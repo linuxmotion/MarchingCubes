@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class VoxelCellUnitTest
 {
@@ -15,12 +16,58 @@ public class VoxelCellUnitTest
         {
 
             0 => Vertex0(),
-            1 => Vertex0Vertex1(),
+            1 => Vertex01(),
+            2 => Vertex012(),
+            3 => Vertex0123(),
+            4 => Vertex0473(),
+            5 => Vertex01234(),
             _ => SingleTriangle()
         };
 
 
         return TestMesh;
+    }
+
+    private static Mesh Vertex0473()
+    {
+
+        VoxelCell cell = GetDefaultVoxelCell();
+        cell.mVoxel[0].Density = 1;
+        cell.mVoxel[4].Density = 1;
+        cell.mVoxel[7].Density = 1;
+        cell.mVoxel[3].Density = 1;
+        cell.CreateEdgeList();
+
+        return cell.CalculateMesh();
+
+    }
+    private static Mesh Vertex0123()
+    {
+
+        VoxelCell cell = GetDefaultVoxelCell();
+        cell.mVoxel[0].Density = 1;
+        cell.mVoxel[1].Density = 1;
+        cell.mVoxel[2].Density = 1;
+        cell.mVoxel[3].Density = 1;
+        cell.CreateEdgeList();
+
+        return cell.CalculateMesh();
+
+    }
+    
+    private static Mesh Vertex01234()
+    {
+
+        VoxelCell cell = GetDefaultVoxelCell();
+        cell.mVoxel[0].Density = 1;
+        cell.mVoxel[1].Density = 1;
+        cell.mVoxel[2].Density = 1;
+        cell.mVoxel[3].Density = 1;
+        cell.mVoxel[4].Density = 1;
+        cell.CreateEdgeList();
+
+        return cell.CalculateMesh();
+
     }
 
     private static Mesh SingleTriangle()
@@ -46,12 +93,24 @@ public class VoxelCellUnitTest
 
     }
 
-    private static Mesh Vertex0Vertex1()
+    private static Mesh Vertex01()
     {
 
         VoxelCell cell = GetDefaultVoxelCell();
         cell.mVoxel[0].Density = 1;
         cell.mVoxel[1].Density = 1;
+        cell.CreateEdgeList();
+
+       return cell.CalculateMesh();
+
+    }
+    private static Mesh Vertex012()
+    {
+
+        VoxelCell cell = GetDefaultVoxelCell();
+        cell.mVoxel[0].Density = 1;
+        cell.mVoxel[1].Density = 1;
+        cell.mVoxel[2].Density = 1;
         cell.CreateEdgeList();
 
        return cell.CalculateMesh();

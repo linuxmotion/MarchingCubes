@@ -2,11 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-
-
-
-
-
+using UnityEngine.Assertions;
 
 class Terrain : MonoBehaviour
 {
@@ -46,6 +42,7 @@ class Terrain : MonoBehaviour
     private List<VoxelCell> mVoxelCells;
 
     private Noise mNoise;
+    private Mesh mTerrainMesh;
 
 
 
@@ -62,7 +59,7 @@ class Terrain : MonoBehaviour
         mOrigin = _InitialPlayerLocation.position;
         mOrigin.y = 0;
         VoxelLayers = new List<List<Voxel>>(_SamplingHeight);
-
+        mTerrainMesh = new Mesh();
         _SamplingHeight++;
         _SamplingLength++;
         _SamplingWidth++;
@@ -85,10 +82,10 @@ class Terrain : MonoBehaviour
     private void GeneratePoints(Vector3 generateAround, in int seed)
     {
         // Generate +1 to height since a since it n+1 row of point to make the cube later
-        for (int i = 0; i < _SamplingHeight; i++)
+        for (int i = 0; i < _SamplingHeight * _Scale; i++)
         {
             VoxelLayers.Add(GenerateSingleElevation(generateAround, seed));
-            generateAround.y += _Scale;
+            generateAround.y += 1 / (float)_Scale;
         }
 
     }
@@ -105,12 +102,18 @@ class Terrain : MonoBehaviour
             for (int column = 0; column < _SamplingWidth * _Scale; column++)
             {
                 Voxel vox = new Voxel();
-                vox.Point = new Vector3(around.x - (_SamplingWidth / 2) + (column / _Scale),
+                float rowLength = 1/_Scale;
+                float columnWidth = 1/_Scale;
+                float xdisplacement = - ((_SamplingWidth - 1) / 2f) + (column/_Scale);
+                float zdisplacement = -  ((_SamplingLength - 1) / 2f) + (row/_Scale);
+
+                vox.Point = new Vector3(around.x + xdisplacement,
                                         around.y,
-                                        around.z - (_SamplingHeight / 2) + (row / _Scale));
+                                        around.z + zdisplacement
+                                        );
 
                 float noise = mNoise.GenerateNoise(vox.Point, seed);
-                Debug.Log(noise);
+                //Debug.Log(noise);
 
                 // move into the range -1  to 1
                 vox.Density = -1f + 2 * noise;
@@ -124,8 +127,66 @@ class Terrain : MonoBehaviour
 
     }
 
+    public Mesh GetTerrainMesh()
+    {
+
+        //for each voxel cell we get a mesh that consists of vertices and triangle.
+        //now we need to put all the vertices and indices into a single array
+        // since cooridinate are givine in world space we will need to shift all the but the first cell
+        // into the correct world space location by adding the the column number to the given triangle
+        // we also must correctly index the new triangles
+
+        // We will have at most the amount of cells times 5 since we can have no more than 5 triangles per mesh
+        List<Vector3[]> agVertices = new List<Vector3[]>(mVoxelCells.Count);// TODO: Dont allocate as much space 
+        List<int[]> agTriangles = new List<int[]>();   // has up to 5 triangles
 
 
+        foreach (VoxelCell vc in mVoxelCells)
+        {
+
+            Mesh m = vc.CalculateMesh(); // retieve the cubesa mesh      
+            agVertices.Add(m.vertices); // has 3,6,9,12, or 15 vertices
+            agTriangles.Add(m.triangles);   // has up to 5 triangles
+
+        }
+
+        Assert.IsTrue(agVertices.Count == agTriangles.Count);
+
+        List<Vector3> linVertices = new List<Vector3>();
+        // now we must linearlize the vertices List<> into a array[]
+        for (int i = 0; i < agVertices.Count; i++)
+        {
+            Vector3[] vertList = agVertices[i];
+            for (int j = 0; j < vertList.Length; j++)
+            {
+                linVertices.Add(agVertices[i][j]);
+            }
+        }
+        List<int> iinIndexedTriangles = new List<int>();
+        int offset = 0;
+        // now we must linearlize the index List<> into a array[]
+        for (int i = 0; i < agTriangles.Count; i++)
+        {
+            int[] vertList = agTriangles[i];
+            for (int j = 0; j < vertList.Length; j++)
+            {
+                iinIndexedTriangles.Add(agTriangles[i][j] + offset);
+            }
+
+            offset += vertList.Length;
+        }
+
+        Assert.IsTrue(linVertices.Count == iinIndexedTriangles.Count);
+
+
+
+        mTerrainMesh.vertices = linVertices.ToArray();
+        mTerrainMesh.triangles = iinIndexedTriangles.ToArray();
+
+
+
+        return mTerrainMesh;
+    }
 
     public void GenerateVoxelSurfaceList()
     {
@@ -169,15 +230,16 @@ class Terrain : MonoBehaviour
                     int columnRowOffset = column + _SamplingWidth * row;
                     VoxelCell cell = new VoxelCell(_ISO_Level);
                     cell.mVoxel[0] = lowerLayer[columnRowOffset];  //(c, r)
-
                     cell.mVoxel[1] = upperLayer[columnRowOffset];  //(c, r)
 
                     cell.mVoxel[2] = upperLayer[columnRowOffset + 1]; // (c, r+1)
                     cell.mVoxel[3] = lowerLayer[columnRowOffset + 1]; // (c, r+1)
 
                     cell.mVoxel[4] = lowerLayer[columnRowOffset + _SamplingWidth];  //(c, r+1)
-                    cell.mVoxel[5] = upperLayer[columnRowOffset + _SamplingWidth + 1];  // (c+1, r+1)
-                    cell.mVoxel[6] = upperLayer[columnRowOffset + _SamplingWidth];  //(c, r+1)
+                    cell.mVoxel[5] = upperLayer[columnRowOffset + _SamplingWidth];  // (c+1, r+1)
+
+
+                    cell.mVoxel[6] = upperLayer[columnRowOffset + _SamplingWidth + 1];  //(c, r+1)
                     cell.mVoxel[7] = lowerLayer[columnRowOffset + _SamplingWidth + 1];  // (c+1, r+1)       
 
                     cell.CreateEdgeList();

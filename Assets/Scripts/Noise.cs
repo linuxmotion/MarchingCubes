@@ -21,6 +21,7 @@ public class Noise : MonoBehaviour{
 
     public float GenerateNoise(in Vector3 point, in int seed)
     {
+
         
         float x = point.x/ _SampleLevel;
         float y = point.y/ _SampleLevel;

@@ -33,7 +33,8 @@ public class MarchingCubes : MonoBehaviour
     {
 
         MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
-        meshRenderer.sharedMaterial = new Material(Shader.Find("Standard"));
+        meshRenderer.material = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+        meshRenderer.material.SetFloat("_Cull", 0);
         MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
         Mesh mesh = new Mesh();
         // Setup the initial parameter for terrain generation
@@ -43,7 +44,10 @@ public class MarchingCubes : MonoBehaviour
         if (_CheckTestCases)
         {
             mesh = VoxelCellUnitTest.GetTestMesh(_CheckCaseNumber);
+            mesh.RecalculateNormals();
             meshFilter.mesh = mesh;
+
+
             return;
 
         }
@@ -65,8 +69,8 @@ public class MarchingCubes : MonoBehaviour
             else
             {
                 // fill the surface as a triangulated mesh
-                ISOFill();
-
+               mesh = ISOFill();
+               meshFilter.mesh = mesh;
             }
 
 
@@ -95,13 +99,11 @@ public class MarchingCubes : MonoBehaviour
         }
     }
 
-    private void ISOFill()
+    private Mesh ISOFill()
     {
 
-
-        List<Voxel> voxel;
-
-        throw new NotImplementedException();
+        return mTerrain.GetTerrainMesh();
+       
     }
 
 
