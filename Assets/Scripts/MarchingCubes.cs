@@ -37,16 +37,20 @@ public class MarchingCubes : MonoBehaviour
         meshRenderer.material = new Material(Shader.Find("Universal Render Pipeline/Lit"));
         meshRenderer.material.SetFloat("_Cull", 0);
         mMeshFilter = gameObject.AddComponent<MeshFilter>();
+        mMeshFilter.mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+        mTerrain = GetComponent<Terrain>();
+        
 
         CalulateMesh();
     }
 
     public void CalulateMesh()
     { 
-        Mesh mesh = new Mesh();
-        // Setup the initial parameter for terrain generation
-        mTerrain = GetComponent<Terrain>();
+        
         mTerrain.Initialize();
+        Mesh mesh = new Mesh();
+        mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+        // Setup the initial parameter for terrain generation
 
         if (_CheckTestCases)
         {
@@ -84,6 +88,9 @@ public class MarchingCubes : MonoBehaviour
 
 
         }
+
+        Debug.Log("There are "+ mMeshFilter.mesh.vertices.Length + " vertices ");
+                
     }
 
     private void EdgeFill()
@@ -129,7 +136,7 @@ public class MarchingCubes : MonoBehaviour
                 point.transform.position = pointDen.Point;
                 if (_UseDensityAsHeight)
                 {
-                    point.transform.localScale = Vector3.one / 2;
+                    point.transform.localScale = Vector3.one;
                     point.transform.position = new Vector3(pointDen.Point.x, pointDen.Density, pointDen.Point.z);
                 }
                 else

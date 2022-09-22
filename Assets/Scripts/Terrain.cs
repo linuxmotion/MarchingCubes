@@ -58,17 +58,15 @@ class Terrain : MonoBehaviour
         mVoxelCells = new List<VoxelCell>();
         mOrigin = _InitialPlayerLocation.position;
         mOrigin.y = 0;
-        VoxelLayers = new List<List<Voxel>>(_SamplingHeight);
         mTerrainMesh = new Mesh();
-        _SamplingHeight++;
-        _SamplingLength++;
-        _SamplingWidth++;
+        mTerrainMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
 
     }
     public void GenerateInitialTerrain()
     {
 
+        VoxelLayers = new List<List<Voxel>>();
         GenerateTerrain(mOrigin);
 
     }
@@ -82,10 +80,10 @@ class Terrain : MonoBehaviour
     private void GeneratePoints(Vector3 generateAround, in int seed)
     {
         // Generate +1 to height since a since it n+1 row of point to make the cube later
-        for (int i = 0; i < _SamplingHeight * _Scale; i++)
+        for (int i = 0; i <= _SamplingHeight * _Scale; i++)
         {
             VoxelLayers.Add(GenerateSingleElevation(generateAround, seed));
-            generateAround.y += 1 / (float)_Scale;
+            generateAround.y += 1/ (float)_Scale;
         }
 
     }
@@ -96,16 +94,16 @@ class Terrain : MonoBehaviour
         List<Voxel> points = new List<Voxel>();
 
         // Loop through each row of points to generate
-        for (int row = 0; row < _SamplingLength * _Scale; row++)
+        for (int row = 0; row <= _SamplingLength * _Scale; row++)
         {
             // Loop through each coloumn within a row, generating points for the world
-            for (int column = 0; column < _SamplingWidth * _Scale; column++)
+            for (int column = 0; column <= _SamplingWidth * _Scale; column++)
             {
                 Voxel vox = new Voxel();
                 float rowLength = 1/_Scale;
                 float columnWidth = 1/_Scale;
-                float xdisplacement = - ((_SamplingWidth - 1) / 2f) + (column/_Scale);
-                float zdisplacement = -  ((_SamplingLength - 1) / 2f) + (row/_Scale);
+                float xdisplacement = - ((_SamplingWidth ) / 2f) + (column/_Scale);
+                float zdisplacement = -  ((_SamplingLength) / 2f) + (row/_Scale);
 
                 vox.Point = new Vector3(around.x + xdisplacement,
                                         around.y,
@@ -201,7 +199,7 @@ class Terrain : MonoBehaviour
         // Loop through each layer 
         int numLayers = VoxelLayers.Count;
         // for every two layer
-        for (int i = 0; i < _SamplingHeight; i++)
+        for (int i = 0; i < _SamplingHeight*_Scale; i++)
         {
             // we need two layers to test if whether the voxel is inside or outside of the surface 
 
@@ -220,14 +218,18 @@ class Terrain : MonoBehaviour
             // for each layer i need the four points of the cell j, j+1, i + Wr, j+1+wr
             // where j is the cell coulumn number and w is the number of cells in a row
             // the formula is derives as f(c,r) = <(c,r),(c+1,r),(c+1,r+1),(c,r+1)>
-            for (int row = 0; row < _SamplingLength - 1; row++)
+            
+            int scaledSampleWidth = (_SamplingWidth * _Scale);
+
+            for (int row = 0; row < scaledSampleWidth; row++)
             {
 
 
-                for (int column = 0; column < _SamplingWidth - 1; column++)
+                for (int column = 0; column < scaledSampleWidth; column++)
                 {
 
-                    int columnRowOffset = column + _SamplingWidth * row;
+                    
+                    int columnRowOffset = column +  (scaledSampleWidth+1)* row;
                     VoxelCell cell = new VoxelCell(_ISO_Level);
                     cell.mVoxel[0] = lowerLayer[columnRowOffset];  //(c, r)
                     cell.mVoxel[1] = upperLayer[columnRowOffset];  //(c, r)
@@ -235,12 +237,12 @@ class Terrain : MonoBehaviour
                     cell.mVoxel[2] = upperLayer[columnRowOffset + 1]; // (c, r+1)
                     cell.mVoxel[3] = lowerLayer[columnRowOffset + 1]; // (c, r+1)
 
-                    cell.mVoxel[4] = lowerLayer[columnRowOffset + _SamplingWidth];  //(c, r+1)
-                    cell.mVoxel[5] = upperLayer[columnRowOffset + _SamplingWidth];  // (c+1, r+1)
+                    cell.mVoxel[4] = lowerLayer[columnRowOffset + scaledSampleWidth + 1];  //(c, r+1)
+                    cell.mVoxel[5] = upperLayer[columnRowOffset + scaledSampleWidth + 1];  // (c+1, r+1)
 
 
-                    cell.mVoxel[6] = upperLayer[columnRowOffset + _SamplingWidth + 1];  //(c, r+1)
-                    cell.mVoxel[7] = lowerLayer[columnRowOffset + _SamplingWidth + 1];  // (c+1, r+1)       
+                    cell.mVoxel[6] = upperLayer[columnRowOffset + scaledSampleWidth + 2];  //(c, r+1)
+                    cell.mVoxel[7] = lowerLayer[columnRowOffset + scaledSampleWidth + 2];  // (c+1, r+1)       
 
                     cell.CreateEdgeList();
                     if (cell.IsOnSurface())

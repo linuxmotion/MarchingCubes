@@ -413,7 +413,7 @@ GameObject:
   - component: {fileID: 1907670780}
   m_Layer: 0
   m_Name: TerrainMesh
-  m_TagString: Untagged
+  m_TagString: TerrainMesh
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -466,7 +466,7 @@ MonoBehaviour:
   _Seed: 100
   _MaxWorldSize: 32
   _InitialPlayerLocation: {fileID: 1505591846}
-  _Scale: 1
+  _Scale: 5
   _SamplingHeight: 32
   _SamplingLength: 32
   _SamplingWidth: 32
