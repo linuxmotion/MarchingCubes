@@ -49,6 +49,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "ReloadScene",
+                    "type": "Button",
+                    "id": "0eb71cb1-fd14-4288-9b68-756c22bd1490",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -260,6 +269,17 @@
                     "action": "Fly",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "c055fdc6-358f-49d3-beee-7dffec5ba9b5",
+                    "path": "<Keyboard>/r",
+                    "interactions": "MultiTap",
+                    "processors": "",
+                    "groups": "KeyboardMouse",
+                    "action": "ReloadScene",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

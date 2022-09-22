@@ -26,6 +26,7 @@ public class MarchingCubes : MonoBehaviour
     private bool _UseEdgeFill;
     [SerializeField]
     private bool _UseWeightedEdges;
+    private MeshFilter mMeshFilter;
 
 
     // Use this for initialization
@@ -35,7 +36,13 @@ public class MarchingCubes : MonoBehaviour
         MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
         meshRenderer.material = new Material(Shader.Find("Universal Render Pipeline/Lit"));
         meshRenderer.material.SetFloat("_Cull", 0);
-        MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
+        mMeshFilter = gameObject.AddComponent<MeshFilter>();
+
+        CalulateMesh();
+    }
+
+    public void CalulateMesh()
+    { 
         Mesh mesh = new Mesh();
         // Setup the initial parameter for terrain generation
         mTerrain = GetComponent<Terrain>();
@@ -45,7 +52,7 @@ public class MarchingCubes : MonoBehaviour
         {
             mesh = VoxelCellUnitTest.GetTestMesh(_CheckCaseNumber);
             mesh.RecalculateNormals();
-            meshFilter.mesh = mesh;
+            mMeshFilter.mesh = mesh;
 
 
             return;
@@ -69,15 +76,14 @@ public class MarchingCubes : MonoBehaviour
             else
             {
                 // fill the surface as a triangulated mesh
-               mesh = ISOFill();
-               meshFilter.mesh = mesh;
+                mesh = ISOFill();
+                mMeshFilter.mesh = mesh;
             }
 
 
 
 
         }
-
     }
 
     private void EdgeFill()

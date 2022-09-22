@@ -486,10 +486,10 @@ MonoBehaviour:
   _PointPrefab: {fileID: 2688265161194097102, guid: 25bc7c7e2aaccfa4a897e694c7c2fa60,
     type: 3}
   _UseDensityAsHeight: 0
-  _CheckTestCases: 1
+  _CheckTestCases: 0
   _CheckCaseNumber: 1
   _UseSpaceFill: 0
-  _UseEdgeFill: 1
+  _UseEdgeFill: 0
   _UseWeightedEdges: 0
 --- !u!114 &352380538134187743
 MonoBehaviour:

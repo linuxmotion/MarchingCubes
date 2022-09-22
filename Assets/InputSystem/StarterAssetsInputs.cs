@@ -51,6 +51,14 @@ namespace StarterAssets
 	
 			FlyInput(value.Get<Vector2>());
 		}
+
+		public void OnReloadScene(InputValue value) {
+
+			Debug.Log("Scene reloaded");
+			((MarchingCubes)GameObject.FindGameObjectWithTag("TerrainMesh").GetComponent<MarchingCubes>() ).CalulateMesh();
+		
+		
+		}
 #endif
 
 		public void FlyInput(Vector2 newFlyState)
