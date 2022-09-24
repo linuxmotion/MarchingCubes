@@ -50,6 +50,7 @@ public class MarchingCubes : MonoBehaviour
         mTerrain.Initialize();
         Mesh mesh = new Mesh();
         mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+        mMeshFilter.mesh.Clear();
         // Setup the initial parameter for terrain generation
 
         if (_CheckTestCases)
