@@ -80,10 +80,11 @@ class Terrain : MonoBehaviour
     private void GeneratePoints(Vector3 generateAround, in int seed)
     {
         // Generate +1 to height since a since it n+1 row of point to make the cube later
+        generateAround.y = -5;
         for (int i = 0; i <= _SamplingHeight * _Scale; i++)
         {
             VoxelLayers.Add(GenerateSingleElevation(generateAround, seed));
-            generateAround.y += 1/ (float)_Scale;
+            generateAround.y += 1 / (float)_Scale;
         }
 
     }
@@ -100,21 +101,15 @@ class Terrain : MonoBehaviour
             for (int column = 0; column <= _SamplingWidth * _Scale; column++)
             {
                 Voxel vox = new Voxel();
-                float rowLength = 1/_Scale;
-                float columnWidth = 1/_Scale;
-                float xdisplacement = - ((_SamplingWidth ) / 2f) + (column/_Scale);
-                float zdisplacement = -  ((_SamplingLength) / 2f) + (row/_Scale);
+                float xdisplacement = -((_SamplingWidth) / 2f) + (column / (float)_Scale);
+                float zdisplacement = -((_SamplingLength) / 2f) + (row / (float)_Scale);
 
                 vox.Point = new Vector3(around.x + xdisplacement,
                                         around.y,
                                         around.z + zdisplacement
                                         );
 
-                float noise = mNoise.GenerateNoise(vox.Point, seed);
-                //Debug.Log(noise);
-
-                // move into the range -1  to 1
-                vox.Density = -1f + 2 * noise;
+                vox.Density = mNoise.GenerateNoise(vox.Point, seed);
                 // Add the point to the list
                 points.Add(vox);
 
@@ -180,7 +175,8 @@ class Terrain : MonoBehaviour
 
         mTerrainMesh.vertices = linVertices.ToArray();
         mTerrainMesh.triangles = iinIndexedTriangles.ToArray();
-
+        mTerrainMesh.RecalculateNormals();
+        mTerrainMesh.RecalculateTangents();
 
 
         return mTerrainMesh;
@@ -199,13 +195,12 @@ class Terrain : MonoBehaviour
         // Loop through each layer 
         int numLayers = VoxelLayers.Count;
         // for every two layer
-        for (int i = 0; i < _SamplingHeight*_Scale; i++)
+        for (int i = 0; i < _SamplingHeight * _Scale; i++)
         {
             // we need two layers to test if whether the voxel is inside or outside of the surface 
 
             // but first check to see if we have reached the top of world that was sampled
-            if (i + 1 >= numLayers)
-                break;
+
 
             lowerLayer = VoxelLayers[i];
             upperLayer = VoxelLayers[i + 1];
@@ -218,18 +213,18 @@ class Terrain : MonoBehaviour
             // for each layer i need the four points of the cell j, j+1, i + Wr, j+1+wr
             // where j is the cell coulumn number and w is the number of cells in a row
             // the formula is derives as f(c,r) = <(c,r),(c+1,r),(c+1,r+1),(c,r+1)>
-            
+
             int scaledSampleWidth = (_SamplingWidth * _Scale);
 
-            for (int row = 0; row < scaledSampleWidth; row++)
+            for (int row = 0; row < _SamplingLength * _Scale; row++)
             {
 
 
                 for (int column = 0; column < scaledSampleWidth; column++)
                 {
 
-                    
-                    int columnRowOffset = column +  (scaledSampleWidth+1)* row;
+
+                    int columnRowOffset = column + (scaledSampleWidth + 1) * row;
                     VoxelCell cell = new VoxelCell(_ISO_Level);
                     cell.mVoxel[0] = lowerLayer[columnRowOffset];  //(c, r)
                     cell.mVoxel[1] = upperLayer[columnRowOffset];  //(c, r)
@@ -248,16 +243,11 @@ class Terrain : MonoBehaviour
                     if (cell.IsOnSurface())
                         mVoxelCells.Add(cell);
 
-                    // if the current cell is on the surface 
-                    // which corners are above the surface and which corners are below the surface
-
                 }
 
             }
 
         }
-
-
 
     }
 
