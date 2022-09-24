@@ -361,23 +361,23 @@ public class VoxelCell
         // know which edges connect, and how many triangle to generate
 
         Mesh m = new Mesh();
-        Vector3[] vertices = new Vector3[mNumberTriangles*3];
-        int[] triangles = new int[mNumberTriangles*3];
+        Vector3[] vertices = new Vector3[mNumberTriangles * 3];
+        int[] triangles = new int[mNumberTriangles * 3];
 
-        for (int i = 0; i < mNumberTriangles*3; i += 3)
+        for (int i = 0; i < mNumberTriangles * 3; i += 3)
         {
             Vector3[] triangle = new Vector3[3];
 
-            Vector3 edges = mVertexConnections[i/3];
+            Vector3 edges = mVertexConnections[i / 3];
             triangle = MakeTriangleFromEdgeVector(edges);
             vertices[i] = triangle[0];
-            vertices[i+1] = triangle[1];
-            vertices[i+2] = triangle[2];
+            vertices[i + 1] = triangle[1];
+            vertices[i + 2] = triangle[2];
 
             triangles[i] = i;
-            triangles[i+1] = i+1;
-            triangles[i+2] = i+2;
-            
+            triangles[i + 1] = i + 1;
+            triangles[i + 2] = i + 2;
+
 
         }
         m.vertices = vertices;
@@ -402,7 +402,8 @@ public class VoxelCell
 
     private Vector3 GetVertexFromEdge(int edge)
     {
-        Vector3 vertex;
+        int index1 = -1;
+        int index2 = -1;
 
         switch (edge)
         {
@@ -410,91 +411,105 @@ public class VoxelCell
             case 0:
                 {
                     // 0,1
-                    vertex = Vector3.Lerp(mVoxel[0].Point, mVoxel[1].Point, .5f);
-
+                    index1 = 0;
+                    index2 = 1;
                 };
                 break;
             case 1:
                 {
                     // lerp vertex 1,2
-
-                    vertex = Vector3.Lerp(mVoxel[1].Point, mVoxel[2].Point, .5f);
+                    index1 = 1;
+                    index2 = 2;
                 };
                 break;
             case 2:
                 {
                     //lerp vertex 2,3
-                    vertex = Vector3.Lerp(mVoxel[2].Point, mVoxel[3].Point, .5f);
+                    index1 = 2;
+                    index2 = 3;
                 };
                 break;
             case 3:
                 {
                     // lerp vertex 3,0
-                    vertex = Vector3.Lerp(mVoxel[3].Point, mVoxel[0].Point, .5f);
+                    index1 = 3;
+                    index2 = 0;
                 };
                 break;
 
             case 4:
                 {
                     //lerp 4, 5
-                    vertex = Vector3.Lerp(mVoxel[4].Point, mVoxel[5].Point, .5f);
+                    index1 = 4;
+                    index2 = 5;
                 };
                 break;
             case 5:
                 {
                     // lerp 5, 6
-
-                    vertex = Vector3.Lerp(mVoxel[5].Point, mVoxel[6].Point, .5f);
+                    index1 = 5;
+                    index2 = 6;
                 };
                 break;
             case 6:
                 {
                     // lerp 6, 7
-
-                    vertex = Vector3.Lerp(mVoxel[6].Point, mVoxel[7].Point, .5f);
+                    index1 = 6;
+                    index2 = 7;
 
                 };
                 break;
             case 7:
                 {
                     // lerp 7,4
-                    vertex = Vector3.Lerp(mVoxel[7].Point, mVoxel[4].Point, .5f);
+                    index1 = 7;
+                    index2 = 4;
                 };
                 break;
             case 8:
                 {
                     // lerp 0,4
-                    vertex = Vector3.Lerp(mVoxel[0].Point, mVoxel[4].Point, .5f);
+                    index1 = 0;
+                    index2 = 4;
 
                 };
                 break;
             case 9:
                 {
                     // lerp vertices 1,5
-                    vertex = Vector3.Lerp(mVoxel[1].Point, mVoxel[5].Point, .5f);
+                    index1 = 1;
+                    index2 = 5;
                 };
                 break;
             case 10:
                 {
                     //lerp 2,6
-                    vertex = Vector3.Lerp(mVoxel[2].Point, mVoxel[6].Point, .5f);
+                    index1 = 2;
+                    index2 = 6;
                 };
                 break;
             case 11:
                 {
                     // lerp 3, 7
-                    vertex = Vector3.Lerp(mVoxel[3].Point, mVoxel[7].Point, .5f);
+                    index1 = 3;
+                    index2 = 7;
                 };
                 break;
             default:
-                { vertex = Vector3.zero; };
-                break;
+                { // 0,1
+                    index1 = -1;
+                    index2 = -1;
+                    break;
+                }
 
 
 
         }
 
-        return vertex;
+        float weight =  mVoxel[index1].Density / (float)(mVoxel[index1].Density - mVoxel[index2].Density)   ;
+ 
+
+        return Vector3.Lerp(mVoxel[index1].Point, mVoxel[index2].Point, weight);
     }
 
     private int[] GetMeshTriangles()
