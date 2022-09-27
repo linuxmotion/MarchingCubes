@@ -134,12 +134,11 @@ class Terrain : MonoBehaviour
         List<int[]> agTriangles = new List<int[]>();   // has up to 5 triangles
 
 
-        foreach (VoxelCell vc in mVoxelCells)
-        {
+        for (int i = 0; i < mVoxelCells.Count; i++) { 
 
-            Mesh m = vc.CalculateMesh(); // retieve the cubesa mesh      
-            agVertices.Add(m.vertices); // has 3,6,9,12, or 15 vertices
-            agTriangles.Add(m.triangles);   // has up to 5 triangles
+            mVoxelCells[i].CalculateMesh(); // retieve the cubesa mesh      
+            agVertices.Add(mVoxelCells[i].mTriangleVertices); // has 3,6,9,12, or 15 vertices
+            agTriangles.Add(mVoxelCells[i].mTriangleIndex);   // has up to 5 triangles
 
         }
 

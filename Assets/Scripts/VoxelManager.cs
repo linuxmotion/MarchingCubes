@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Unity.Burst.Intrinsics;
 using UnityEngine;
 
 
@@ -20,9 +21,9 @@ public class VoxelCell
     public Voxel[] mVoxel = new Voxel[SIZE];
     private byte mEdgeList = 0;
     private int ISOLevel;
-    private int mNumberTriangles;
-    private Vector3[] mTriangleVertices;
-    private int[] mTriangleIndex;
+    public int mNumberTriangles { get; private set; }
+    public Vector3[] mTriangleVertices;
+    public int[] mTriangleIndex;
 
     // We have up to five triangle that get connected per cube
     private Vector3[] mVertexConnections;
@@ -308,7 +309,7 @@ public class VoxelCell
     public void CreateEdgeList()
     {
 
-        for (int i = 0; i < SIZE; i++)
+        for (int i = 0; i < 8; i++) // high acces time
         {
 
             if (mVoxel[i].Density > ISOLevel)
@@ -354,13 +355,12 @@ public class VoxelCell
 
 
 
-    public Mesh CalculateMesh()
+    public void CalculateMesh()
     {
 
 
         // know which edges connect, and how many triangle to generate
 
-        Mesh m = new Mesh();
         Vector3[] vertices = new Vector3[mNumberTriangles * 3];
         int[] triangles = new int[mNumberTriangles * 3];
 
@@ -380,11 +380,10 @@ public class VoxelCell
 
 
         }
-        m.vertices = vertices;
-        m.triangles = triangles;
         mTriangleVertices = vertices;
         mTriangleIndex = triangles;
-        return m;
+
+        return;
 
     }
 
@@ -511,6 +510,8 @@ public class VoxelCell
 
         return Vector3.Lerp(mVoxel[index1].Point, mVoxel[index2].Point, weight);
     }
+
+
 
     private int[] GetMeshTriangles()
     {

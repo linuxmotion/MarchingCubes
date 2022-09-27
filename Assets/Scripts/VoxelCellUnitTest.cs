@@ -38,7 +38,11 @@ public class VoxelCellUnitTest
         cell.mVoxel[3].Density = 1;
         cell.CreateEdgeList();
 
-        return cell.CalculateMesh();
+        cell.CalculateMesh();
+        Mesh m = new Mesh();
+        m.vertices = cell.mTriangleVertices;
+        m.triangles = cell.mTriangleIndex;
+        return m;
 
     }
     private static Mesh Vertex0123()
@@ -51,10 +55,14 @@ public class VoxelCellUnitTest
         cell.mVoxel[3].Density = 1;
         cell.CreateEdgeList();
 
-        return cell.CalculateMesh();
+        cell.CalculateMesh();
+        Mesh m = new Mesh();
+        m.vertices = cell.mTriangleVertices;
+        m.triangles = cell.mTriangleIndex;
+        return m;
 
     }
-    
+
     private static Mesh Vertex01234()
     {
 
@@ -66,7 +74,11 @@ public class VoxelCellUnitTest
         cell.mVoxel[4].Density = 1;
         cell.CreateEdgeList();
 
-        return cell.CalculateMesh();
+        cell.CalculateMesh();
+        Mesh m = new Mesh();
+        m.vertices = cell.mTriangleVertices;
+        m.triangles = cell.mTriangleIndex;
+        return m;
 
     }
 
@@ -89,7 +101,13 @@ public class VoxelCellUnitTest
         cell.mVoxel[0].Density = 1;
         cell.CreateEdgeList();
 
-        return cell.CalculateMesh();
+
+
+        cell.CalculateMesh();
+        Mesh m = new Mesh();
+        m.vertices = cell.mTriangleVertices;
+        m.triangles = cell.mTriangleIndex;
+        return m;
 
     }
 
@@ -101,7 +119,12 @@ public class VoxelCellUnitTest
         cell.mVoxel[1].Density = 1;
         cell.CreateEdgeList();
 
-       return cell.CalculateMesh();
+
+        cell.CalculateMesh(); 
+        Mesh m = new Mesh(); 
+        m.vertices = cell.mTriangleVertices; 
+        m.triangles = cell.mTriangleIndex; 
+        return m;
 
     }
     private static Mesh Vertex012()
@@ -112,8 +135,11 @@ public class VoxelCellUnitTest
         cell.mVoxel[1].Density = 1;
         cell.mVoxel[2].Density = 1;
         cell.CreateEdgeList();
-
-       return cell.CalculateMesh();
+        cell.CalculateMesh(); 
+        Mesh m = new Mesh(); 
+        m.vertices = cell.mTriangleVertices; 
+        m.triangles = cell.mTriangleIndex; 
+        return m;
 
     }
 
