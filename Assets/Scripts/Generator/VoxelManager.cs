@@ -508,7 +508,7 @@ public class VoxelCell
         float weight =  mVoxel[index1].Density / (float)(mVoxel[index1].Density - mVoxel[index2].Density)   ;
  
 
-        return Vector3.Lerp(mVoxel[index1].Point, mVoxel[index2].Point, weight);
+        return Vector3.Lerp(mVoxel[index1].Point, mVoxel[index2].Point, 0.5f);
     }
 
 

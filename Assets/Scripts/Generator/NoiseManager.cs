@@ -2,9 +2,9 @@
 
 
 
-public class Noise : MonoBehaviour{
+public class NoiseManager : MonoBehaviour {
 
- [Header("Noise sampling parameters")]
+    [Header("Noise sampling parameters")]
     [SerializeField]
     private float _Frequency;
     [SerializeField]
@@ -16,20 +16,49 @@ public class Noise : MonoBehaviour{
     [SerializeField]
     private float _SampleLevel;
 
+    public NoiseParameters Parameterize() {
 
-    // Taken from https://gist.github.com/tntmeijs/6a3b4587ff7d38a6fa63e13f9d0ac46d
 
-    public float GenerateNoise(in Vector3 point, in int seed)
+        return new NoiseParameters(_Frequency, _Amplitude,_Persistence,_Octave,_SampleLevel);
+    
+    
+    }
+}
+
+public struct NoiseParameters
+{
+    public float Frequency;
+    public float Amplitude;
+    public float Persistence;
+    public int Octave;
+    public float SampleLevel;
+
+    public NoiseParameters(float frequency, float amplitude, float persistence, int octave, float sampleLevel)
     {
+        Frequency = frequency;
+        Amplitude = amplitude;
+        Persistence = persistence;
+        Octave = octave;
+        SampleLevel = sampleLevel;
+    }
+}
 
+// Taken from https://gist.github.com/tntmeijs/6a3b4587ff7d38a6fa63e13f9d0ac46d
+
+public class Noise {
+
+
+    public static float GenerateNoise(in Vector3 point, in int seed, in NoiseParameters noiseParameters)
+    {
         
-        float x = point.x/ _SampleLevel;
-        float y = point.y/ _SampleLevel;
-        float z = point.z/ _SampleLevel;
-        float frequency =  _Frequency;
-        float amplitude =  _Amplitude;
-        float persistence =  _Persistence;
-        int octave = _Octave;
+        
+        float x = point.x/ noiseParameters.SampleLevel;
+        float y = point.y/ noiseParameters.SampleLevel;
+        float z = point.z/ noiseParameters.SampleLevel;
+        float frequency = noiseParameters.Frequency;
+        float amplitude = noiseParameters.Amplitude;
+        float persistence = noiseParameters.Persistence;
+        int octave = noiseParameters.Octave;
 
         float noise = 0.0f;
 

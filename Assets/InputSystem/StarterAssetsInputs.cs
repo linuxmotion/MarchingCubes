@@ -55,7 +55,7 @@ namespace StarterAssets
 		public void OnReloadScene(InputValue value) {
 
 			Debug.Log("Scene reloaded");
-			((MarchingCubes)GameObject.FindGameObjectWithTag("TerrainMesh").GetComponent<MarchingCubes>() ).CalulateMesh();
+			((MarchingCubeThreaded)GameObject.FindGameObjectWithTag("TerrainMesh").GetComponent<MarchingCubeThreaded>() ).UpdateChunk();
 		
 		
 		}
