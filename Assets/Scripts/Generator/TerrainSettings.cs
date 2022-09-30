@@ -24,23 +24,32 @@ class TerrainSettings : MonoBehaviour
     private int _SamplingWidth;
     [SerializeField]
     private int _ISO_Level;
+
+    public TerrainParameters Paramterize() {
+
+        return new TerrainParameters(_Seed, _InitialPlayerLocation.position, _Scale, _SamplingHeight, _SamplingLength, _SamplingWidth, _ISO_Level);
+    
+    }
+    public Transform GetPlayerTransform() {
+        return _InitialPlayerLocation;
+    }
 }
 
 public struct TerrainParameters
 {
 
     public int Seed;
-    public Transform InitialPlayerLocation;
+    public Vector3 Origin;
     public int Scale;
     public int SamplingHeight;
     public int SamplingLength;
     public int SamplingWidth;
     public int ISO_Level;
 
-    public TerrainParameters(int seed, Transform initialPlayerLocation, int scale, int samplingHeight, int samplingLength, int samplingWidth, int iSO_Level)
+    public TerrainParameters(int seed, Vector3 origin, int scale, int samplingHeight, int samplingLength, int samplingWidth, int iSO_Level)
     {
         Seed = seed;
-        InitialPlayerLocation = initialPlayerLocation;
+        Origin = origin;
         Scale = scale;
         SamplingHeight = samplingHeight;
         SamplingLength = samplingLength;

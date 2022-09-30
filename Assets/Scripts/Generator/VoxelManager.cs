@@ -312,7 +312,7 @@ public class VoxelCell
         for (int i = 0; i < 8; i++) // high acces time
         {
 
-            if (mVoxel[i].Density > ISOLevel)
+            if (mVoxel[i].Density >= ISOLevel)
             {
                 mEdgeList |= (byte)(0b00000001 << i);
             }
@@ -508,7 +508,7 @@ public class VoxelCell
         float weight =  mVoxel[index1].Density / (float)(mVoxel[index1].Density - mVoxel[index2].Density)   ;
  
 
-        return Vector3.Lerp(mVoxel[index1].Point, mVoxel[index2].Point, 0.5f);
+        return Vector3.Lerp(mVoxel[index1].Point, mVoxel[index2].Point, weight);
     }
 
 

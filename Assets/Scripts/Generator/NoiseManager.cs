@@ -50,8 +50,17 @@ public class Noise {
 
     public static float GenerateNoise(in Vector3 point, in int seed, in NoiseParameters noiseParameters)
     {
+        //return -point.y + Mathf.Sin(point.x) + Mathf.Sin(point.z);
+
+        // Noise testing seed
+        if (seed == 0)
+        {
+           
+            return -point.y;
         
         
+        }
+
         float x = point.x/ noiseParameters.SampleLevel;
         float y = point.y/ noiseParameters.SampleLevel;
         float z = point.z/ noiseParameters.SampleLevel;

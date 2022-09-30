@@ -363,3 +363,10 @@ MigrationBackup/
 FodyWeavers.xsd
 /Library
 /Temp
+<<<<<<< HEAD
+=======
+
+/MemoryCapture
+
+/MemoryCaptures
+>>>>>>> d6164cf (Add generating a single chunk on one thread)

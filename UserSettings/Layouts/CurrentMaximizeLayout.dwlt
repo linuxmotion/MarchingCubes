@@ -19,16 +19,20 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 30
-    width: 1518.4
-    height: 713.2
+    width: 1508
+    height: 716.4
   m_MinSize: {x: 400, y: 200}
   m_MaxSize: {x: 32384, y: 16192}
   vertical: 0
+<<<<<<< HEAD
 <<<<<<< HEAD
   controlID: 83
 =======
   controlID: 14733
 >>>>>>> 8b20ab6 (Move to a threaded model-All seting not used)
+=======
+  controlID: 18780
+>>>>>>> d6164cf (Add generating a single chunk on one thread)
 --- !u!114 &2
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -52,10 +56,10 @@ MonoBehaviour:
     m_Tooltip: 
   m_Pos:
     serializedVersion: 2
-    x: 640.8
-    y: 90.4
-    width: 402
-    height: 483.8
+    x: 805.60004
+    y: 80.8
+    width: 227.59998
+    height: 486.2
   m_ViewDataDictionary: {fileID: 0}
   m_OverlayCanvas:
     m_LastAppliedPresetName: Default
@@ -102,23 +106,23 @@ MonoBehaviour:
       serializedVersion: 2
       x: 0
       y: 21
-      width: 402
-      height: 462.8
-    m_Scale: {x: 1.1592739, y: 1.159274}
-    m_Translation: {x: 200.99988, y: 231.39996}
+      width: 227.59998
+      height: 465.2
+    m_Scale: {x: 1.1592737, y: 1.159274}
+    m_Translation: {x: 113.799805, y: 232.59995}
     m_MarginLeft: 0
     m_MarginRight: 0
     m_MarginTop: 0
     m_MarginBottom: 0
     m_LastShownAreaInsideMargins:
       serializedVersion: 2
-      x: -173.3843
-      y: -199.60765
-      width: 346.7688
-      height: 399.21536
+      x: -98.16474
+      y: -200.64278
+      width: 196.32979
+      height: 401.28564
     m_MinimalGUI: 1
-  m_defaultScale: 0.26171875
-  m_LastWindowPixelSize: {x: 502.5, y: 604.75}
+  m_defaultScale: 0.14817707
+  m_LastWindowPixelSize: {x: 284.49997, y: 607.75}
   m_ClearInEditMode: 1
   m_NoCameraWarning: 1
   m_LowResolutionForAspectRatios: 01000000000000000000
@@ -143,12 +147,12 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 0
-    width: 1037.6
-    height: 713.2
+    width: 1028
+    height: 716.4
   m_MinSize: {x: 300, y: 200}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 1
-  controlID: 14734
+  controlID: 18781
 --- !u!114 &4
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -169,12 +173,12 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 0
-    width: 1037.6
-    height: 504.8
+    width: 1028
+    height: 507.2
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 8096}
   vertical: 0
-  controlID: 14735
+  controlID: 18782
 --- !u!114 &5
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -192,10 +196,10 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 0
-    width: 207.2
-    height: 504.8
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
+    width: 204
+    height: 507.2
+  m_MinSize: {x: 201, y: 221}
+  m_MaxSize: {x: 4001, y: 4021}
   m_ActualView: {fileID: 6}
   m_Panes:
   - {fileID: 6}
@@ -223,9 +227,9 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
     x: 7.2000003
-    y: 90.4
-    width: 206.2
-    height: 483.8
+    y: 80.8
+    width: 203
+    height: 486.2
   m_ViewDataDictionary: {fileID: 0}
   m_OverlayCanvas:
     m_LastAppliedPresetName: Default
@@ -233,9 +237,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 1a6f0000
-      m_LastClickedID: 28442
-      m_ExpandedIDs: 7e55ffff16fbffffe46e0000f46e0000f86e00000a6f0000
+      m_SelectedIDs: 80e6feff
+      m_LastClickedID: -72064
+      m_ExpandedIDs: 16fbffffda6e0000f06e0000f86e0000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -274,10 +278,10 @@ MonoBehaviour:
   m_Children: []
   m_Position:
     serializedVersion: 2
-    x: 207.2
+    x: 204
     y: 0
-    width: 426.39996
-    height: 504.8
+    width: 594.4
+    height: 507.2
   m_MinSize: {x: 202, y: 221}
   m_MaxSize: {x: 4002, y: 4021}
   m_ActualView: {fileID: 8}
@@ -309,6 +313,7 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
 <<<<<<< HEAD
+<<<<<<< HEAD
     x: 248.8
     y: 81.6
     width: 518
@@ -319,6 +324,12 @@ MonoBehaviour:
     width: 424.39996
     height: 483.8
 >>>>>>> 8b20ab6 (Move to a threaded model-All seting not used)
+=======
+    x: 211.2
+    y: 80.8
+    width: 592.4
+    height: 486.2
+>>>>>>> d6164cf (Add generating a single chunk on one thread)
   m_ViewDataDictionary: {fileID: 0}
   m_OverlayCanvas:
     m_LastAppliedPresetName: Default
@@ -328,8 +339,8 @@ MonoBehaviour:
       floating: 0
       collapsed: 0
       displayed: 1
-      snapOffset: {x: -101, y: -26}
-      snapOffsetDelta: {x: 0, y: 0}
+      snapOffset: {x: 0, y: 0}
+      snapOffsetDelta: {x: -100, y: -25.600006}
       snapCorner: 3
       id: Tool Settings
       index: 0
@@ -521,6 +532,7 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_Position:
 <<<<<<< HEAD
+<<<<<<< HEAD
     m_Target: {x: 11.706606, y: 0.49511182, z: -15.499853}
     speed: 2
     m_Value: {x: 11.706606, y: 0.49511182, z: -15.499853}
@@ -529,6 +541,11 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: -9.268501, y: -10.549079, z: -11.866367}
 >>>>>>> 8b20ab6 (Move to a threaded model-All seting not used)
+=======
+    m_Target: {x: -14.82, y: 0, z: -2.72}
+    speed: 2
+    m_Value: {x: -14.82, y: 0, z: -2.72}
+>>>>>>> d6164cf (Add generating a single chunk on one thread)
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 2
@@ -576,6 +593,7 @@ MonoBehaviour:
     m_gridOpacity: 0.5
   m_Rotation:
 <<<<<<< HEAD
+<<<<<<< HEAD
     m_Target: {x: 0.052557718, y: 0.8437274, z: -0.081964985, w: 0.52836084}
     speed: 2
     m_Value: {x: 0.052544013, y: 0.8435074, z: -0.08194361, w: 0.52822304}
@@ -584,17 +602,27 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: -0.08998556, y: 0.90967137, z: -0.27273425, w: -0.30002776}
 >>>>>>> 8b20ab6 (Move to a threaded model-All seting not used)
-  m_Size:
-    m_Target: 10
+=======
+    m_Target: {x: 0.08623034, y: 0.88060355, z: -0.17648827, w: 0.43140474}
     speed: 2
-    m_Value: 10
+    m_Value: {x: 0.08623034, y: 0.88060355, z: -0.17648827, w: 0.43140474}
+>>>>>>> d6164cf (Add generating a single chunk on one thread)
+  m_Size:
+    m_Target: 2.2808099
+    speed: 2
+    m_Value: 2.2808099
   m_Ortho:
     m_Target: 0
     speed: 2
     m_Value: 0
   m_CameraSettings:
+<<<<<<< HEAD
     m_Speed: 1.06047
     m_SpeedNormalized: 0.53
+=======
+    m_Speed: 0.5607209
+    m_SpeedNormalized: 0.28000045
+>>>>>>> d6164cf (Add generating a single chunk on one thread)
     m_SpeedMin: 0.001
     m_SpeedMax: 2
     m_EasingEnabled: 1
@@ -1811,6 +1839,7 @@ MonoBehaviour:
   m_Position:
     serializedVersion: 2
 <<<<<<< HEAD
+<<<<<<< HEAD
     x: 761.6
     y: 0
     width: 445.59998
@@ -1821,6 +1850,12 @@ MonoBehaviour:
     width: 404
     height: 504.8
 >>>>>>> 8b20ab6 (Move to a threaded model-All seting not used)
+=======
+    x: 798.4
+    y: 0
+    width: 229.59998
+    height: 507.2
+>>>>>>> d6164cf (Add generating a single chunk on one thread)
   m_MinSize: {x: 202, y: 221}
   m_MaxSize: {x: 4002, y: 4021}
   m_ActualView: {fileID: 9}
@@ -1942,6 +1977,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
 <<<<<<< HEAD
+<<<<<<< HEAD
     y: 507.2
     width: 1207.2
     height: 207.59998
@@ -1954,6 +1990,13 @@ MonoBehaviour:
     height: 208.40002
   m_MinSize: {x: 100, y: 100}
   m_MaxSize: {x: 4000, y: 4000}
+=======
+    y: 507.2
+    width: 1028
+    height: 209.20001
+  m_MinSize: {x: 101, y: 121}
+  m_MaxSize: {x: 4001, y: 4021}
+>>>>>>> d6164cf (Add generating a single chunk on one thread)
   m_ActualView: {fileID: 13}
 >>>>>>> 8b20ab6 (Move to a threaded model-All seting not used)
   m_Panes:
@@ -1984,6 +2027,7 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
 <<<<<<< HEAD
+<<<<<<< HEAD
     x: 7.2000003
     y: 588.8
     width: 1206.2
@@ -1994,6 +2038,12 @@ MonoBehaviour:
     width: 1048.6
     height: 192.20001
 >>>>>>> 8b20ab6 (Move to a threaded model-All seting not used)
+=======
+    x: 7.2000003
+    y: 588
+    width: 699
+    height: 188.20001
+>>>>>>> d6164cf (Add generating a single chunk on one thread)
   m_ViewDataDictionary: {fileID: 0}
   m_OverlayCanvas:
     m_LastAppliedPresetName: Default
@@ -2032,6 +2082,7 @@ MonoBehaviour:
     m_IsLocked: 0
   m_FolderTreeState:
 <<<<<<< HEAD
+<<<<<<< HEAD
     scrollPos: {x: 0, y: 79}
     m_SelectedIDs: 72700000
     m_LastClickedID: 28786
@@ -2042,6 +2093,12 @@ MonoBehaviour:
     m_LastClickedID: 31102
     m_ExpandedIDs: 000000008c71000000ca9a3b
 >>>>>>> 8b20ab6 (Move to a threaded model-All seting not used)
+=======
+    scrollPos: {x: 0, y: 72.599976}
+    m_SelectedIDs: 82710000
+    m_LastClickedID: 29058
+    m_ExpandedIDs: 00000000806f0000
+>>>>>>> d6164cf (Add generating a single chunk on one thread)
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -2070,10 +2127,14 @@ MonoBehaviour:
     m_SelectedIDs: 
     m_LastClickedID: 0
 <<<<<<< HEAD
+<<<<<<< HEAD
     m_ExpandedIDs: 0000000072700000
 =======
     m_ExpandedIDs: 000000008c71000000ca9a3b
 >>>>>>> 8b20ab6 (Move to a threaded model-All seting not used)
+=======
+    m_ExpandedIDs: 00000000806f0000
+>>>>>>> d6164cf (Add generating a single chunk on one thread)
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -2099,6 +2160,7 @@ MonoBehaviour:
       m_ResourceFile: 
   m_ListAreaState:
 <<<<<<< HEAD
+<<<<<<< HEAD
     m_SelectedInstanceIDs: 5c8f0000
     m_LastClickedInstanceID: 36700
     m_HadKeyboardFocusLastEvent: 1
@@ -2106,6 +2168,10 @@ MonoBehaviour:
 =======
     m_SelectedInstanceIDs: 7e55ffff
     m_LastClickedInstanceID: -43650
+=======
+    m_SelectedInstanceIDs: 
+    m_LastClickedInstanceID: 0
+>>>>>>> d6164cf (Add generating a single chunk on one thread)
     m_HadKeyboardFocusLastEvent: 0
     m_ExpandedInstanceIDs: c6230000646d000000000000
 >>>>>>> 8b20ab6 (Move to a threaded model-All seting not used)
@@ -2159,6 +2225,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 7.2000003
 <<<<<<< HEAD
+<<<<<<< HEAD
     y: 588.8
     width: 1206.2
     height: 186.59998
@@ -2167,6 +2234,11 @@ MonoBehaviour:
     width: 1036.6
     height: 187.40002
 >>>>>>> 8b20ab6 (Move to a threaded model-All seting not used)
+=======
+    y: 588
+    width: 1027
+    height: 188.20001
+>>>>>>> d6164cf (Add generating a single chunk on one thread)
   m_ViewDataDictionary: {fileID: 0}
   m_OverlayCanvas:
     m_LastAppliedPresetName: Default
@@ -2238,6 +2310,7 @@ MonoBehaviour:
   m_Position:
     serializedVersion: 2
 <<<<<<< HEAD
+<<<<<<< HEAD
     x: 1207.2
     y: 0
     width: 312.80005
@@ -2247,11 +2320,14 @@ MonoBehaviour:
   m_ActualView: {fileID: 15}
 =======
     x: 1037.6
+=======
+    x: 1028
+>>>>>>> d6164cf (Add generating a single chunk on one thread)
     y: 0
-    width: 480.80005
-    height: 713.2
-  m_MinSize: {x: 275, y: 50}
-  m_MaxSize: {x: 4000, y: 4000}
+    width: 480
+    height: 716.4
+  m_MinSize: {x: 276, y: 71}
+  m_MaxSize: {x: 4001, y: 4021}
   m_ActualView: {fileID: 16}
 >>>>>>> 8b20ab6 (Move to a threaded model-All seting not used)
   m_Panes:
@@ -2289,6 +2365,7 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
 <<<<<<< HEAD
+<<<<<<< HEAD
     x: 1214.4
     y: 81.6
     width: 311.80005
@@ -2299,12 +2376,19 @@ MonoBehaviour:
     width: 479.80005
     height: 692.2
 >>>>>>> 8b20ab6 (Move to a threaded model-All seting not used)
+=======
+    x: 1035.2001
+    y: 80.8
+    width: 479
+    height: 695.4
+>>>>>>> d6164cf (Add generating a single chunk on one thread)
   m_ViewDataDictionary: {fileID: 0}
   m_OverlayCanvas:
     m_LastAppliedPresetName: Default
     m_SaveData: []
-  m_ObjectsLockedBeforeSerialization: []
-  m_InstanceIDsLockedBeforeSerialization: 
+  m_ObjectsLockedBeforeSerialization:
+  - {fileID: 0}
+  m_InstanceIDsLockedBeforeSerialization: da6e0000
   m_PreviewResizer:
     m_CachedPref: -160
     m_ControlHash: -371814159
@@ -2314,7 +2398,7 @@ MonoBehaviour:
   m_GlobalObjectId: 
   m_InspectorMode: 0
   m_LockTracker:
-    m_IsLocked: 0
+    m_IsLocked: 1
   m_PreviewWindow: {fileID: 0}
 --- !u!114 &17
 MonoBehaviour:
