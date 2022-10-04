@@ -9,6 +9,7 @@ using UnityEngine.Assertions;
 struct ChunkLoader : IJob
 {
 
+    public double  IJobID;
 
     public NoiseParameters noiseParameters;
     public TerrainParameters terrainParameters;
@@ -19,8 +20,9 @@ struct ChunkLoader : IJob
     public NativeArray<int> Triangles;
     public NativeArray<bool> UpdateMainThread;
 
-    public ChunkLoader(NoiseParameters noiseP, TerrainParameters terrainP)
+    public ChunkLoader(NoiseParameters noiseP, TerrainParameters terrainP, double id)
     {
+        IJobID = id;
         noiseParameters = noiseP;
         terrainParameters = terrainP;
         NumberOfTriangles = new NativeArray<int>(1, Allocator.Persistent);
@@ -221,7 +223,8 @@ struct ChunkLoader : IJob
                     y = -((Height) / 2f) + (level / (float)Scale);
                     z = -((Length) / 2f) + (row / (float)Scale);
 
-                    Vector3 vect = new Vector3(x, y, z);
+                    Vector3 vect = this.terrainParameters.Origin + new Vector3(x, y, z);
+                   
                     // TODO: Generate better noise - create a flat plane
 
                     float noise = Noise.GenerateNoise(vect, terrainParameters.Seed, noiseParameters);

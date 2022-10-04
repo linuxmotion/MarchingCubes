@@ -26,6 +26,7 @@ MonoBehaviour:
   vertical: 0
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   controlID: 83
 =======
   controlID: 14733
@@ -33,6 +34,9 @@ MonoBehaviour:
 =======
   controlID: 18780
 >>>>>>> d6164cf (Add generating a single chunk on one thread)
+=======
+  controlID: 20
+>>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
 --- !u!114 &2
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -42,6 +46,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 1
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
   m_Script: {fileID: 12015, guid: 0000000000000000e000000000000000, type: 0}
@@ -300,6 +305,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 1
 >>>>>>> 8b20ab6 (Move to a threaded model-All seting not used)
+=======
+>>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
   m_Script: {fileID: 12013, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: 
   m_EditorClassIdentifier: 
@@ -327,7 +334,7 @@ MonoBehaviour:
 =======
     x: 211.2
     y: 80.8
-    width: 592.4
+    width: 495.59998
     height: 486.2
 >>>>>>> d6164cf (Add generating a single chunk on one thread)
   m_ViewDataDictionary: {fileID: 0}
@@ -533,6 +540,7 @@ MonoBehaviour:
   m_Position:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     m_Target: {x: 11.706606, y: 0.49511182, z: -15.499853}
     speed: 2
     m_Value: {x: 11.706606, y: 0.49511182, z: -15.499853}
@@ -546,6 +554,11 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: -14.82, y: 0, z: -2.72}
 >>>>>>> d6164cf (Add generating a single chunk on one thread)
+=======
+    m_Target: {x: 13.3473425, y: 39.990376, z: 10.293274}
+    speed: 2
+    m_Value: {x: 13.3473425, y: 39.990376, z: 10.293274}
+>>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 2
@@ -594,6 +607,7 @@ MonoBehaviour:
   m_Rotation:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     m_Target: {x: 0.052557718, y: 0.8437274, z: -0.081964985, w: 0.52836084}
     speed: 2
     m_Value: {x: 0.052544013, y: 0.8435074, z: -0.08194361, w: 0.52822304}
@@ -607,15 +621,21 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0.08623034, y: 0.88060355, z: -0.17648827, w: 0.43140474}
 >>>>>>> d6164cf (Add generating a single chunk on one thread)
-  m_Size:
-    m_Target: 2.2808099
+=======
+    m_Target: {x: 0.02776076, y: 0.97179323, z: -0.17688723, w: 0.15413141}
     speed: 2
-    m_Value: 2.2808099
+    m_Value: {x: 0.02817909, y: 0.971121, z: -0.18128303, w: 0.1525332}
+>>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
+  m_Size:
+    m_Target: 12.124355
+    speed: 2
+    m_Value: 12.124355
   m_Ortho:
     m_Target: 0
     speed: 2
     m_Value: 0
   m_CameraSettings:
+<<<<<<< HEAD
 <<<<<<< HEAD
     m_Speed: 1.06047
     m_SpeedNormalized: 0.53
@@ -623,6 +643,10 @@ MonoBehaviour:
     m_Speed: 0.5607209
     m_SpeedNormalized: 0.28000045
 >>>>>>> d6164cf (Add generating a single chunk on one thread)
+=======
+    m_Speed: 1
+    m_SpeedNormalized: 0.5
+>>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
     m_SpeedMin: 0.001
     m_SpeedMax: 2
     m_EasingEnabled: 1
@@ -654,17 +678,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Children:
   - {fileID: 4}
+<<<<<<< HEAD
   - {fileID: 10}
+=======
+  - {fileID: 11}
+>>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
   m_Position:
     serializedVersion: 2
     x: 0
     y: 0
+<<<<<<< HEAD
     width: 1207.2
     height: 714.8
   m_MinSize: {x: 300, y: 200}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 1
   controlID: 84
+=======
+    width: 1028
+    height: 716.4
+  m_MinSize: {x: 300, y: 200}
+  m_MaxSize: {x: 24288, y: 16192}
+  vertical: 1
+  controlID: 21
+>>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
 --- !u!114 &4
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -680,17 +717,29 @@ MonoBehaviour:
   m_Children:
   - {fileID: 5}
   - {fileID: 7}
+<<<<<<< HEAD
   - {fileID: 8}
+=======
+  - {fileID: 9}
+>>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
   m_Position:
     serializedVersion: 2
     x: 0
     y: 0
+<<<<<<< HEAD
     width: 1207.2
+=======
+    width: 1028
+>>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
     height: 507.2
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 8096}
   vertical: 0
+<<<<<<< HEAD
   controlID: 85
+=======
+  controlID: 22
+>>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
 --- !u!114 &5
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -708,10 +757,17 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 0
+<<<<<<< HEAD
     width: 241.6
     height: 507.2
   m_MinSize: {x: 201, y: 221}
   m_MaxSize: {x: 4001, y: 4021}
+=======
+    width: 204
+    height: 507.2
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
+>>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
   m_ActualView: {fileID: 6}
   m_Panes:
   - {fileID: 6}
@@ -739,8 +795,13 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
     x: 7.2000003
+<<<<<<< HEAD
     y: 81.6
     width: 240.6
+=======
+    y: 80.8
+    width: 203
+>>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
     height: 486.2
   m_ViewDataDictionary: {fileID: 0}
   m_OverlayCanvas:
@@ -749,9 +810,15 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
+<<<<<<< HEAD
       m_SelectedIDs: 5c8f0000
       m_LastClickedID: 36700
       m_ExpandedIDs: 8487fbff16fbffffa26d0000d26d0000d66d0000da6d0000e46d0000488f0000548f00005c8f0000
+=======
+      m_SelectedIDs: da6e0000
+      m_LastClickedID: 28378
+      m_ExpandedIDs: 16fbffffda6e0000f06e0000
+>>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -790,6 +857,7 @@ MonoBehaviour:
   m_Children: []
   m_Position:
     serializedVersion: 2
+<<<<<<< HEAD
     x: 241.6
     y: 0
     width: 520
@@ -801,6 +869,20 @@ MonoBehaviour:
   - {fileID: 2}
   m_Selected: 0
   m_LastSelected: 0
+=======
+    x: 204
+    y: 0
+    width: 497.59998
+    height: 507.2
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
+  m_ActualView: {fileID: 2}
+  m_Panes:
+  - {fileID: 2}
+  - {fileID: 8}
+  m_Selected: 0
+  m_LastSelected: 1
+>>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -1823,7 +1905,7 @@ MonoBehaviour:
       data:
         m_SortAscending: 0
         m_SortedColumn: -1
---- !u!114 &10
+--- !u!114 &9
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1840,6 +1922,7 @@ MonoBehaviour:
     serializedVersion: 2
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     x: 761.6
     y: 0
     width: 445.59998
@@ -1852,9 +1935,13 @@ MonoBehaviour:
 >>>>>>> 8b20ab6 (Move to a threaded model-All seting not used)
 =======
     x: 798.4
+=======
+    x: 701.6
+>>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
     y: 0
-    width: 229.59998
+    width: 326.40002
     height: 507.2
+<<<<<<< HEAD
 >>>>>>> d6164cf (Add generating a single chunk on one thread)
   m_MinSize: {x: 202, y: 221}
   m_MaxSize: {x: 4002, y: 4021}
@@ -1865,6 +1952,16 @@ MonoBehaviour:
   m_LastSelected: 0
 <<<<<<< HEAD
 --- !u!114 &9
+=======
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
+  m_ActualView: {fileID: 10}
+  m_Panes:
+  - {fileID: 10}
+  m_Selected: 0
+  m_LastSelected: 0
+--- !u!114 &10
+>>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1885,9 +1982,15 @@ MonoBehaviour:
     m_Tooltip: 
   m_Pos:
     serializedVersion: 2
+<<<<<<< HEAD
     x: 768.8
     y: 81.6
     width: 443.59998
+=======
+    x: 708.8
+    y: 80.8
+    width: 324.40002
+>>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
     height: 486.2
   m_ViewDataDictionary: {fileID: 0}
   m_OverlayCanvas:
@@ -1907,7 +2010,11 @@ MonoBehaviour:
   m_UseMipMap: 0
   m_VSyncEnabled: 0
   m_Gizmos: 0
+<<<<<<< HEAD
   m_Stats: 0
+=======
+  m_Stats: 1
+>>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
   m_SelectedSizes: 03000000000000000000000000000000000000000000000000000000000000000000000000000000
   m_ZoomArea:
     m_HRangeLocked: 0
@@ -1935,16 +2042,24 @@ MonoBehaviour:
       serializedVersion: 2
       x: 0
       y: 21
+<<<<<<< HEAD
       width: 443.59998
       height: 465.2
     m_Scale: {x: 1.1592739, y: 1.1592739}
     m_Translation: {x: 221.79979, y: 232.59998}
+=======
+      width: 324.40002
+      height: 465.2
+    m_Scale: {x: 1.1592737, y: 1.159274}
+    m_Translation: {x: 162.19986, y: 232.59998}
+>>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
     m_MarginLeft: 0
     m_MarginRight: 0
     m_MarginTop: 0
     m_MarginBottom: 0
     m_LastShownAreaInsideMargins:
       serializedVersion: 2
+<<<<<<< HEAD
       x: -191.32648
       y: -200.64282
       width: 382.65332
@@ -1952,13 +2067,25 @@ MonoBehaviour:
     m_MinimalGUI: 1
   m_defaultScale: 0.28880206
   m_LastWindowPixelSize: {x: 554.5, y: 607.75}
+=======
+      x: -139.91507
+      y: -200.64279
+      width: 279.83038
+      height: 401.28564
+    m_MinimalGUI: 1
+  m_defaultScale: 0.21119793
+  m_LastWindowPixelSize: {x: 405.50003, y: 607.75}
+>>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
   m_ClearInEditMode: 1
   m_NoCameraWarning: 1
   m_LowResolutionForAspectRatios: 01000000000000000000
   m_XRRenderMode: 0
   m_RenderTexture: {fileID: 0}
+<<<<<<< HEAD
 --- !u!114 &10
 =======
+=======
+>>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
 --- !u!114 &11
 >>>>>>> 8b20ab6 (Move to a threaded model-All seting not used)
 MonoBehaviour:
@@ -1994,9 +2121,14 @@ MonoBehaviour:
     y: 507.2
     width: 1028
     height: 209.20001
+<<<<<<< HEAD
   m_MinSize: {x: 101, y: 121}
   m_MaxSize: {x: 4001, y: 4021}
 >>>>>>> d6164cf (Add generating a single chunk on one thread)
+=======
+  m_MinSize: {x: 100, y: 100}
+  m_MaxSize: {x: 4000, y: 4000}
+>>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
   m_ActualView: {fileID: 13}
 >>>>>>> 8b20ab6 (Move to a threaded model-All seting not used)
   m_Panes:
@@ -2097,8 +2229,12 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 72.599976}
     m_SelectedIDs: 82710000
     m_LastClickedID: 29058
+<<<<<<< HEAD
     m_ExpandedIDs: 00000000806f0000
 >>>>>>> d6164cf (Add generating a single chunk on one thread)
+=======
+    m_ExpandedIDs: 000000008c6f0000
+>>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -2128,6 +2264,7 @@ MonoBehaviour:
     m_LastClickedID: 0
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     m_ExpandedIDs: 0000000072700000
 =======
     m_ExpandedIDs: 000000008c71000000ca9a3b
@@ -2135,6 +2272,9 @@ MonoBehaviour:
 =======
     m_ExpandedIDs: 00000000806f0000
 >>>>>>> d6164cf (Add generating a single chunk on one thread)
+=======
+    m_ExpandedIDs: 000000008c6f0000
+>>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -2326,8 +2466,8 @@ MonoBehaviour:
     y: 0
     width: 480
     height: 716.4
-  m_MinSize: {x: 276, y: 71}
-  m_MaxSize: {x: 4001, y: 4021}
+  m_MinSize: {x: 275, y: 50}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 16}
 >>>>>>> 8b20ab6 (Move to a threaded model-All seting not used)
   m_Panes:
@@ -2386,9 +2526,8 @@ MonoBehaviour:
   m_OverlayCanvas:
     m_LastAppliedPresetName: Default
     m_SaveData: []
-  m_ObjectsLockedBeforeSerialization:
-  - {fileID: 0}
-  m_InstanceIDsLockedBeforeSerialization: da6e0000
+  m_ObjectsLockedBeforeSerialization: []
+  m_InstanceIDsLockedBeforeSerialization: 
   m_PreviewResizer:
     m_CachedPref: -160
     m_ControlHash: -371814159
@@ -2398,7 +2537,7 @@ MonoBehaviour:
   m_GlobalObjectId: 
   m_InspectorMode: 0
   m_LockTracker:
-    m_IsLocked: 1
+    m_IsLocked: 0
   m_PreviewWindow: {fileID: 0}
 --- !u!114 &17
 MonoBehaviour:
