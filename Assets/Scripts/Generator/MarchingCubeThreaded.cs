@@ -38,33 +38,35 @@ public partial class MarchingCubeThreaded : MonoBehaviour
 
     }
 
-
+    private int mNumberofChunks;
 
     // Start is called before the first frame update
     void Start()
     {
-        _ChunkRenderDistance = _ChunkRenderDistance + 2;
+        _ChunkRenderDistance = _ChunkRenderDistance * 2 + 1;
 
-        mChunkList = new List<Chunk>(_ChunkRenderDistance * _ChunkRenderDistance);
-        //mChunkLoaderList = new List<ChunkLoader>(_ChunkRenderDistance * _ChunkRenderDistance);
-        //mJobHandles = new List<JobHandle>(_ChunkRenderDistance * _ChunkRenderDistance);
+        mNumberofChunks = _ChunkRenderDistance * _ChunkRenderDistance;
+        Debug.Log("Instantitating chunk pool of size: " + mNumberofChunks);
+        mChunkList = new List<Chunk>(mNumberofChunks);
+        //mChunkLoaderList = new List<ChunkLoader>(mNumberofChunks);
+        //mJobHandles = new List<JobHandle>(mNumberofChunks);
 
 
 
         //mCollider = gameObject.AddComponent<MeshCollider>();
 
         noiseParameters = GetComponent<NoiseManager>().Parameterize();
+        Debug.Log(noiseParameters);
         mTerrainParameters = GetComponent<TerrainSettings>().Paramterize();
-
         mPlayerLocation = GetComponent<TerrainSettings>().GetPlayerTransform();
 
         Vector3 forward = mPlayerLocation.transform.forward;
         Vector3 playerLocation = mPlayerLocation.transform.position;
         Vector3 playerchunkorigin = GetChunkCenterFromLocation(playerLocation, mTerrainParameters);
-        List<Vector3> currentChunkOrigins = InitialChunksFromPLayerSpawnChunk(playerchunkorigin, _ChunkRenderDistance * _ChunkRenderDistance, mTerrainParameters);
+        List<Vector3> currentChunkOrigins = InitialChunksFromPLayerSpawnChunk(playerchunkorigin, mNumberofChunks, mTerrainParameters);
 
 
-        for (int i = 0; i < _ChunkRenderDistance * _ChunkRenderDistance; i++)
+        for (int i = 0; i < mNumberofChunks; i++)
         {
 
 
@@ -73,18 +75,20 @@ public partial class MarchingCubeThreaded : MonoBehaviour
             Chunk chunk = new Chunk();
             TerrainParameters terrainParameters = mTerrainParameters;
             terrainParameters.Origin = currentChunkOrigins[i];
+            Debug.Log("Creating chunk at :" + terrainParameters.Origin);
 
+            chunk.IJobID = i;
             chunk.Loader = new ChunkLoader(noiseParameters, terrainParameters, i);
 
 
-
+            chunk.ChunkOrigin = terrainParameters.Origin;
             chunk.Vertices = chunk.Loader.Vertices;
             chunk.Triangles = chunk.Loader.Triangles;
             chunk.UpdateMainThread = chunk.Loader.UpdateMainThread;
             chunk.NumberOfTriangles = chunk.Loader.NumberOfTriangles;
             chunk.Points = chunk.Loader.Points;
             chunk.ChunkObject = new GameObject();
-            chunk.ChunkObject.name = "Chunk # " + i;
+            chunk.ChunkObject.name = "Chunk #" + i;
 
             chunk.ChunkObject.transform.SetParent(this.transform);
             chunk.Filter = chunk.ChunkObject.AddComponent<MeshFilter>();
@@ -96,6 +100,7 @@ public partial class MarchingCubeThreaded : MonoBehaviour
 
 
             mChunkList.Add(chunk);
+            Debug.Log("Chunk " + chunk.ChunkObject);
 
 
         }
@@ -107,18 +112,32 @@ public partial class MarchingCubeThreaded : MonoBehaviour
 
     private List<Vector3> InitialChunksFromPLayerSpawnChunk(Vector3 playerchunkorigin, int numberChunks, in TerrainParameters terrainParameters)
     {
+
+
+
+        float bootomLeftX = playerchunkorigin.x - ((_ChunkRenderDistance - 1) / 2) * terrainParameters.SamplingWidth;
+        float bootomLeftz = playerchunkorigin.y - ((_ChunkRenderDistance - 1) / 2) * terrainParameters.SamplingLength;
+
         List<Vector3> chunksOrigins = new List<Vector3>(numberChunks);
-        for (int i = 0; i < numberChunks; i++)
+
+
+        for (int i = 0; i < _ChunkRenderDistance; i++)
         {
 
-            Vector3 point = new Vector3();
-            point.x = playerchunkorigin.x + i * terrainParameters.SamplingWidth;
-            point.z = playerchunkorigin.z;// + i * terrainParameters.SamplingWidth;
-            //point.y = i * terrainParameters.SamplingLength;
-            
-            chunksOrigins.Add(point);
-            Debug.Log(chunksOrigins[i]);
+
+            for (int j = 0; j < _ChunkRenderDistance; j++)
+            {
+                Vector3 point = new Vector3();
+                point.x = bootomLeftX + terrainParameters.SamplingWidth * j;
+                point.z = bootomLeftz + terrainParameters.SamplingLength * i;
+                chunksOrigins.Add(point);
+
+            }
+
+
         }
+
+
 
         return chunksOrigins;
     }

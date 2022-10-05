@@ -19,11 +19,12 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 30
-    width: 1508
-    height: 716.4
+    width: 1280
+    height: 667
   m_MinSize: {x: 400, y: 200}
   m_MaxSize: {x: 32384, y: 16192}
   vertical: 0
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -37,6 +38,9 @@ MonoBehaviour:
 =======
   controlID: 20
 >>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
+=======
+  controlID: 5522
+>>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
 --- !u!114 &2
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -48,7 +52,10 @@ MonoBehaviour:
   m_EditorHideFlags: 1
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
   m_Script: {fileID: 12015, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: 
   m_EditorClassIdentifier: 
@@ -56,15 +63,26 @@ MonoBehaviour:
   m_MaxSize: {x: 4000, y: 4000}
   m_TitleContent:
     m_Text: Game
+<<<<<<< HEAD
     m_Image: {fileID: 4621777727084837110, guid: 0000000000000000d000000000000000,
+=======
+    m_Image: {fileID: -6423792434712278376, guid: 0000000000000000d000000000000000,
+>>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
       type: 0}
     m_Tooltip: 
   m_Pos:
     serializedVersion: 2
+<<<<<<< HEAD
     x: 805.60004
     y: 80.8
     width: 227.59998
     height: 486.2
+=======
+    x: -2645
+    y: 73
+    width: 316
+    height: 332
+>>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
   m_ViewDataDictionary: {fileID: 0}
   m_OverlayCanvas:
     m_LastAppliedPresetName: Default
@@ -90,10 +108,17 @@ MonoBehaviour:
     m_VRangeLocked: 0
     hZoomLockedByDefault: 0
     vZoomLockedByDefault: 0
+<<<<<<< HEAD
     m_HBaseRangeMin: -768
     m_HBaseRangeMax: 768
     m_VBaseRangeMin: -432
     m_VBaseRangeMax: 432
+=======
+    m_HBaseRangeMin: -960
+    m_HBaseRangeMax: 960
+    m_VBaseRangeMin: -540
+    m_VBaseRangeMax: 540
+>>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
     m_HAllowExceedBaseRangeMin: 1
     m_HAllowExceedBaseRangeMax: 1
     m_VAllowExceedBaseRangeMin: 1
@@ -111,16 +136,24 @@ MonoBehaviour:
       serializedVersion: 2
       x: 0
       y: 21
+<<<<<<< HEAD
       width: 227.59998
       height: 465.2
     m_Scale: {x: 1.1592737, y: 1.159274}
     m_Translation: {x: 113.799805, y: 232.59995}
+=======
+      width: 316
+      height: 311
+    m_Scale: {x: 1.1592737, y: 1.159274}
+    m_Translation: {x: 157.99982, y: 155.49994}
+>>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
     m_MarginLeft: 0
     m_MarginRight: 0
     m_MarginTop: 0
     m_MarginBottom: 0
     m_LastShownAreaInsideMargins:
       serializedVersion: 2
+<<<<<<< HEAD
       x: -98.16474
       y: -200.64278
       width: 196.32979
@@ -128,6 +161,15 @@ MonoBehaviour:
     m_MinimalGUI: 1
   m_defaultScale: 0.14817707
   m_LastWindowPixelSize: {x: 284.49997, y: 607.75}
+=======
+      x: -136.29207
+      y: -134.13562
+      width: 272.58444
+      height: 268.27136
+    m_MinimalGUI: 1
+  m_defaultScale: 0.16458334
+  m_LastWindowPixelSize: {x: 316, y: 332}
+>>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
   m_ClearInEditMode: 1
   m_NoCameraWarning: 1
   m_LowResolutionForAspectRatios: 01000000000000000000
@@ -152,12 +194,21 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 0
+<<<<<<< HEAD
     width: 1028
     height: 716.4
   m_MinSize: {x: 300, y: 200}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 1
   controlID: 18781
+=======
+    width: 873
+    height: 667
+  m_MinSize: {x: 300, y: 200}
+  m_MaxSize: {x: 24288, y: 16192}
+  vertical: 1
+  controlID: 5523
+>>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
 --- !u!114 &4
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -178,12 +229,21 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 0
+<<<<<<< HEAD
     width: 1028
     height: 507.2
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 8096}
   vertical: 0
   controlID: 18782
+=======
+    width: 873
+    height: 353
+  m_MinSize: {x: 300, y: 100}
+  m_MaxSize: {x: 24288, y: 8096}
+  vertical: 0
+  controlID: 5524
+>>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
 --- !u!114 &5
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -201,8 +261,13 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 0
+<<<<<<< HEAD
     width: 204
     height: 507.2
+=======
+    width: 244
+    height: 353
+>>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
   m_MinSize: {x: 201, y: 221}
   m_MaxSize: {x: 4001, y: 4021}
   m_ActualView: {fileID: 6}
@@ -226,15 +291,26 @@ MonoBehaviour:
   m_MaxSize: {x: 4000, y: 4000}
   m_TitleContent:
     m_Text: Hierarchy
+<<<<<<< HEAD
     m_Image: {fileID: -3734745235275155857, guid: 0000000000000000d000000000000000,
+=======
+    m_Image: {fileID: 7966133145522015247, guid: 0000000000000000d000000000000000,
+>>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
       type: 0}
     m_Tooltip: 
   m_Pos:
     serializedVersion: 2
+<<<<<<< HEAD
     x: 7.2000003
     y: 80.8
     width: 203
     height: 486.2
+=======
+    x: -3200
+    y: 73
+    width: 243
+    height: 332
+>>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
   m_ViewDataDictionary: {fileID: 0}
   m_OverlayCanvas:
     m_LastAppliedPresetName: Default
@@ -242,9 +318,15 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
+<<<<<<< HEAD
       m_SelectedIDs: 80e6feff
       m_LastClickedID: -72064
       m_ExpandedIDs: 16fbffffda6e0000f06e0000f86e0000
+=======
+      m_SelectedIDs: da6e0000
+      m_LastClickedID: 28378
+      m_ExpandedIDs: 16fbffffda6e0000f46e0000066f0000
+>>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -283,10 +365,17 @@ MonoBehaviour:
   m_Children: []
   m_Position:
     serializedVersion: 2
+<<<<<<< HEAD
     x: 204
     y: 0
     width: 594.4
     height: 507.2
+=======
+    x: 244
+    y: 0
+    width: 311
+    height: 353
+>>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
   m_MinSize: {x: 202, y: 221}
   m_MaxSize: {x: 4002, y: 4021}
   m_ActualView: {fileID: 8}
@@ -304,9 +393,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 1
+<<<<<<< HEAD
 >>>>>>> 8b20ab6 (Move to a threaded model-All seting not used)
 =======
 >>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
+=======
+>>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
   m_Script: {fileID: 12013, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: 
   m_EditorClassIdentifier: 
@@ -314,11 +406,12 @@ MonoBehaviour:
   m_MaxSize: {x: 4000, y: 4000}
   m_TitleContent:
     m_Text: Scene
-    m_Image: {fileID: 8634526014445323508, guid: 0000000000000000d000000000000000,
+    m_Image: {fileID: 2593428753322112591, guid: 0000000000000000d000000000000000,
       type: 0}
     m_Tooltip: 
   m_Pos:
     serializedVersion: 2
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     x: 248.8
@@ -337,6 +430,12 @@ MonoBehaviour:
     width: 495.59998
     height: 486.2
 >>>>>>> d6164cf (Add generating a single chunk on one thread)
+=======
+    x: -2956
+    y: 73
+    width: 309
+    height: 332
+>>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
   m_ViewDataDictionary: {fileID: 0}
   m_OverlayCanvas:
     m_LastAppliedPresetName: Default
@@ -346,8 +445,8 @@ MonoBehaviour:
       floating: 0
       collapsed: 0
       displayed: 1
-      snapOffset: {x: 0, y: 0}
-      snapOffsetDelta: {x: -100, y: -25.600006}
+      snapOffset: {x: -101, y: -26}
+      snapOffsetDelta: {x: 0, y: 0}
       snapCorner: 3
       id: Tool Settings
       index: 0
@@ -541,6 +640,7 @@ MonoBehaviour:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     m_Target: {x: 11.706606, y: 0.49511182, z: -15.499853}
     speed: 2
     m_Value: {x: 11.706606, y: 0.49511182, z: -15.499853}
@@ -559,6 +659,11 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 13.3473425, y: 39.990376, z: 10.293274}
 >>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
+=======
+    m_Target: {x: -4.418566, y: 2.2643135, z: -126.76917}
+    speed: 2
+    m_Value: {x: -4.418566, y: 2.2643135, z: -126.76917}
+>>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 2
@@ -608,6 +713,7 @@ MonoBehaviour:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     m_Target: {x: 0.052557718, y: 0.8437274, z: -0.081964985, w: 0.52836084}
     speed: 2
     m_Value: {x: 0.052544013, y: 0.8435074, z: -0.08194361, w: 0.52822304}
@@ -626,10 +732,15 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0.02817909, y: 0.971121, z: -0.18128303, w: 0.1525332}
 >>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
-  m_Size:
-    m_Target: 12.124355
+=======
+    m_Target: {x: 0.0015043672, y: 0.99864876, z: -0.038971804, w: 0.037590496}
     speed: 2
-    m_Value: 12.124355
+    m_Value: {x: 0.0022014978, y: 0.99783087, z: -0.044937078, w: 0.048056096}
+>>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
+  m_Size:
+    m_Target: 77.127594
+    speed: 2
+    m_Value: 77.127594
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -664,6 +775,7 @@ MonoBehaviour:
   m_SceneVisActive: 1
   m_LastLockedObject: {fileID: 0}
   m_ViewIsLockedToObject: 0
+<<<<<<< HEAD
 --- !u!114 &3
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -884,6 +996,9 @@ MonoBehaviour:
   m_LastSelected: 1
 >>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
 --- !u!114 &8
+=======
+--- !u!114 &9
+>>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -899,7 +1014,7 @@ MonoBehaviour:
   m_MaxSize: {x: 4000, y: 4000}
   m_TitleContent:
     m_Text: Profiler
-    m_Image: {fileID: 2169972056302973491, guid: 0000000000000000d000000000000000,
+    m_Image: {fileID: -1089619856830078684, guid: 0000000000000000d000000000000000,
       type: 0}
     m_Tooltip: 
   m_Pos:
@@ -1905,7 +2020,7 @@ MonoBehaviour:
       data:
         m_SortAscending: 0
         m_SortedColumn: -1
---- !u!114 &9
+--- !u!114 &10
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1920,6 +2035,7 @@ MonoBehaviour:
   m_Children: []
   m_Position:
     serializedVersion: 2
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -1956,10 +2072,20 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 200}
   m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 10}
+=======
+    x: 555
+    y: 0
+    width: 318
+    height: 353
+  m_MinSize: {x: 202, y: 221}
+  m_MaxSize: {x: 4002, y: 4021}
+  m_ActualView: {fileID: 2}
+>>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
   m_Panes:
-  - {fileID: 10}
+  - {fileID: 2}
   m_Selected: 0
   m_LastSelected: 0
+<<<<<<< HEAD
 --- !u!114 &10
 >>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
 MonoBehaviour:
@@ -2086,6 +2212,8 @@ MonoBehaviour:
 =======
 =======
 >>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
+=======
+>>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
 --- !u!114 &11
 >>>>>>> 8b20ab6 (Move to a threaded model-All seting not used)
 MonoBehaviour:
@@ -2103,6 +2231,7 @@ MonoBehaviour:
   m_Position:
     serializedVersion: 2
     x: 0
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     y: 507.2
@@ -2129,6 +2258,13 @@ MonoBehaviour:
   m_MinSize: {x: 100, y: 100}
   m_MaxSize: {x: 4000, y: 4000}
 >>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
+=======
+    y: 353
+    width: 873
+    height: 314
+  m_MinSize: {x: 101, y: 121}
+  m_MaxSize: {x: 4001, y: 4021}
+>>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
   m_ActualView: {fileID: 13}
 >>>>>>> 8b20ab6 (Move to a threaded model-All seting not used)
   m_Panes:
@@ -2153,7 +2289,7 @@ MonoBehaviour:
   m_MaxSize: {x: 10000, y: 10000}
   m_TitleContent:
     m_Text: Project
-    m_Image: {fileID: -5179483145760003458, guid: 0000000000000000d000000000000000,
+    m_Image: {fileID: -5467254957812901981, guid: 0000000000000000d000000000000000,
       type: 0}
     m_Tooltip: 
   m_Pos:
@@ -2230,11 +2366,15 @@ MonoBehaviour:
     m_SelectedIDs: 82710000
     m_LastClickedID: 29058
 <<<<<<< HEAD
+<<<<<<< HEAD
     m_ExpandedIDs: 00000000806f0000
 >>>>>>> d6164cf (Add generating a single chunk on one thread)
 =======
     m_ExpandedIDs: 000000008c6f0000
 >>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
+=======
+    m_ExpandedIDs: 00000000906f0000
+>>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -2265,6 +2405,7 @@ MonoBehaviour:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     m_ExpandedIDs: 0000000072700000
 =======
     m_ExpandedIDs: 000000008c71000000ca9a3b
@@ -2275,6 +2416,9 @@ MonoBehaviour:
 =======
     m_ExpandedIDs: 000000008c6f0000
 >>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
+=======
+    m_ExpandedIDs: 00000000906f0000
+>>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -2358,11 +2502,12 @@ MonoBehaviour:
   m_MaxSize: {x: 4000, y: 4000}
   m_TitleContent:
     m_Text: Console
-    m_Image: {fileID: -4950941429401207979, guid: 0000000000000000d000000000000000,
+    m_Image: {fileID: -4327648978806127646, guid: 0000000000000000d000000000000000,
       type: 0}
     m_Tooltip: 
   m_Pos:
     serializedVersion: 2
+<<<<<<< HEAD
     x: 7.2000003
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -2379,6 +2524,12 @@ MonoBehaviour:
     width: 1027
     height: 188.20001
 >>>>>>> d6164cf (Add generating a single chunk on one thread)
+=======
+    x: -3200
+    y: 426
+    width: 872
+    height: 293
+>>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
   m_ViewDataDictionary: {fileID: 0}
   m_OverlayCanvas:
     m_LastAppliedPresetName: Default
@@ -2451,6 +2602,7 @@ MonoBehaviour:
     serializedVersion: 2
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     x: 1207.2
     y: 0
     width: 312.80005
@@ -2463,9 +2615,12 @@ MonoBehaviour:
 =======
     x: 1028
 >>>>>>> d6164cf (Add generating a single chunk on one thread)
+=======
+    x: 873
+>>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
     y: 0
-    width: 480
-    height: 716.4
+    width: 407
+    height: 667
   m_MinSize: {x: 275, y: 50}
   m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 16}
@@ -2499,11 +2654,12 @@ MonoBehaviour:
   m_MaxSize: {x: 4000, y: 4000}
   m_TitleContent:
     m_Text: Inspector
-    m_Image: {fileID: -440750813802333266, guid: 0000000000000000d000000000000000,
+    m_Image: {fileID: -2667387946076563598, guid: 0000000000000000d000000000000000,
       type: 0}
     m_Tooltip: 
   m_Pos:
     serializedVersion: 2
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     x: 1214.4
@@ -2522,6 +2678,12 @@ MonoBehaviour:
     width: 479
     height: 695.4
 >>>>>>> d6164cf (Add generating a single chunk on one thread)
+=======
+    x: -2327
+    y: 73
+    width: 406
+    height: 646
+>>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
   m_ViewDataDictionary: {fileID: 0}
   m_OverlayCanvas:
     m_LastAppliedPresetName: Default

@@ -170,7 +170,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d3684cec81148f47a7db9dd4ae3cfe1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ChunkRenderDistance: 1
+  _ChunkRenderDistance: 2
 --- !u!114 &121356140
 MonoBehaviour:
   m_ObjectHideFlags: 0

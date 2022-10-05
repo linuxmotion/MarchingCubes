@@ -41,6 +41,10 @@ public struct NoiseParameters
         Octave = octave;
         SampleLevel = sampleLevel;
     }
+
+    override public string ToString() {
+        return base.ToString() + " - Frequency:" + Frequency + " | Amplitude: " + Amplitude + " | Persistence: " + Persistence + " | Octave: " + Octave + " | SampleLevel: " + SampleLevel + " ";  
+    }
 }
 
 // Taken from https://gist.github.com/tntmeijs/6a3b4587ff7d38a6fa63e13f9d0ac46d
