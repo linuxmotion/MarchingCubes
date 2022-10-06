@@ -68,7 +68,7 @@
 =======
     <Compile Include="Assets\Scripts\Character\FirstPersonController.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeA.cs" />
-    <Compile Include="Assets\Scripts\Generator\NoiseManager.cs" />
+    <Compile Include="Assets\Scripts\Generator\NoiseSettings.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshProFloatingText.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeB.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\EnvMapAnimator.cs" />
@@ -116,8 +116,12 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ChatController.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_UiFrameRateCounter.cs" />
     <Compile Include="Assets\Scripts\Generator\Tests\CubeGenerator.cs" />
+<<<<<<< HEAD
     <Compile Include="Assets\Scripts\Generator\MarchingCubeThreaded.cs" />
 >>>>>>> 8b20ab6 (Move to a threaded model-All seting not used)
+=======
+    <Compile Include="Assets\Scripts\Generator\ChunkRenderer.cs" />
+>>>>>>> e0a244c (Change file names to be more consistent and reflect content)
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ObjectSpin.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventCheck.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ShaderPropAnimator.cs" />
@@ -139,7 +143,7 @@
     <None Include="Assets\Scripts\Temp.txt" />
 =======
     <Compile Include="Assets\Scripts\Character\BasicRigidBodyPush.cs" />
-    <Compile Include="Assets\Scripts\Generator\ChunkLoader.cs" />
+    <Compile Include="Assets\Scripts\Generator\TerrainLoader.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark03.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_FrameRateCounter.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_B.cs" />

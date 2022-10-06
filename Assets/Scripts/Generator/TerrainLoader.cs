@@ -6,10 +6,10 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 
-struct ChunkLoader : IJob
+struct TerrainLoader : IJob
 {
 
-    public double  IJobID;
+    public Vector2 IJobID;
 
     public NoiseParameters noiseParameters;
     public TerrainParameters terrainParameters;
@@ -20,7 +20,13 @@ struct ChunkLoader : IJob
     public NativeArray<int> Triangles;
     public NativeArray<bool> UpdateMainThread;
 
-    public ChunkLoader(NoiseParameters noiseP, TerrainParameters terrainP, double id)
+    /// <summary>
+    /// Initialize the IJob for use with a chunk
+    /// </summary>
+    /// <param name="noiseP">The noise parameters to create the chunk with</param>
+    /// <param name="terrainP">The terrain parameters that controls generation, LOD and size</param>
+    /// <param name="id">A vector in 2d space the represnts the chunk centers for a given terrainP </param>
+    public TerrainLoader(NoiseParameters noiseP, TerrainParameters terrainP, Vector2 id)
     {
         IJobID = id;
         noiseParameters = noiseP;
@@ -31,32 +37,48 @@ struct ChunkLoader : IJob
         if (terrainParameters.SamplingLength == 0 || terrainParameters.SamplingWidth == 0 || terrainParameters.SamplingHeight == 0)
             throw new UnityException("Cannot have zero size volume");
 
-        int size =(terrainParameters.SamplingLength + 1) * (terrainParameters.SamplingWidth+ 1) * (terrainParameters.SamplingHeight+ 1) * terrainParameters.Scale;
+        int size = (terrainParameters.SamplingLength + 1) * (terrainParameters.SamplingWidth + 1) * (terrainParameters.SamplingHeight + 1) * terrainParameters.Scale;
 
-        int numPossiblePoints = (terrainParameters.SamplingLength * terrainParameters.Scale + 1) * (terrainParameters.SamplingWidth * terrainParameters.Scale + 1) * (terrainParameters.SamplingHeight * terrainParameters.Scale + 1) ;
+        int numPossiblePoints = (terrainParameters.SamplingLength * terrainParameters.Scale + 1) * (terrainParameters.SamplingWidth * terrainParameters.Scale + 1) * (terrainParameters.SamplingHeight * terrainParameters.Scale + 1);
         Points = new NativeArray<Voxel>(numPossiblePoints, Allocator.Persistent);
         Vertices = new NativeArray<Vector3>(size * 15, Allocator.Persistent);
         Triangles = new NativeArray<int>(size * 15, Allocator.Persistent);
 
     }
-
-    public void ReInitialize(NoiseParameters noiseP, TerrainParameters terrainP) {
+    /// <summary>
+    /// Reinitialize the chunk job for loading a chunk
+    /// </summary>
+    /// <param name="noiseP">The new noise parameters</param>
+    /// <param name="terrainP"> The new parameters to create the terrain with</param>
+    /// <param name="id">The id of the chunk as an x,z coordinate pair</param>
+    public void  ReInitialize(NoiseParameters noiseP, TerrainParameters terrainP, Vector2 id)
+    {
 
         // The array may change size, dump them then set the struct back up
-        Points.Dispose();
-        Vertices.Dispose();
-        Triangles.Dispose();
+        if (Points.IsCreated)
+            Points.Dispose();
+        if (NumberOfTriangles.IsCreated)
+            NumberOfTriangles.Dispose();
+        if (Vertices.IsCreated)
+            Vertices.Dispose();
+        if (Triangles.IsCreated)
+            Triangles.Dispose();
+        if (UpdateMainThread.IsCreated)
+            UpdateMainThread.Dispose();
 
+        IJobID = id;
         noiseParameters = noiseP;
         terrainParameters = terrainP;
+        NumberOfTriangles = new NativeArray<int>(1, Allocator.Persistent);
+        UpdateMainThread = new NativeArray<bool>(1, Allocator.Persistent);
 
         if (terrainParameters.SamplingLength == 0 || terrainParameters.SamplingWidth == 0 || terrainParameters.SamplingHeight == 0)
             throw new UnityException("Cannot have zero size volume");
 
-        int size = 32 * 32 * 32 * terrainParameters.Scale;// (terrainParameters.SamplingLength + 1) * (terrainParameters.SamplingWidth+ 1) * (terrainParameters.SamplingHeight+ 1) * terrainParameters.Scale;
+        int size = (terrainParameters.SamplingLength + 1) * (terrainParameters.SamplingWidth + 1) * (terrainParameters.SamplingHeight + 1) * terrainParameters.Scale;
 
-        
-        Points = new NativeArray<Voxel>(size, Allocator.Persistent);
+        int numPossiblePoints = (terrainParameters.SamplingLength * terrainParameters.Scale + 1) * (terrainParameters.SamplingWidth * terrainParameters.Scale + 1) * (terrainParameters.SamplingHeight * terrainParameters.Scale + 1);
+        Points = new NativeArray<Voxel>(numPossiblePoints, Allocator.Persistent);
         Vertices = new NativeArray<Vector3>(size * 15, Allocator.Persistent);
         Triangles = new NativeArray<int>(size * 15, Allocator.Persistent);
 
@@ -67,7 +89,7 @@ struct ChunkLoader : IJob
 
     public void Execute()
     {
-        
+
         GenerateScalarField(terrainParameters.Origin);
         // have a set of volumetric data
         // turn all that data into cubes to march over
@@ -150,7 +172,7 @@ struct ChunkLoader : IJob
         int Scale = terrainParameters.Scale;
 
         int levelSize = ((Width * Scale + 1) * (Length * Scale + 1));
-        int rowSize = Width*Scale + 1;
+        int rowSize = Width * Scale + 1;
 
         for (int level = 0; level < Height * Scale; level++)
         {
@@ -159,7 +181,7 @@ struct ChunkLoader : IJob
 
             for (int row = 0; row < Length * Scale; row++)
             {
-                rowOffset = row * (Width*Scale + 1);
+                rowOffset = row * (Width * Scale + 1);
                 for (int coloumn = 0; coloumn < Width * Scale; coloumn++)
                 {
 
@@ -197,7 +219,7 @@ struct ChunkLoader : IJob
     private void GenerateScalarField(Vector3 around)
     {
 
-      
+
 
         int levelOffset = 0, rowOffset = 0;
         float x, y, z;
@@ -215,7 +237,7 @@ struct ChunkLoader : IJob
 
             for (int row = 0; row <= Length * Scale; row++)
             {
-                rowOffset = row * (Width* Scale + 1);
+                rowOffset = row * (Width * Scale + 1);
                 for (int column = 0; column <= Width * Scale; column++)
                 {
 
@@ -224,7 +246,7 @@ struct ChunkLoader : IJob
                     z = -((Length) / 2f) + (row / (float)Scale);
 
                     Vector3 vect = this.terrainParameters.Origin + new Vector3(x, y, z);
-                   
+
                     // TODO: Generate better noise - create a flat plane
 
                     float noise = Noise.GenerateNoise(vect, terrainParameters.Seed, noiseParameters);

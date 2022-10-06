@@ -2,7 +2,7 @@
 
 
 
-public class NoiseManager : MonoBehaviour {
+public class NoiseSettings : MonoBehaviour {
 
     [Header("Noise sampling parameters")]
     [SerializeField]

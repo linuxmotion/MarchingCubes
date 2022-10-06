@@ -35,6 +35,9 @@ class TerrainSettings : MonoBehaviour
     }
 }
 
+/// <summary>
+/// A structure that controls the length, width and height of a chunk. It also controls the subsampling scale and what value determines a surface 
+/// </summary>
 public struct TerrainParameters
 {
 

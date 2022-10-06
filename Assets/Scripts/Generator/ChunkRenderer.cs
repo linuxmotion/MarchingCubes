@@ -6,16 +6,20 @@ using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 
-public partial class MarchingCubeThreaded : MonoBehaviour
+[RequireComponent(typeof(TerrainSettings))]
+[RequireComponent(typeof(NoiseSettings))]
+public partial class ChunkRenderer : MonoBehaviour
 {
 
-    NoiseParameters noiseParameters;
+    NoiseParameters mNoiseParameters;
     TerrainParameters mTerrainParameters;
 
     List<Chunk> mChunkList;
+    List<bool> mChunksInUse;
 
     public int _ChunkRenderDistance;
     private Transform mPlayerLocation;
+    private Vector3 mCurrentChunkCenter;
 
 
     class Chunk
@@ -32,8 +36,8 @@ public partial class MarchingCubeThreaded : MonoBehaviour
 
         public JobHandle Handle;
         public Vector3 ChunkOrigin;
-        public double IJobID;
-        public ChunkLoader Loader;
+        public Vector2 IJobID;
+        public TerrainLoader Loader;
 
 
     }
@@ -48,6 +52,11 @@ public partial class MarchingCubeThreaded : MonoBehaviour
         mNumberofChunks = _ChunkRenderDistance * _ChunkRenderDistance;
         Debug.Log("Instantitating chunk pool of size: " + mNumberofChunks);
         mChunkList = new List<Chunk>(mNumberofChunks);
+        mChunksInUse = new List<bool>(mNumberofChunks);
+
+        // Init each list member
+        for (int i = 0; i < mNumberofChunks; i++)
+            mChunksInUse.Add(false);
         //mChunkLoaderList = new List<ChunkLoader>(mNumberofChunks);
         //mJobHandles = new List<JobHandle>(mNumberofChunks);
 
@@ -55,15 +64,15 @@ public partial class MarchingCubeThreaded : MonoBehaviour
 
         //mCollider = gameObject.AddComponent<MeshCollider>();
 
-        noiseParameters = GetComponent<NoiseManager>().Parameterize();
-        Debug.Log(noiseParameters);
+        mNoiseParameters = GetComponent<NoiseSettings>().Parameterize();
+        Debug.Log("Setting default parameters to :" + mNoiseParameters.ToString());
         mTerrainParameters = GetComponent<TerrainSettings>().Paramterize();
         mPlayerLocation = GetComponent<TerrainSettings>().GetPlayerTransform();
 
         Vector3 forward = mPlayerLocation.transform.forward;
         Vector3 playerLocation = mPlayerLocation.transform.position;
-        Vector3 playerchunkorigin = GetChunkCenterFromLocation(playerLocation, mTerrainParameters);
-        List<Vector3> currentChunkOrigins = InitialChunksFromPLayerSpawnChunk(playerchunkorigin, mNumberofChunks, mTerrainParameters);
+        mCurrentChunkCenter = GetChunkCenterFromLocation(playerLocation, mTerrainParameters.SamplingLength, mTerrainParameters.SamplingWidth);
+        List<Vector3> currentChunkOrigins = ChunksFromCenterLocation(mCurrentChunkCenter, mNumberofChunks, mTerrainParameters.SamplingLength, mTerrainParameters.SamplingWidth);
 
 
         for (int i = 0; i < mNumberofChunks; i++)
@@ -77,8 +86,13 @@ public partial class MarchingCubeThreaded : MonoBehaviour
             terrainParameters.Origin = currentChunkOrigins[i];
             Debug.Log("Creating chunk at :" + terrainParameters.Origin);
 
-            chunk.IJobID = i;
-            chunk.Loader = new ChunkLoader(noiseParameters, terrainParameters, i);
+            // Xid and Zid are multiple of the sampling height sincee they are the centers
+            // of each chunk
+            float chunkXid = terrainParameters.Origin.x / terrainParameters.SamplingWidth;
+            float chunkZid = terrainParameters.Origin.z / terrainParameters.SamplingWidth;
+            chunk.IJobID = new Vector2(chunkXid, chunkZid);
+            Debug.Log("Chunk location ID: " + chunk.IJobID);
+            chunk.Loader = new TerrainLoader(mNoiseParameters, terrainParameters, chunk.IJobID);
 
 
             chunk.ChunkOrigin = terrainParameters.Origin;
@@ -107,16 +121,16 @@ public partial class MarchingCubeThreaded : MonoBehaviour
 
 
         // use the editor provided origin
-        ScheduleChunks(mPlayerLocation);
+        ScheduleChunks();
     }
 
-    private List<Vector3> InitialChunksFromPLayerSpawnChunk(Vector3 playerchunkorigin, int numberChunks, in TerrainParameters terrainParameters)
+    private List<Vector3> ChunksFromCenterLocation(in Vector3 playerchunkorigin, in int numberChunks, in int length, in int width)
     {
 
 
 
-        float bootomLeftX = playerchunkorigin.x - ((_ChunkRenderDistance - 1) / 2) * terrainParameters.SamplingWidth;
-        float bootomLeftz = playerchunkorigin.y - ((_ChunkRenderDistance - 1) / 2) * terrainParameters.SamplingLength;
+        float bootomLeftX = playerchunkorigin.x - ((_ChunkRenderDistance - 1) / 2) * width;
+        float bootomLeftz = playerchunkorigin.y - ((_ChunkRenderDistance - 1) / 2) * length;
 
         List<Vector3> chunksOrigins = new List<Vector3>(numberChunks);
 
@@ -128,8 +142,8 @@ public partial class MarchingCubeThreaded : MonoBehaviour
             for (int j = 0; j < _ChunkRenderDistance; j++)
             {
                 Vector3 point = new Vector3();
-                point.x = bootomLeftX + terrainParameters.SamplingWidth * j;
-                point.z = bootomLeftz + terrainParameters.SamplingLength * i;
+                point.x = bootomLeftX + width * j;
+                point.z = bootomLeftz + length * i;
                 chunksOrigins.Add(point);
 
             }
@@ -142,26 +156,31 @@ public partial class MarchingCubeThreaded : MonoBehaviour
         return chunksOrigins;
     }
 
-    private Vector3 GetChunkCenterFromLocation(Vector3 playerLocation, TerrainParameters terrainParameters)
+    /// <summary>
+    /// Gets the center of the chunk that the current playerLocation is in.
+    /// </summary>
+    /// <param name="playerLocation">The current positon of the player</param>
+    /// <param name="length">Unit length of the chunk length(Z-Axis)</param>
+    /// <param name="width">Unit length of the chunk width(X-Axis)</param>
+    /// <returns></returns>
+    private Vector3 GetChunkCenterFromLocation(in Vector3 playerLocation, in int length, in int width)
     {
 
 
-        float m = terrainParameters.SamplingWidth;
 
         Vector3 center = new Vector3();
-        center.x = NearestCommonMultiple(playerLocation.x, terrainParameters.SamplingWidth);
-        center.z = NearestCommonMultiple(playerLocation.z, terrainParameters.SamplingLength);
+        center.x = NearestCommonMultiple(playerLocation.x, width);
+        center.z = NearestCommonMultiple(playerLocation.z, length);
         return center;
     }
 
     /// <summary>
     /// Get the nearest common multiple of the number m
-    /// given a number n 
+    /// given a number n.
     /// </summary>
-    /// <param name="n"></param>
-    /// <param name="m"></param>
-    /// <param name="p"></param>
-    /// <returns>The nearest common multiple p</returns>
+    /// <param name="n">The number to find the nearest multiple of.</param>
+    /// <param name="m">The multiple to use.</param>
+    /// <returns>The nearest common multiple.</returns>
     private static float NearestCommonMultiple(float n, float m)
     {
         float f = MathF.Floor(n / m) * m;//floor(n, m);
@@ -180,31 +199,28 @@ public partial class MarchingCubeThreaded : MonoBehaviour
         return p;
     }
 
-    public void ScheduleChunks(Transform location)
+    private void ScheduleChunks()
     {
 
 
         for (int i = 0; i < mChunkList.Count; i++)
         {
-
+            mChunksInUse[i] = true;
             mChunkList[i].Handle = mChunkList[i].Loader.Schedule();
         }
-
 
 
 
     }
     public void LateUpdate()
     {
-        for (int i = 0; i < mChunkList.Count; i++)
-        {
+        //for (int i = 0; i < mChunkList.Count; i++)
+        //{
 
-            if (!mChunkList[i].Handle.IsCompleted)
-                mChunkList[i].Handle.Complete();
+        //    if (!mChunkList[i].Handle.IsCompleted)
+        //        mChunkList[i].Handle.Complete();
 
-        }
-
-
+        //}
 
     }
 
@@ -212,11 +228,25 @@ public partial class MarchingCubeThreaded : MonoBehaviour
     void Update()
     {
 
+        Vector3 snapped = GetChunkCenterFromLocation(mPlayerLocation.position, mTerrainParameters.SamplingLength, mTerrainParameters.SamplingWidth);
+
+        if (mCurrentChunkCenter != snapped)
+        {
+            Debug.Log("Player center chunk change from :" + mCurrentChunkCenter + " to :" + snapped);
+            mCurrentChunkCenter = snapped;
+            // find a new job to create a chunk with from the job pool
+            ReloadEdgeChunks();
+
+            // schedule the job and resave the given handle
+        }
+
         for (int i = 0; i < mChunkList.Count; i++)
         {
-
+            // Dont attempt to complete the chunk unless the job is done
+            
             if (mChunkList[i].Handle.IsCompleted)
             {
+                //Debug.Break();
                 mChunkList[i].Handle.Complete();
                 if (!mChunkList[i].Loader.UpdateMainThread[0])
                     break;
@@ -238,6 +268,7 @@ public partial class MarchingCubeThreaded : MonoBehaviour
                 n[0] = false;
                 cl.UpdateMainThread = n;
                 mChunkList[i].Loader = cl;
+                mChunksInUse[i] = false;
 
 
             }
@@ -249,6 +280,36 @@ public partial class MarchingCubeThreaded : MonoBehaviour
 
 
     }
+
+    private void ReloadEdgeChunks()
+    {
+
+
+        //int unusedJob = -1;
+        //for (int i = 0; i < mNumberofChunks; i++)
+        //{
+
+        //    if (!mChunksInUse[i])
+        //    {
+        //        unusedJob = i;
+        //        break;
+        //    }
+
+        //}
+        //// once a job is found, reinitialize it 
+        //if (unusedJob != -1)
+        //{
+        //    TerrainParameters parameters = mTerrainParameters;
+        //    parameters.Origin = mCurrentChunkCenter
+        //        float chunkXid = terrainParameters.Origin.x / mTerrainParameters.SamplingWidth;
+        //    float chunkZid = terrainParameters.Origin.z / mTerrainParameters.SamplingWidth;
+        //    mChunkList[unusedJob].Loader.ReInitialize(mTerrainParameters, mTerrainParameters, new Vector2(chunkXid, chunkZid));
+
+        //}
+
+        throw new NotImplementedException();
+    }
+
     public void OnDestroy()
     {
         for (int i = 0; i < mChunkList.Count; i++)

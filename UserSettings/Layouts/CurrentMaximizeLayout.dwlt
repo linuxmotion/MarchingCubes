@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Children:
   - {fileID: 3}
-  - {fileID: 15}
+  - {fileID: 14}
   m_Position:
     serializedVersion: 2
     x: 0
@@ -24,6 +24,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 200}
   m_MaxSize: {x: 32384, y: 16192}
   vertical: 0
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -41,6 +42,9 @@ MonoBehaviour:
 =======
   controlID: 5522
 >>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
+=======
+  controlID: -1
+>>>>>>> e0a244c (Change file names to be more consistent and reflect content)
 --- !u!114 &2
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -50,6 +54,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 1
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -284,6 +289,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 1
+=======
+>>>>>>> e0a244c (Change file names to be more consistent and reflect content)
   m_Script: {fileID: 12061, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: 
   m_EditorClassIdentifier: 
@@ -308,15 +315,21 @@ MonoBehaviour:
 =======
     x: -3200
     y: 73
+<<<<<<< HEAD
     width: 243
     height: 332
 >>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
+=======
+    width: 264
+    height: 451
+>>>>>>> e0a244c (Change file names to be more consistent and reflect content)
   m_ViewDataDictionary: {fileID: 0}
   m_OverlayCanvas:
     m_LastAppliedPresetName: Default
     m_SaveData: []
   m_SceneHierarchy:
     m_TreeViewState:
+<<<<<<< HEAD
       scrollPos: {x: 0, y: 0}
 <<<<<<< HEAD
       m_SelectedIDs: 80e6feff
@@ -327,6 +340,12 @@ MonoBehaviour:
       m_LastClickedID: 28378
       m_ExpandedIDs: 16fbffffda6e0000f46e0000066f0000
 >>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
+=======
+      scrollPos: {x: 0, y: 7794}
+      m_SelectedIDs: 
+      m_LastClickedID: 0
+      m_ExpandedIDs: 14fbffffda6e0000f46e0000
+>>>>>>> e0a244c (Change file names to be more consistent and reflect content)
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -350,7 +369,84 @@ MonoBehaviour:
       m_IsLocked: 0
     m_CurrentSortingName: TransformSorting
   m_WindowGUID: 4c969a2b90040154d917609493e03593
---- !u!114 &7
+--- !u!114 &3
+MonoBehaviour:
+  m_ObjectHideFlags: 52
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 1
+  m_Script: {fileID: 12010, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Children:
+  - {fileID: 4}
+  - {fileID: 10}
+  m_Position:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 873
+    height: 667
+  m_MinSize: {x: 300, y: 200}
+  m_MaxSize: {x: 24288, y: 16192}
+  vertical: 1
+  controlID: -1
+--- !u!114 &4
+MonoBehaviour:
+  m_ObjectHideFlags: 52
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 1
+  m_Script: {fileID: 12010, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Children:
+  - {fileID: 5}
+  - {fileID: 6}
+  - {fileID: 8}
+  m_Position:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 873
+    height: 472
+  m_MinSize: {x: 300, y: 100}
+  m_MaxSize: {x: 24288, y: 8096}
+  vertical: 0
+  controlID: -1
+--- !u!114 &5
+MonoBehaviour:
+  m_ObjectHideFlags: 52
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 1
+  m_Script: {fileID: 12006, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Children: []
+  m_Position:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 265
+    height: 472
+  m_MinSize: {x: 201, y: 221}
+  m_MaxSize: {x: 4001, y: 4021}
+  m_ActualView: {fileID: 2}
+  m_Panes:
+  - {fileID: 2}
+  m_Selected: 0
+  m_LastSelected: 0
+--- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -366,6 +462,7 @@ MonoBehaviour:
   m_Position:
     serializedVersion: 2
 <<<<<<< HEAD
+<<<<<<< HEAD
     x: 204
     y: 0
     width: 594.4
@@ -376,15 +473,20 @@ MonoBehaviour:
     width: 311
     height: 353
 >>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
+=======
+    x: 265
+    y: 0
+    width: 284
+    height: 472
+>>>>>>> e0a244c (Change file names to be more consistent and reflect content)
   m_MinSize: {x: 202, y: 221}
   m_MaxSize: {x: 4002, y: 4021}
-  m_ActualView: {fileID: 8}
+  m_ActualView: {fileID: 7}
   m_Panes:
-  - {fileID: 8}
-  - {fileID: 9}
+  - {fileID: 7}
   m_Selected: 0
-  m_LastSelected: 1
---- !u!114 &8
+  m_LastSelected: 0
+--- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -414,6 +516,7 @@ MonoBehaviour:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     x: 248.8
     y: 81.6
     width: 518
@@ -436,6 +539,12 @@ MonoBehaviour:
     width: 309
     height: 332
 >>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
+=======
+    x: -2935
+    y: 73
+    width: 282
+    height: 451
+>>>>>>> e0a244c (Change file names to be more consistent and reflect content)
   m_ViewDataDictionary: {fileID: 0}
   m_OverlayCanvas:
     m_LastAppliedPresetName: Default
@@ -641,6 +750,7 @@ MonoBehaviour:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     m_Target: {x: 11.706606, y: 0.49511182, z: -15.499853}
     speed: 2
     m_Value: {x: 11.706606, y: 0.49511182, z: -15.499853}
@@ -664,10 +774,15 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: -4.418566, y: 2.2643135, z: -126.76917}
 >>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
+=======
+    m_Target: {x: 0, y: 0, z: 0}
+    speed: 2
+    m_Value: {x: 0, y: 0, z: 0}
+>>>>>>> e0a244c (Change file names to be more consistent and reflect content)
   m_RenderMode: 0
   m_CameraMode:
-    drawMode: 2
-    name: Shaded Wireframe
+    drawMode: 0
+    name: Shaded
     section: Shading Mode
   m_ValidateTrueMetals: 0
   m_DoValidateTrueMetals: 0
@@ -714,6 +829,7 @@ MonoBehaviour:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     m_Target: {x: 0.052557718, y: 0.8437274, z: -0.081964985, w: 0.52836084}
     speed: 2
     m_Value: {x: 0.052544013, y: 0.8435074, z: -0.08194361, w: 0.52822304}
@@ -737,10 +853,15 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0.0022014978, y: 0.99783087, z: -0.044937078, w: 0.048056096}
 >>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
-  m_Size:
-    m_Target: 77.127594
+=======
+    m_Target: {x: 0.2811907, y: -0.0064297095, z: 0.0018928064, w: 0.9597531}
     speed: 2
-    m_Value: 77.127594
+    m_Value: {x: -0.28119072, y: 0.0064297095, z: -0.0018928065, w: -0.9597531}
+>>>>>>> e0a244c (Change file names to be more consistent and reflect content)
+  m_Size:
+    m_Target: 10
+    speed: 2
+    m_Value: 10
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -775,6 +896,7 @@ MonoBehaviour:
   m_SceneVisActive: 1
   m_LastLockedObject: {fileID: 0}
   m_ViewIsLockedToObject: 0
+<<<<<<< HEAD
 <<<<<<< HEAD
 --- !u!114 &3
 MonoBehaviour:
@@ -2021,6 +2143,9 @@ MonoBehaviour:
         m_SortAscending: 0
         m_SortedColumn: -1
 --- !u!114 &10
+=======
+--- !u!114 &8
+>>>>>>> e0a244c (Change file names to be more consistent and reflect content)
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2035,6 +2160,7 @@ MonoBehaviour:
   m_Children: []
   m_Position:
     serializedVersion: 2
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -2074,20 +2200,31 @@ MonoBehaviour:
   m_ActualView: {fileID: 10}
 =======
     x: 555
+=======
+    x: 549
+>>>>>>> e0a244c (Change file names to be more consistent and reflect content)
     y: 0
-    width: 318
-    height: 353
+    width: 324
+    height: 472
   m_MinSize: {x: 202, y: 221}
   m_MaxSize: {x: 4002, y: 4021}
+<<<<<<< HEAD
   m_ActualView: {fileID: 2}
 >>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
+=======
+  m_ActualView: {fileID: 9}
+>>>>>>> e0a244c (Change file names to be more consistent and reflect content)
   m_Panes:
-  - {fileID: 2}
+  - {fileID: 9}
   m_Selected: 0
   m_LastSelected: 0
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!114 &10
 >>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
+=======
+--- !u!114 &9
+>>>>>>> e0a244c (Change file names to be more consistent and reflect content)
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2103,11 +2240,16 @@ MonoBehaviour:
   m_MaxSize: {x: 4000, y: 4000}
   m_TitleContent:
     m_Text: Game
+<<<<<<< HEAD
     m_Image: {fileID: 4621777727084837110, guid: 0000000000000000d000000000000000,
+=======
+    m_Image: {fileID: -6423792434712278376, guid: 0000000000000000d000000000000000,
+>>>>>>> e0a244c (Change file names to be more consistent and reflect content)
       type: 0}
     m_Tooltip: 
   m_Pos:
     serializedVersion: 2
+<<<<<<< HEAD
 <<<<<<< HEAD
     x: 768.8
     y: 81.6
@@ -2118,6 +2260,12 @@ MonoBehaviour:
     width: 324.40002
 >>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
     height: 486.2
+=======
+    x: -2651
+    y: 73
+    width: 322
+    height: 451
+>>>>>>> e0a244c (Change file names to be more consistent and reflect content)
   m_ViewDataDictionary: {fileID: 0}
   m_OverlayCanvas:
     m_LastAppliedPresetName: Default
@@ -2137,20 +2285,31 @@ MonoBehaviour:
   m_VSyncEnabled: 0
   m_Gizmos: 0
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_Stats: 0
 =======
   m_Stats: 1
 >>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
+=======
+  m_Stats: 1
+>>>>>>> e0a244c (Change file names to be more consistent and reflect content)
   m_SelectedSizes: 03000000000000000000000000000000000000000000000000000000000000000000000000000000
   m_ZoomArea:
     m_HRangeLocked: 0
     m_VRangeLocked: 0
     hZoomLockedByDefault: 0
     vZoomLockedByDefault: 0
+<<<<<<< HEAD
     m_HBaseRangeMin: -768
     m_HBaseRangeMax: 768
     m_VBaseRangeMin: -432
     m_VBaseRangeMax: 432
+=======
+    m_HBaseRangeMin: -960
+    m_HBaseRangeMax: 960
+    m_VBaseRangeMin: -540
+    m_VBaseRangeMax: 540
+>>>>>>> e0a244c (Change file names to be more consistent and reflect content)
     m_HAllowExceedBaseRangeMin: 1
     m_HAllowExceedBaseRangeMax: 1
     m_VAllowExceedBaseRangeMin: 1
@@ -2169,6 +2328,7 @@ MonoBehaviour:
       x: 0
       y: 21
 <<<<<<< HEAD
+<<<<<<< HEAD
       width: 443.59998
       height: 465.2
     m_Scale: {x: 1.1592739, y: 1.1592739}
@@ -2179,12 +2339,19 @@ MonoBehaviour:
     m_Scale: {x: 1.1592737, y: 1.159274}
     m_Translation: {x: 162.19986, y: 232.59998}
 >>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
+=======
+      width: 322
+      height: 430
+    m_Scale: {x: 1.1592736, y: 1.159274}
+    m_Translation: {x: 160.99982, y: 214.99997}
+>>>>>>> e0a244c (Change file names to be more consistent and reflect content)
     m_MarginLeft: 0
     m_MarginRight: 0
     m_MarginTop: 0
     m_MarginBottom: 0
     m_LastShownAreaInsideMargins:
       serializedVersion: 2
+<<<<<<< HEAD
 <<<<<<< HEAD
       x: -191.32648
       y: -200.64282
@@ -2202,11 +2369,21 @@ MonoBehaviour:
   m_defaultScale: 0.21119793
   m_LastWindowPixelSize: {x: 405.50003, y: 607.75}
 >>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
+=======
+      x: -138.87991
+      y: -185.46088
+      width: 277.76013
+      height: 370.9218
+    m_MinimalGUI: 1
+  m_defaultScale: 0.16770834
+  m_LastWindowPixelSize: {x: 322, y: 451}
+>>>>>>> e0a244c (Change file names to be more consistent and reflect content)
   m_ClearInEditMode: 1
   m_NoCameraWarning: 1
   m_LowResolutionForAspectRatios: 01000000000000000000
   m_XRRenderMode: 0
   m_RenderTexture: {fileID: 0}
+<<<<<<< HEAD
 <<<<<<< HEAD
 --- !u!114 &10
 =======
@@ -2216,6 +2393,9 @@ MonoBehaviour:
 >>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
 --- !u!114 &11
 >>>>>>> 8b20ab6 (Move to a threaded model-All seting not used)
+=======
+--- !u!114 &10
+>>>>>>> e0a244c (Change file names to be more consistent and reflect content)
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2231,6 +2411,7 @@ MonoBehaviour:
   m_Position:
     serializedVersion: 2
     x: 0
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -2260,20 +2441,27 @@ MonoBehaviour:
 >>>>>>> 0dc279f (Spawn chunks at player according to chunk size)
 =======
     y: 353
+=======
+    y: 472
+>>>>>>> e0a244c (Change file names to be more consistent and reflect content)
     width: 873
-    height: 314
+    height: 195
   m_MinSize: {x: 101, y: 121}
   m_MaxSize: {x: 4001, y: 4021}
+<<<<<<< HEAD
 >>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
   m_ActualView: {fileID: 13}
 >>>>>>> 8b20ab6 (Move to a threaded model-All seting not used)
+=======
+  m_ActualView: {fileID: 12}
+>>>>>>> e0a244c (Change file names to be more consistent and reflect content)
   m_Panes:
+  - {fileID: 11}
   - {fileID: 12}
   - {fileID: 13}
-  - {fileID: 14}
   m_Selected: 1
   m_LastSelected: 0
---- !u!114 &12
+--- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2474,7 +2662,7 @@ MonoBehaviour:
       m_IsRenaming: 0
       m_OriginalEventType: 11
       m_IsRenamingFilename: 1
-      m_ClientGUIView: {fileID: 11}
+      m_ClientGUIView: {fileID: 10}
     m_CreateAssetUtility:
       m_EndAction: {fileID: 0}
       m_InstanceID: 0
@@ -2486,7 +2674,7 @@ MonoBehaviour:
     m_GridSize: 64
   m_SkipHiddenPackages: 0
   m_DirectoriesAreaWidth: 207
---- !u!114 &13
+--- !u!114 &12
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2526,15 +2714,19 @@ MonoBehaviour:
 >>>>>>> d6164cf (Add generating a single chunk on one thread)
 =======
     x: -3200
-    y: 426
+    y: 545
     width: 872
+<<<<<<< HEAD
     height: 293
 >>>>>>> 39520e8 (Render chunks in a square grid surrounding a point)
+=======
+    height: 174
+>>>>>>> e0a244c (Change file names to be more consistent and reflect content)
   m_ViewDataDictionary: {fileID: 0}
   m_OverlayCanvas:
     m_LastAppliedPresetName: Default
     m_SaveData: []
---- !u!114 &14
+--- !u!114 &13
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2585,7 +2777,7 @@ MonoBehaviour:
       m_IsRenamingFilename: 0
       m_ClientGUIView: {fileID: 0}
     m_SearchString: 
---- !u!114 &15
+--- !u!114 &14
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2621,11 +2813,18 @@ MonoBehaviour:
     y: 0
     width: 407
     height: 667
+<<<<<<< HEAD
   m_MinSize: {x: 275, y: 50}
   m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 16}
 >>>>>>> 8b20ab6 (Move to a threaded model-All seting not used)
+=======
+  m_MinSize: {x: 276, y: 71}
+  m_MaxSize: {x: 4001, y: 4021}
+  m_ActualView: {fileID: 15}
+>>>>>>> e0a244c (Change file names to be more consistent and reflect content)
   m_Panes:
+  - {fileID: 15}
   - {fileID: 16}
 <<<<<<< HEAD
   m_Selected: 0
@@ -2634,11 +2833,14 @@ MonoBehaviour:
 =======
   - {fileID: 17}
   - {fileID: 18}
-  - {fileID: 19}
   m_Selected: 0
   m_LastSelected: 1
+<<<<<<< HEAD
 --- !u!114 &16
 >>>>>>> 8b20ab6 (Move to a threaded model-All seting not used)
+=======
+--- !u!114 &15
+>>>>>>> e0a244c (Change file names to be more consistent and reflect content)
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2701,7 +2903,7 @@ MonoBehaviour:
   m_LockTracker:
     m_IsLocked: 0
   m_PreviewWindow: {fileID: 0}
---- !u!114 &17
+--- !u!114 &16
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2773,7 +2975,7 @@ MonoBehaviour:
       m_IsRenaming: 0
       m_OriginalEventType: 11
       m_IsRenamingFilename: 0
-      m_ClientGUIView: {fileID: 15}
+      m_ClientGUIView: {fileID: 14}
     m_SearchString: 
   m_ControlPickerViewState:
     m_AdvancedDropdownState:
@@ -2992,7 +3194,7 @@ MonoBehaviour:
     m_Text: StarterAssets (Input Actions)
     m_Image: {fileID: 0}
     m_Tooltip: 
---- !u!114 &18
+--- !u!114 &17
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3301,8 +3503,12 @@ MonoBehaviour:
     m_SortedColumns: 
   m_EventTraceDisabled: 1
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 --- !u!114 &19
+=======
+--- !u!114 &18
+>>>>>>> e0a244c (Change file names to be more consistent and reflect content)
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
