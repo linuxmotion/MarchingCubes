@@ -249,7 +249,7 @@ public partial class ChunkRenderer : MonoBehaviour
                 //Debug.Break();
                 mChunkList[i].Handle.Complete();
                 if (!mChunkList[i].Loader.UpdateMainThread[0])
-                    break;
+                    continue;
 
                 int index = (mChunkList[i].Loader.NumberOfTriangles[0] * 3);
 
