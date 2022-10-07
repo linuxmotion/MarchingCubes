@@ -54,7 +54,7 @@ namespace StarterAssets
 
 		public void OnReloadScene(InputValue value) {
 
-			Debug.Log("Scene reloaded");
+			//Debug.Log("Scene reloaded");
 			//(GameObject.FindGameObjectWithTag("TerrainMesh").GetComponent<MarchingCubeThreaded>() ).UpdateChunk();
 		
 		
@@ -63,7 +63,7 @@ namespace StarterAssets
 
 		public void FlyInput(Vector2 newFlyState)
 		{
-			Debug.Log(newFlyState);
+			//Debug.Log(newFlyState);
 			flying = newFlyState;
 		}
 

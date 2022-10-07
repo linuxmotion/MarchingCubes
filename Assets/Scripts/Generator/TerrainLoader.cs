@@ -51,7 +51,7 @@ struct TerrainLoader : IJob
     /// <param name="noiseP">The new noise parameters</param>
     /// <param name="terrainP"> The new parameters to create the terrain with</param>
     /// <param name="id">The id of the chunk as an x,z coordinate pair</param>
-    public void  ReInitialize(NoiseParameters noiseP, TerrainParameters terrainP, Vector2 id)
+    public void ReInitialize(NoiseParameters noiseP, TerrainParameters terrainP, Vector2 id)
     {
 
         // The array may change size, dump them then set the struct back up
@@ -98,7 +98,7 @@ struct TerrainLoader : IJob
         UpdateMainThread[0] = true;
 
     }
-    [BurstCompile]
+    // [BurstCompile]
     private void CalulateMesh(List<VoxelCell> VoxelCells)
     {
 
@@ -110,7 +110,8 @@ struct TerrainLoader : IJob
 
         // We will have at most the amount of cells times 5 since we can have no more than 5 triangles per mesh
         List<Vector3[]> agVertices = new List<Vector3[]>(VoxelCells.Count);// TODO: Dont allocate as much space 
-        List<int[]> agTriangles = new List<int[]>();   // has up to 5 triangles
+        List<int[]> agTriangles = new List<int[]>(VoxelCells.Count);   // has up to 5 triangles
+        int numTri = 0;
 
 
         for (int i = 0; i < VoxelCells.Count; i++)
@@ -118,49 +119,44 @@ struct TerrainLoader : IJob
 
             agVertices.Add(VoxelCells[i].mTriangleVertices); // has 3,6,9,12, or 15 vertices
             agTriangles.Add(VoxelCells[i].mTriangleIndex);   // has up to 5 triangles
-            NumberOfTriangles[0] += VoxelCells[i].mNumberTriangles;
+            numTri += VoxelCells[i].mNumberTriangles;
 
         }
+        NumberOfTriangles[0] = numTri;
 
         Assert.IsTrue(agVertices.Count == agTriangles.Count);
 
-        List<Vector3> linVertices = new List<Vector3>();
+        List<Vector3> linVertices = new List<Vector3>(agVertices.Count * 5);
+        List<int> linIndexedTriangles = new List<int>(agVertices.Count * 5);
+        int offset = 0;
+        Vector3[] vertList;
+        int[] triList;
         // now we must linearlize the vertices List<> into a array[]
         for (int i = 0; i < agVertices.Count; i++)
         {
-            Vector3[] vertList = agVertices[i];
+            vertList = agVertices[i];
+            triList = agTriangles[i];
             for (int j = 0; j < vertList.Length; j++)
             {
+                linIndexedTriangles.Add(agTriangles[i][j] + offset);
                 linVertices.Add(agVertices[i][j]);
             }
-        }
-        List<int> iinIndexedTriangles = new List<int>();
-        int offset = 0;
-        // now we must linearlize the index List<> into a array[]
-        for (int i = 0; i < agTriangles.Count; i++)
-        {
-            int[] vertList = agTriangles[i];
-            for (int j = 0; j < vertList.Length; j++)
-            {
-                iinIndexedTriangles.Add(agTriangles[i][j] + offset);
-            }
-
-            offset += vertList.Length;
+            offset += triList.Length;
         }
 
-        Assert.IsTrue(linVertices.Count == iinIndexedTriangles.Count);
+        Assert.IsTrue(linVertices.Count == linIndexedTriangles.Count);
 
         for (int i = 0; i < linVertices.Count; i++)
         {
             Vertices[i] = linVertices[i];
-            Triangles[i] = iinIndexedTriangles[i];
+            Triangles[i] = linIndexedTriangles[i];
 
         }
 
 
 
     }
-    [BurstCompile]
+    // [BurstCompile]
     private List<VoxelCell> CreateCubeData()
     {
         int levelOffset, rowOffset;
@@ -229,7 +225,7 @@ struct TerrainLoader : IJob
         int Height = terrainParameters.SamplingHeight;
         int Scale = terrainParameters.Scale;
 
-
+        List<Voxel> nativePointsBuffer = new List<Voxel>(Length * Width * Height * Scale);
 
         for (int level = 0; level <= Height * Scale; level++)
         {
@@ -251,11 +247,12 @@ struct TerrainLoader : IJob
 
                     float noise = Noise.GenerateNoise(vect, terrainParameters.Seed, noiseParameters);
                     Voxel v = new Voxel(vect, noise);
-                    Points[levelOffset + rowOffset + column] = v;
+                    nativePointsBuffer.Add(v);
 
                 }
 
             }
         }
+        Points.CopyFrom(nativePointsBuffer.ToArray());
     }
 }

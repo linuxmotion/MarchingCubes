@@ -2,6 +2,7 @@ using StarterAssets;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
@@ -16,7 +17,7 @@ public partial class ChunkRenderer : MonoBehaviour
 
     List<Chunk> mChunkList;
     List<bool> mChunksInUse;
-
+    Queue<Chunk> mChunkQueue;
     public int _ChunkRenderDistance;
     private Transform mPlayerLocation;
     private Vector3 mCurrentChunkCenter;
@@ -47,73 +48,38 @@ public partial class ChunkRenderer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _ChunkRenderDistance = _ChunkRenderDistance * 2 + 1;
 
-        mNumberofChunks = _ChunkRenderDistance * _ChunkRenderDistance;
-        Debug.Log("Instantitating chunk pool of size: " + mNumberofChunks);
-        mChunkList = new List<Chunk>(mNumberofChunks);
-        mChunksInUse = new List<bool>(mNumberofChunks);
-
-        // Init each list member
-        for (int i = 0; i < mNumberofChunks; i++)
-            mChunksInUse.Add(false);
-        //mChunkLoaderList = new List<ChunkLoader>(mNumberofChunks);
-        //mJobHandles = new List<JobHandle>(mNumberofChunks);
-
-
-
-        //mCollider = gameObject.AddComponent<MeshCollider>();
-
+        // Setup components
         mNoiseParameters = GetComponent<NoiseSettings>().Parameterize();
         Debug.Log("Setting default parameters to :" + mNoiseParameters.ToString());
         mTerrainParameters = GetComponent<TerrainSettings>().Paramterize();
         mPlayerLocation = GetComponent<TerrainSettings>().GetPlayerTransform();
 
+        // Setup Chunk list
+        _ChunkRenderDistance = _ChunkRenderDistance * 2 + 1;
+        mNumberofChunks = _ChunkRenderDistance * _ChunkRenderDistance;
+        Debug.Log("Instantitating chunk pool of size: " + mNumberofChunks);
+        mChunkList = new List<Chunk>(mNumberofChunks);
+        mChunksInUse = new List<bool>(mNumberofChunks);
+
+        for (int i = 0; i < mNumberofChunks; i++)
+        {
+            mChunksInUse.Add(false);
+        }
+
         Vector3 forward = mPlayerLocation.transform.forward;
         Vector3 playerLocation = mPlayerLocation.transform.position;
-        mCurrentChunkCenter = GetChunkCenterFromLocation(playerLocation, mTerrainParameters.SamplingLength, mTerrainParameters.SamplingWidth);
-        List<Vector3> currentChunkOrigins = ChunksFromCenterLocation(mCurrentChunkCenter, mNumberofChunks, mTerrainParameters.SamplingLength, mTerrainParameters.SamplingWidth);
+        mCurrentChunkCenter = GetChunkCenterFromLocation(playerLocation);
+        List<Vector3> currentChunkOrigins = GetChunksFromCenterLocation(mCurrentChunkCenter);
 
 
         for (int i = 0; i < mNumberofChunks; i++)
         {
-
-
-
             //mChunkLoaderList.Add(new ChunkLoader(noiseParameters, terrainParameters));
-            Chunk chunk = new Chunk();
-            TerrainParameters terrainParameters = mTerrainParameters;
-            terrainParameters.Origin = currentChunkOrigins[i];
-            Debug.Log("Creating chunk at :" + terrainParameters.Origin);
-
-            // Xid and Zid are multiple of the sampling height sincee they are the centers
-            // of each chunk
-            float chunkXid = terrainParameters.Origin.x / terrainParameters.SamplingWidth;
-            float chunkZid = terrainParameters.Origin.z / terrainParameters.SamplingWidth;
-            chunk.IJobID = new Vector2(chunkXid, chunkZid);
-            Debug.Log("Chunk location ID: " + chunk.IJobID);
-            chunk.Loader = new TerrainLoader(mNoiseParameters, terrainParameters, chunk.IJobID);
-
-
-            chunk.ChunkOrigin = terrainParameters.Origin;
-            chunk.Vertices = chunk.Loader.Vertices;
-            chunk.Triangles = chunk.Loader.Triangles;
-            chunk.UpdateMainThread = chunk.Loader.UpdateMainThread;
-            chunk.NumberOfTriangles = chunk.Loader.NumberOfTriangles;
-            chunk.Points = chunk.Loader.Points;
-            chunk.ChunkObject = new GameObject();
-            chunk.ChunkObject.name = "Chunk #" + i;
-
-            chunk.ChunkObject.transform.SetParent(this.transform);
-            chunk.Filter = chunk.ChunkObject.AddComponent<MeshFilter>();
-            chunk.Renderer = chunk.ChunkObject.AddComponent<MeshRenderer>();
-            chunk.Filter.mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-            chunk.Renderer.material = new Material(Shader.Find("Universal Render Pipeline/Lit"));
-            chunk.Renderer.material.SetFloat("_Cull", 0);
-
-
+            Chunk chunk = SetupChunk(currentChunkOrigins[i], i);
 
             mChunkList.Add(chunk);
+            //mChunkQueue.Enqueue(chunk);
             Debug.Log("Chunk " + chunk.ChunkObject);
 
 
@@ -124,13 +90,59 @@ public partial class ChunkRenderer : MonoBehaviour
         ScheduleChunks();
     }
 
-    private List<Vector3> ChunksFromCenterLocation(in Vector3 playerchunkorigin, in int numberChunks, in int length, in int width)
+    private Chunk SetupChunk(Vector3 currentChunkOrigins, int i)
+    {
+        Chunk chunk = new Chunk();
+        TerrainParameters terrainParameters = mTerrainParameters;
+        terrainParameters.Origin = currentChunkOrigins;
+        Debug.Log("Creating chunk at :" + terrainParameters.Origin);
+
+
+
+        chunk.IJobID = ChunkIDFromLocation(terrainParameters.Origin);
+
+        Debug.Log("Chunk location ID: " + chunk.IJobID);
+        chunk.Loader = new TerrainLoader(mNoiseParameters, terrainParameters, chunk.IJobID);
+
+
+        chunk.ChunkOrigin = terrainParameters.Origin;
+        chunk.Vertices = chunk.Loader.Vertices;
+        chunk.Triangles = chunk.Loader.Triangles;
+        chunk.UpdateMainThread = chunk.Loader.UpdateMainThread;
+        chunk.NumberOfTriangles = chunk.Loader.NumberOfTriangles;
+        chunk.Points = chunk.Loader.Points;
+        chunk.ChunkObject = new GameObject();
+        chunk.ChunkObject.name = "Chunk #" + i;
+
+        chunk.ChunkObject.transform.SetParent(this.transform);
+        chunk.Filter = chunk.ChunkObject.AddComponent<MeshFilter>();
+        chunk.Renderer = chunk.ChunkObject.AddComponent<MeshRenderer>();
+        chunk.Filter.mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+        chunk.Renderer.material = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+        chunk.Renderer.material.SetFloat("_Cull", 0);
+        return chunk;
+    }
+
+    private Vector2 ChunkIDFromLocation(Vector3 origin)
+    {
+        // Xid and Zid are multiple of the sampling height sincee they are the centers
+        // of each chunk
+        float chunkXid = origin.x / mTerrainParameters.SamplingWidth;
+        float chunkZid = origin.z / mTerrainParameters.SamplingWidth;
+        return new Vector2(chunkXid, chunkZid);
+    }
+
+    private List<Vector3> GetChunksFromCenterLocation(in Vector3 playerchunkorigin)
     {
 
 
+        int numberChunks = mNumberofChunks,
+            length = mTerrainParameters.SamplingLength,
+            width = mTerrainParameters.SamplingWidth;
+
 
         float bootomLeftX = playerchunkorigin.x - ((_ChunkRenderDistance - 1) / 2) * width;
-        float bootomLeftz = playerchunkorigin.y - ((_ChunkRenderDistance - 1) / 2) * length;
+        float bootomLeftz = playerchunkorigin.z - ((_ChunkRenderDistance - 1) / 2) * length;
 
         List<Vector3> chunksOrigins = new List<Vector3>(numberChunks);
 
@@ -163,13 +175,15 @@ public partial class ChunkRenderer : MonoBehaviour
     /// <param name="length">Unit length of the chunk length(Z-Axis)</param>
     /// <param name="width">Unit length of the chunk width(X-Axis)</param>
     /// <returns></returns>
-    private Vector3 GetChunkCenterFromLocation(in Vector3 playerLocation, in int length, in int width)
+    private Vector3 GetChunkCenterFromLocation(in Vector3 playerLocation)
     {
 
-
+        int length = mTerrainParameters.SamplingLength,
+            width = mTerrainParameters.SamplingWidth;
 
         Vector3 center = new Vector3();
         center.x = NearestCommonMultiple(playerLocation.x, width);
+        center.y = playerLocation.y;
         center.z = NearestCommonMultiple(playerLocation.z, length);
         return center;
     }
@@ -206,6 +220,7 @@ public partial class ChunkRenderer : MonoBehaviour
         for (int i = 0; i < mChunkList.Count; i++)
         {
             mChunksInUse[i] = true;
+
             mChunkList[i].Handle = mChunkList[i].Loader.Schedule();
         }
 
@@ -228,14 +243,15 @@ public partial class ChunkRenderer : MonoBehaviour
     void Update()
     {
 
-        Vector3 snapped = GetChunkCenterFromLocation(mPlayerLocation.position, mTerrainParameters.SamplingLength, mTerrainParameters.SamplingWidth);
+        Vector3 snapped = GetChunkCenterFromLocation(mPlayerLocation.position);
 
         if (mCurrentChunkCenter != snapped)
         {
+            Vector3 oldCenter = mCurrentChunkCenter;
             Debug.Log("Player center chunk change from :" + mCurrentChunkCenter + " to :" + snapped);
             mCurrentChunkCenter = snapped;
             // find a new job to create a chunk with from the job pool
-            ReloadEdgeChunks();
+            ReloadEdgeChunksFromCenter(oldCenter);
 
             // schedule the job and resave the given handle
         }
@@ -243,7 +259,7 @@ public partial class ChunkRenderer : MonoBehaviour
         for (int i = 0; i < mChunkList.Count; i++)
         {
             // Dont attempt to complete the chunk unless the job is done
-            
+
             if (mChunkList[i].Handle.IsCompleted)
             {
                 //Debug.Break();
@@ -281,33 +297,57 @@ public partial class ChunkRenderer : MonoBehaviour
 
     }
 
-    private void ReloadEdgeChunks()
+    private void ReloadEdgeChunksFromCenter(in Vector3 oldCenter)
     {
+        Debug.Log("Oldcenter: " + oldCenter + " -> CurrentCenter: " + mCurrentChunkCenter);
+
+        List<Vector3> newChunksCenters = GetChunksFromCenterLocation(mCurrentChunkCenter);
+        List<Vector3> oldChunkCenters = GetChunksFromCenterLocation(oldCenter);
+
+        IEnumerable<Vector3> evicDiff = oldChunkCenters.Except(newChunksCenters);
+        IEnumerable<Vector3> newDiff = newChunksCenters.Except(oldChunkCenters);
+
+        Debug.Assert(evicDiff.ToList().Count == newDiff.ToList().Count);
+
+        Queue<Vector3> q = new Queue<Vector3>(newDiff);
+
+        List<Vector3> evictionCenters = evicDiff.ToList();
+        List<Vector2> evictionIDs = new List<Vector2>();
+        List<int> reuseIndices = new List<int>();
 
 
-        //int unusedJob = -1;
-        //for (int i = 0; i < mNumberofChunks; i++)
-        //{
+        for (int i = 0; i < mChunkList.Count; i++)
+        {
+            for (int j = 0; j < evictionCenters.Count; j++)
+            {
+                if (mChunkList[i].ChunkOrigin == evictionCenters[j]) {
+                    mChunkList[i].ChunkOrigin = q.Dequeue();
+                    reuseIndices.Add(i);
+                
+                }
 
-        //    if (!mChunksInUse[i])
-        //    {
-        //        unusedJob = i;
-        //        break;
-        //    }
+            }
+        }
 
-        //}
-        //// once a job is found, reinitialize it 
-        //if (unusedJob != -1)
-        //{
-        //    TerrainParameters parameters = mTerrainParameters;
-        //    parameters.Origin = mCurrentChunkCenter
-        //        float chunkXid = terrainParameters.Origin.x / mTerrainParameters.SamplingWidth;
-        //    float chunkZid = terrainParameters.Origin.z / mTerrainParameters.SamplingWidth;
-        //    mChunkList[unusedJob].Loader.ReInitialize(mTerrainParameters, mTerrainParameters, new Vector2(chunkXid, chunkZid));
+        foreach (var i in reuseIndices)
+        {
 
-        //}
+            // Schedule the new chunks to update
 
-        throw new NotImplementedException();
+            var tp = mTerrainParameters;
+            tp.Origin = mChunkList[i].ChunkOrigin;
+            mChunkList[i].Loader.ReInitialize(mNoiseParameters, tp, new Vector2());
+            mChunkList[i].Vertices = mChunkList[i].Loader.Vertices;
+            mChunkList[i].Triangles = mChunkList[i].Loader.Triangles;
+            mChunkList[i].UpdateMainThread = mChunkList[i].Loader.UpdateMainThread;
+            mChunkList[i].NumberOfTriangles = mChunkList[i].Loader.NumberOfTriangles;
+            mChunkList[i].Points = mChunkList[i].Loader.Points;
+
+            mChunkList[i].Handle = mChunkList[i].Loader.Schedule();
+        }
+
+
+
     }
 
     public void OnDestroy()
