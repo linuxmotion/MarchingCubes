@@ -2,7 +2,8 @@
 
 
 
-public class NoiseSettings : MonoBehaviour {
+public class NoiseSettings : MonoBehaviour
+{
 
     [Header("Noise sampling parameters")]
     [SerializeField]
@@ -16,12 +17,13 @@ public class NoiseSettings : MonoBehaviour {
     [SerializeField]
     private float _SampleLevel;
 
-    public NoiseParameters Parameterize() {
+    public NoiseParameters Parameterize()
+    {
 
 
-        return new NoiseParameters(_Frequency, _Amplitude,_Persistence,_Octave,_SampleLevel);
-    
-    
+        return new NoiseParameters(_Frequency, _Amplitude, _Persistence, _Octave, _SampleLevel);
+
+
     }
 }
 
@@ -42,32 +44,25 @@ public struct NoiseParameters
         SampleLevel = sampleLevel;
     }
 
-    override public string ToString() {
-        return base.ToString() + " - Frequency:" + Frequency + " | Amplitude: " + Amplitude + " | Persistence: " + Persistence + " | Octave: " + Octave + " | SampleLevel: " + SampleLevel + " ";  
+    override public string ToString()
+    {
+        return base.ToString() + " - Frequency:" + Frequency + " | Amplitude: " + Amplitude + " | Persistence: " + Persistence + " | Octave: " + Octave + " | SampleLevel: " + SampleLevel + " ";
     }
 }
 
 // Taken from https://gist.github.com/tntmeijs/6a3b4587ff7d38a6fa63e13f9d0ac46d
 
-public class Noise {
+public class Noise
+{
 
 
     public static float GenerateNoise(in Vector3 point, in int seed, in NoiseParameters noiseParameters)
     {
-        return -point.y + Mathf.Sin(point.x) + Mathf.Sin(point.z);
+      
 
-        // Noise testing seed
-        if (seed == 0)
-        {
-           
-            return -point.y;
-        
-        
-        }
-
-        float x = point.x/ noiseParameters.SampleLevel;
-        float y = point.y/ noiseParameters.SampleLevel;
-        float z = point.z/ noiseParameters.SampleLevel;
+        float x = point.x / noiseParameters.SampleLevel;
+        float y = point.y / noiseParameters.SampleLevel;
+        float z = point.z / noiseParameters.SampleLevel;
         float frequency = noiseParameters.Frequency;
         float amplitude = noiseParameters.Amplitude;
         float persistence = noiseParameters.Persistence;

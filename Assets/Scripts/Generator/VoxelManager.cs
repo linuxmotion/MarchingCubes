@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using Unity.Burst.Intrinsics;
+using Unity.Profiling;
 using UnityEngine;
 
 
@@ -15,7 +16,7 @@ public struct Voxel
 
 public class VoxelCell
 {
-    public static int SIZE { get; private set; } = 8;
+    public const int SIZE  = 8;
     private int NUM_POSSIBLE_TRIANGLES = 5;
 
     public Voxel[] mVoxel = new Voxel[SIZE];
@@ -28,7 +29,7 @@ public class VoxelCell
     // We have up to five triangle that get connected per cube
     private Vector3[] mVertexConnections;
 
-    static int[] CASENUMBERTOTRIANGLES = new int[256]{
+    readonly static int[] CASENUMBERTOTRIANGLES = new int[256]{
                   0 , 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 2, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 3,
                   1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 3, 2, 3, 3, 2, 3, 4, 4, 3, 3, 4, 4, 3, 4, 5, 5, 2,
                   1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 3, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 4,
@@ -38,7 +39,7 @@ public class VoxelCell
                   2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 2, 3, 3, 2, 3, 4, 4, 5, 4, 5, 5, 2, 4, 3, 5, 4, 3, 2, 4, 1,
                   3, 4, 4, 5, 4, 5, 3, 4, 4, 5, 5, 2, 3, 4, 2, 1, 2, 3, 3, 2, 3, 4, 2, 1, 3, 2, 4, 1, 2, 1, 1, 0 };
 
-    static Vector3[,] EDGECONNECTIONLIST = new Vector3[,] {
+    readonly static Vector3[,] EDGECONNECTIONLIST = new Vector3[,] {
        {new Vector3(-1,-1,-1), new Vector3(-1,-1,-1), new Vector3(-1,-1,-1), new Vector3(-1,-1,-1), new Vector3(-1,-1,-1) },
        {new Vector3(0,8,3), new Vector3(-1,-1,-1), new Vector3(-1,-1,-1), new Vector3(-1,-1,-1), new Vector3(-1,-1,-1) },
        {new Vector3(0,1,9), new Vector3(-1,-1,-1), new Vector3(-1,-1,-1), new Vector3(-1,-1,-1), new Vector3(-1,-1,-1) },
@@ -305,10 +306,10 @@ public class VoxelCell
         ISOLevel = isoLevel;
     }
 
-
+    static readonly ProfilerMarker CodeMarker = new ProfilerMarker("Create Edge List"); 
     public void CreateEdgeList()
     {
-
+        CodeMarker.Begin();
         for (int i = 0; i < 8; i++) // high acces time
         {
 
@@ -318,16 +319,17 @@ public class VoxelCell
             }
 
         }
-
-        mNumberTriangles = CASENUMBERTOTRIANGLES[mEdgeList];
-        if (mNumberTriangles > NUM_POSSIBLE_TRIANGLES)
+        int numTri = CASENUMBERTOTRIANGLES[mEdgeList];
+        mNumberTriangles = numTri;
+        if (numTri > NUM_POSSIBLE_TRIANGLES)
             throw new UnityException("More than the maximum triangles are to be prooduced: Logic error");
 
-        mVertexConnections = new Vector3[mNumberTriangles];
-        for (int i = 0; i < mNumberTriangles; i++)
+        mVertexConnections = new Vector3[numTri];
+        for (int i = 0; i < numTri; i++)
         {
             mVertexConnections[i] = EDGECONNECTIONLIST[mEdgeList, i];
         }
+        CodeMarker.End();
     }
 
     public bool IsOnSurface()

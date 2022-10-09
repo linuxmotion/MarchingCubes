@@ -156,7 +156,8 @@ struct TerrainLoader : IJob
 
 
     }
-    // [BurstCompile]
+
+    [BurstCompile]
     private List<VoxelCell> CreateCubeData()
     {
         int levelOffset, rowOffset;
@@ -166,6 +167,7 @@ struct TerrainLoader : IJob
         int Width = terrainParameters.SamplingWidth;
         int Height = terrainParameters.SamplingHeight;
         int Scale = terrainParameters.Scale;
+        List<Voxel> localPoints = new(Points.ToArray());
 
         int levelSize = ((Width * Scale + 1) * (Length * Scale + 1));
         int rowSize = Width * Scale + 1;
@@ -183,15 +185,15 @@ struct TerrainLoader : IJob
 
 
                     VoxelCell cell = new VoxelCell(0);
-                    cell.mVoxel[0] = Points[coloumn + rowOffset + levelOffset];  //(c, r) 
-                    cell.mVoxel[1] = Points[coloumn + rowOffset + levelOffset + levelSize];  //(c, r) 
-                    cell.mVoxel[2] = Points[coloumn + rowOffset + levelOffset + levelSize + 1];  //(c, r) 
-                    cell.mVoxel[3] = Points[coloumn + rowOffset + levelOffset + 1];  //(c, r) 
+                    cell.mVoxel[0] = localPoints[coloumn + rowOffset + levelOffset];  //(c, r) 
+                    cell.mVoxel[1] = localPoints[coloumn + rowOffset + levelOffset + levelSize];  //(c, r) 
+                    cell.mVoxel[2] = localPoints[coloumn + rowOffset + levelOffset + levelSize + 1];  //(c, r) 
+                    cell.mVoxel[3] = localPoints[coloumn + rowOffset + levelOffset + 1];  //(c, r) 
 
-                    cell.mVoxel[4] = Points[coloumn + rowOffset + levelOffset + rowSize];  //(c, r) 
-                    cell.mVoxel[5] = Points[coloumn + rowOffset + levelOffset + rowSize + levelSize];  //(c, r) 
-                    cell.mVoxel[6] = Points[coloumn + rowOffset + levelOffset + rowSize + levelSize + 1];  //(c, r) 
-                    cell.mVoxel[7] = Points[coloumn + rowOffset + levelOffset + rowSize + 1];  //(c, r) 
+                    cell.mVoxel[4] = localPoints[coloumn + rowOffset + levelOffset + rowSize];  //(c, r) 
+                    cell.mVoxel[5] = localPoints[coloumn + rowOffset + levelOffset + rowSize + levelSize];  //(c, r) 
+                    cell.mVoxel[6] = localPoints[coloumn + rowOffset + levelOffset + rowSize + levelSize + 1];  //(c, r) 
+                    cell.mVoxel[7] = localPoints[coloumn + rowOffset + levelOffset + rowSize + 1];  //(c, r) 
 
                     // create the edge list
                     cell.CreateEdgeList();
@@ -224,8 +226,9 @@ struct TerrainLoader : IJob
         int Width = terrainParameters.SamplingWidth;
         int Height = terrainParameters.SamplingHeight;
         int Scale = terrainParameters.Scale;
-
-        List<Voxel> nativePointsBuffer = new List<Voxel>(Length * Width * Height * Scale);
+        float Scalef = (float)Scale;
+        Vector3 pos = Vector3.zero;
+        List<Voxel> nativePointsBuffer = new List<Voxel>(Length * Width * Height * Scale*Scale*Scale);
 
         for (int level = 0; level <= Height * Scale; level++)
         {
@@ -237,16 +240,19 @@ struct TerrainLoader : IJob
                 for (int column = 0; column <= Width * Scale; column++)
                 {
 
-                    x = -((Width) / 2f) + (column / (float)Scale);
-                    y = -((Height) / 2f) + (level / (float)Scale);
-                    z = -((Length) / 2f) + (row / (float)Scale);
+                    x = -((Width) / 2f) + (column / Scalef);
+                    y = -((Height) / 2f) + (level / Scalef);
+                    z = -((Length) / 2f) + (row / Scalef);
 
-                    Vector3 vect = this.terrainParameters.Origin + new Vector3(x, y, z);
+                    pos = this.terrainParameters.Origin; ;// + new Vector3(x, y, z);
+                    pos.x += x;
+                    pos.y += y;
+                    pos.z += z;
 
                     // TODO: Generate better noise - create a flat plane
 
-                    float noise = Noise.GenerateNoise(vect, terrainParameters.Seed, noiseParameters);
-                    Voxel v = new Voxel(vect, noise);
+                    float noise = Noise.GenerateNoise(pos, terrainParameters.Seed, noiseParameters);
+                    Voxel v = new(pos, noise);
                     nativePointsBuffer.Add(v);
 
                 }
