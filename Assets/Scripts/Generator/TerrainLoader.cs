@@ -53,6 +53,7 @@ struct TerrainLoader : IJob
     /// <param name="id">The id of the chunk as an x,z coordinate pair</param>
     public void ReInitialize(NoiseParameters noiseP, TerrainParameters terrainP, Vector2 id)
     {
+        
 
         // The array may change size, dump them then set the struct back up
         if (Points.IsCreated)

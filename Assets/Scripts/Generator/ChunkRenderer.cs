@@ -6,6 +6,7 @@ using System.Linq;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
+using UnityEngine.Pool;
 
 [RequireComponent(typeof(TerrainSettings))]
 [RequireComponent(typeof(NoiseSettings))]
@@ -13,11 +14,13 @@ public partial class ChunkRenderer : MonoBehaviour
 {
 
     NoiseParameters mNoiseParameters;
+    NoiseSettings mNoiseSettings;
     TerrainParameters mTerrainParameters;
 
     List<Chunk> mChunkList;
     List<bool> mChunksInUse;
-    Queue<Chunk> mChunkQueue;
+   // Queue<Chunk> mChunkQueue;
+    //ObjectPool<TerrainLoader> mLoaderPool;
     public int _ChunkRenderDistance;
     private Transform mPlayerLocation;
     private Vector3 mCurrentChunkCenter;
@@ -50,7 +53,8 @@ public partial class ChunkRenderer : MonoBehaviour
     {
 
         // Setup components
-        mNoiseParameters = GetComponent<NoiseSettings>().Parameterize();
+        mNoiseSettings = GetComponent<NoiseSettings>();
+        mNoiseParameters = mNoiseSettings.Parameterize();
         Debug.Log("Setting default parameters to :" + mNoiseParameters.ToString());
         mTerrainParameters = GetComponent<TerrainSettings>().Paramterize();
         mPlayerLocation = GetComponent<TerrainSettings>().GetPlayerTransform();
@@ -229,14 +233,42 @@ public partial class ChunkRenderer : MonoBehaviour
     }
     public void LateUpdate()
     {
-        //for (int i = 0; i < mChunkList.Count; i++)
-        //{
 
-        //    if (!mChunkList[i].Handle.IsCompleted)
-        //        mChunkList[i].Handle.Complete();
+        // check to see if the noise settings have change
+        // only need to check one since all chunks have the same settings
+        NoiseParameters noiseParameters1 = mNoiseSettings.Parameterize();
+        if (noiseParameters1 != mChunkList[0].Loader.noiseParameters) {
 
-        //}
+            Debug.Log("Editor values changed from : " + mChunkList[0].Loader.noiseParameters +" to: " + noiseParameters1);
+             mNoiseParameters = mNoiseSettings.Parameterize();
+            ApplyEditorChangesToTerrain();
 
+
+        }
+
+
+    }
+
+    public void ApplyEditorChangesToTerrain() {
+        
+        // reinit the whole chunk list
+        // with the new settings since the chunks already exist
+        for (int i = 0; i < mChunkList.Count; i++) {
+
+            var tp = mTerrainParameters;
+            tp.Origin = mChunkList[i].ChunkOrigin;
+            mChunkList[i].Loader.ReInitialize(mNoiseParameters, tp, new Vector2());
+            mChunkList[i].Vertices = mChunkList[i].Loader.Vertices;
+            mChunkList[i].Triangles = mChunkList[i].Loader.Triangles;
+            mChunkList[i].UpdateMainThread = mChunkList[i].Loader.UpdateMainThread;
+            mChunkList[i].NumberOfTriangles = mChunkList[i].Loader.NumberOfTriangles;
+            mChunkList[i].Points = mChunkList[i].Loader.Points;
+
+        }
+        // Finally schedule the chunks to update
+        ScheduleChunks();
+    
+    
     }
 
     // Update is called once per frame
@@ -328,6 +360,8 @@ public partial class ChunkRenderer : MonoBehaviour
 
             }
         }
+
+
 
         foreach (var i in reuseIndices)
         {

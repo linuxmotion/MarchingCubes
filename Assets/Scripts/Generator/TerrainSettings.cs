@@ -33,6 +33,15 @@ class TerrainSettings : MonoBehaviour
     public Transform GetPlayerTransform() {
         return _InitialPlayerLocation;
     }
+
+    public bool UpdateSettings(TerrainSettings settings)
+    {
+        if (this != settings)
+            return true;
+
+        return false;
+        
+    }
 }
 
 /// <summary>

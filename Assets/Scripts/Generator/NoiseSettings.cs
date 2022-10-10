@@ -19,9 +19,16 @@ public class NoiseSettings : MonoBehaviour
 
     public NoiseParameters Parameterize()
     {
-
-
         return new NoiseParameters(_Frequency, _Amplitude, _Persistence, _Octave, _SampleLevel);
+    }
+
+    public bool UpdateSettings(NoiseSettings settings)
+    { 
+        if (settings.Parameterize() !=  Parameterize())
+            return false;
+
+        return true;
+
 
 
     }
@@ -44,9 +51,30 @@ public struct NoiseParameters
         SampleLevel = sampleLevel;
     }
 
+    public static  bool operator ==(NoiseParameters n1, NoiseParameters n2) {
+
+    
+        return n1.Equals(n2);
+    }
+    public  static bool operator !=(NoiseParameters n1, NoiseParameters n2) {
+
+
+        return !n1.Equals(n2);
+    }
+
     override public string ToString()
     {
         return base.ToString() + " - Frequency:" + Frequency + " | Amplitude: " + Amplitude + " | Persistence: " + Persistence + " | Octave: " + Octave + " | SampleLevel: " + SampleLevel + " ";
+    }
+
+    public override bool Equals(object obj)
+    {
+        return obj is NoiseParameters parameters &&
+               Frequency == parameters.Frequency &&
+               Amplitude == parameters.Amplitude &&
+               Persistence == parameters.Persistence &&
+               Octave == parameters.Octave &&
+               SampleLevel == parameters.SampleLevel;
     }
 }
 
@@ -89,8 +117,10 @@ public class Noise
             frequency *= 2.0f;
         }
 
-        // Use the average of all octaves
-        return noise / octave;
+
+        // This should push the ending value into the range of -1 to 1, more or less, since noise could be slighty
+        // below 0 or beyond 1.0
+        return -1f + 2 * (noise / octave);
 
 
     }

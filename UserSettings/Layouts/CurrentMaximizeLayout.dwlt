@@ -31,6 +31,7 @@ MonoBehaviour:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   controlID: 83
 =======
   controlID: 14733
@@ -53,6 +54,9 @@ MonoBehaviour:
 =======
   controlID: 124
 >>>>>>> 0a34e39 (Optimize some generation calls)
+=======
+  controlID: 233
+>>>>>>> 7e4b15b (Allow changing the noise settings in the editor to take affect without restart.)
 --- !u!114 &2
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -126,7 +130,7 @@ MonoBehaviour:
       y: 21
       width: 246.79993
       height: 474.8
-    m_Scale: {x: 1.1592737, y: 1.159274}
+    m_Scale: {x: 1.159274, y: 1.159274}
     m_Translation: {x: 123.39984, y: 237.39996}
     m_MarginLeft: 0
     m_MarginRight: 0
@@ -134,9 +138,9 @@ MonoBehaviour:
     m_MarginBottom: 0
     m_LastShownAreaInsideMargins:
       serializedVersion: 2
-      x: -106.445816
+      x: -106.44579
       y: -204.78331
-      width: 212.89185
+      width: 212.8918
       height: 409.56668
     m_MinimalGUI: 1
   m_defaultScale: 0.16067703
@@ -170,7 +174,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 200}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 1
-  controlID: 125
+  controlID: 234
 --- !u!114 &4
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -196,7 +200,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 8096}
   vertical: 0
-  controlID: 126
+  controlID: 235
 --- !u!114 &5
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -550,22 +554,26 @@ MonoBehaviour:
 =======
       m_SelectedIDs: 
       m_LastClickedID: 0
+<<<<<<< HEAD
       m_ExpandedIDs: 16fbffff
 >>>>>>> 0a34e39 (Optimize some generation calls)
+=======
+      m_ExpandedIDs: 16fbffffea6e0000046f0000
+>>>>>>> 7e4b15b (Allow changing the noise settings in the editor to take affect without restart.)
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: 
-        m_OriginalName: 
+        m_Name: Chunk #1
+        m_OriginalName: Chunk #1
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
           y: 0
           width: 0
           height: 0
-        m_UserData: 0
+        m_UserData: -113458
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 11
+        m_OriginalEventType: 0
         m_IsRenamingFilename: 0
         m_ClientGUIView: {fileID: 5}
       m_SearchString: 
@@ -924,6 +932,7 @@ MonoBehaviour:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     m_Target: {x: 11.706606, y: 0.49511182, z: -15.499853}
     speed: 2
     m_Value: {x: 11.706606, y: 0.49511182, z: -15.499853}
@@ -962,6 +971,11 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: -1.2508198, y: 309.9305, z: -152.45038}
 >>>>>>> 0a34e39 (Optimize some generation calls)
+=======
+    m_Target: {x: 8.730011, y: -45.893837, z: 125.78361}
+    speed: 2
+    m_Value: {x: 8.730011, y: -45.893837, z: 125.78361}
+>>>>>>> 7e4b15b (Allow changing the noise settings in the editor to take affect without restart.)
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1015,6 +1029,7 @@ MonoBehaviour:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     m_Target: {x: 0.052557718, y: 0.8437274, z: -0.081964985, w: 0.52836084}
     speed: 2
     m_Value: {x: 0.052544013, y: 0.8435074, z: -0.08194361, w: 0.52822304}
@@ -1053,10 +1068,15 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: -0.55594754, y: -0.0430324, z: 0.028910711, w: -0.82959914}
 >>>>>>> 0a34e39 (Optimize some generation calls)
-  m_Size:
-    m_Target: 11.488255
+=======
+    m_Target: {x: -0.18714355, y: -0.043259136, z: 0.008195106, w: -0.9815102}
     speed: 2
-    m_Value: 11.488255
+    m_Value: {x: -0.18708786, y: -0.046196, z: 0.008755083, w: -0.9812174}
+>>>>>>> 7e4b15b (Allow changing the noise settings in the editor to take affect without restart.)
+  m_Size:
+    m_Target: 116.2773
+    speed: 2
+    m_Value: 111.27014
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -2400,8 +2420,8 @@ MonoBehaviour:
     y: 0
     width: 248.79993
     height: 516.8
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 202, y: 221}
+  m_MaxSize: {x: 4002, y: 4021}
   m_ActualView: {fileID: 2}
 >>>>>>> 0a34e39 (Optimize some generation calls)
   m_Panes:
@@ -2764,6 +2784,7 @@ MonoBehaviour:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     x: 7.2000003
     y: 588.8
     width: 1206.2
@@ -2786,6 +2807,12 @@ MonoBehaviour:
     width: 872
     height: 174
 >>>>>>> fb27990 (Add loading of chunks when crossing a border)
+=======
+    x: 0
+    y: 590.4
+    width: 1046.2
+    height: 193
+>>>>>>> 7e4b15b (Allow changing the noise settings in the editor to take affect without restart.)
   m_ViewDataDictionary: {fileID: 0}
   m_OverlayCanvas:
     m_LastAppliedPresetName: Default
@@ -2850,6 +2877,7 @@ MonoBehaviour:
 =======
 =======
     scrollPos: {x: 0, y: 70}
+<<<<<<< HEAD
     m_SelectedIDs: 16710000
     m_LastClickedID: 28950
 <<<<<<< HEAD
@@ -2859,6 +2887,11 @@ MonoBehaviour:
 =======
     m_ExpandedIDs: 000000009e6f0000
 >>>>>>> 0a34e39 (Optimize some generation calls)
+=======
+    m_SelectedIDs: 1e930000
+    m_LastClickedID: 37662
+    m_ExpandedIDs: 000000009e6f00001a93000000ca9a3b
+>>>>>>> 7e4b15b (Allow changing the noise settings in the editor to take affect without restart.)
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -2934,6 +2967,7 @@ MonoBehaviour:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     m_SelectedInstanceIDs: 5c8f0000
     m_LastClickedInstanceID: 36700
     m_HadKeyboardFocusLastEvent: 1
@@ -2949,6 +2983,10 @@ MonoBehaviour:
 =======
     m_SelectedInstanceIDs: 34710000
     m_LastClickedInstanceID: 28980
+=======
+    m_SelectedInstanceIDs: 1e930000
+    m_LastClickedInstanceID: 37662
+>>>>>>> 7e4b15b (Allow changing the noise settings in the editor to take affect without restart.)
     m_HadKeyboardFocusLastEvent: 1
 >>>>>>> fb27990 (Add loading of chunks when crossing a border)
     m_ExpandedInstanceIDs: c6230000646d000000000000
@@ -3248,8 +3286,80 @@ MonoBehaviour:
   m_OverlayCanvas:
     m_LastAppliedPresetName: Default
     m_SaveData: []
-  m_ObjectsLockedBeforeSerialization: []
-  m_InstanceIDsLockedBeforeSerialization: 
+  m_ObjectsLockedBeforeSerialization:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  m_InstanceIDsLockedBeforeSerialization: ea6e0000
   m_PreviewResizer:
     m_CachedPref: -160
     m_ControlHash: -371814159
@@ -3259,7 +3369,7 @@ MonoBehaviour:
   m_GlobalObjectId: 
   m_InspectorMode: 0
   m_LockTracker:
-    m_IsLocked: 0
+    m_IsLocked: 1
   m_PreviewWindow: {fileID: 0}
 --- !u!114 &16
 MonoBehaviour:
