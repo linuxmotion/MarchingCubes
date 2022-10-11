@@ -32,6 +32,7 @@ MonoBehaviour:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   controlID: 83
 =======
   controlID: 14733
@@ -57,6 +58,9 @@ MonoBehaviour:
 =======
   controlID: 233
 >>>>>>> 7e4b15b (Allow changing the noise settings in the editor to take affect without restart.)
+=======
+  controlID: 67
+>>>>>>> 3c9725e (Add live changing of the terrain settings in the editor)
 --- !u!114 &2
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -131,14 +135,14 @@ MonoBehaviour:
       width: 246.79993
       height: 474.8
     m_Scale: {x: 1.159274, y: 1.159274}
-    m_Translation: {x: 123.39984, y: 237.39996}
+    m_Translation: {x: 123.3999, y: 237.39996}
     m_MarginLeft: 0
     m_MarginRight: 0
     m_MarginTop: 0
     m_MarginBottom: 0
     m_LastShownAreaInsideMargins:
       serializedVersion: 2
-      x: -106.44579
+      x: -106.44585
       y: -204.78331
       width: 212.8918
       height: 409.56668
@@ -174,7 +178,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 200}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 1
-  controlID: 234
+  controlID: 68
 --- !u!114 &4
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -200,7 +204,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 8096}
   vertical: 0
-  controlID: 235
+  controlID: 69
 --- !u!114 &5
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -530,6 +534,7 @@ MonoBehaviour:
 <<<<<<< HEAD
       scrollPos: {x: 0, y: 0}
 <<<<<<< HEAD
+<<<<<<< HEAD
       m_SelectedIDs: 80e6feff
       m_LastClickedID: -72064
       m_ExpandedIDs: 16fbffffda6e0000f06e0000f86e0000
@@ -560,20 +565,25 @@ MonoBehaviour:
 =======
       m_ExpandedIDs: 16fbffffea6e0000046f0000
 >>>>>>> 7e4b15b (Allow changing the noise settings in the editor to take affect without restart.)
+=======
+      m_SelectedIDs: 16f8ffff
+      m_LastClickedID: -2026
+      m_ExpandedIDs: 14fbffffea6e0000046f0000
+>>>>>>> 3c9725e (Add live changing of the terrain settings in the editor)
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: Chunk #1
-        m_OriginalName: Chunk #1
+        m_Name: 
+        m_OriginalName: 
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
           y: 0
           width: 0
           height: 0
-        m_UserData: -113458
+        m_UserData: 0
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 0
+        m_OriginalEventType: 11
         m_IsRenamingFilename: 0
         m_ClientGUIView: {fileID: 5}
       m_SearchString: 
@@ -933,6 +943,7 @@ MonoBehaviour:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     m_Target: {x: 11.706606, y: 0.49511182, z: -15.499853}
     speed: 2
     m_Value: {x: 11.706606, y: 0.49511182, z: -15.499853}
@@ -976,6 +987,11 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 8.730011, y: -45.893837, z: 125.78361}
 >>>>>>> 7e4b15b (Allow changing the noise settings in the editor to take affect without restart.)
+=======
+    m_Target: {x: -108.94535, y: -29.005516, z: 39.030727}
+    speed: 2
+    m_Value: {x: -108.94535, y: -29.005516, z: 39.030727}
+>>>>>>> 3c9725e (Add live changing of the terrain settings in the editor)
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1030,6 +1046,7 @@ MonoBehaviour:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     m_Target: {x: 0.052557718, y: 0.8437274, z: -0.081964985, w: 0.52836084}
     speed: 2
     m_Value: {x: 0.052544013, y: 0.8435074, z: -0.08194361, w: 0.52822304}
@@ -1073,10 +1090,15 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: -0.18708786, y: -0.046196, z: 0.008755083, w: -0.9812174}
 >>>>>>> 7e4b15b (Allow changing the noise settings in the editor to take affect without restart.)
-  m_Size:
-    m_Target: 116.2773
+=======
+    m_Target: {x: -0.13493495, y: 0.5710947, z: -0.09577274, w: -0.8042404}
     speed: 2
-    m_Value: 111.27014
+    m_Value: {x: -0.13611831, y: 0.5708557, z: -0.09661364, w: -0.8039039}
+>>>>>>> 3c9725e (Add live changing of the terrain settings in the editor)
+  m_Size:
+    m_Target: 56.677074
+    speed: 2
+    m_Value: 59.34772
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -2420,8 +2442,8 @@ MonoBehaviour:
     y: 0
     width: 248.79993
     height: 516.8
-  m_MinSize: {x: 202, y: 221}
-  m_MaxSize: {x: 4002, y: 4021}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 2}
 >>>>>>> 0a34e39 (Optimize some generation calls)
   m_Panes:
@@ -2890,8 +2912,12 @@ MonoBehaviour:
 =======
     m_SelectedIDs: 1e930000
     m_LastClickedID: 37662
+<<<<<<< HEAD
     m_ExpandedIDs: 000000009e6f00001a93000000ca9a3b
 >>>>>>> 7e4b15b (Allow changing the noise settings in the editor to take affect without restart.)
+=======
+    m_ExpandedIDs: 000000009e6f0000
+>>>>>>> 3c9725e (Add live changing of the terrain settings in the editor)
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -3286,80 +3312,8 @@ MonoBehaviour:
   m_OverlayCanvas:
     m_LastAppliedPresetName: Default
     m_SaveData: []
-  m_ObjectsLockedBeforeSerialization:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  m_InstanceIDsLockedBeforeSerialization: ea6e0000
+  m_ObjectsLockedBeforeSerialization: []
+  m_InstanceIDsLockedBeforeSerialization: 
   m_PreviewResizer:
     m_CachedPref: -160
     m_ControlHash: -371814159
@@ -3369,7 +3323,7 @@ MonoBehaviour:
   m_GlobalObjectId: 
   m_InspectorMode: 0
   m_LockTracker:
-    m_IsLocked: 1
+    m_IsLocked: 0
   m_PreviewWindow: {fileID: 0}
 --- !u!114 &16
 MonoBehaviour:

@@ -25,7 +25,7 @@ class TerrainSettings : MonoBehaviour
     [SerializeField]
     private int _ISO_Level;
 
-    public TerrainParameters Paramterize() {
+    public TerrainParameters Parameterize() {
 
         return new TerrainParameters(_Seed, _InitialPlayerLocation.position, _Scale, _SamplingHeight, _SamplingLength, _SamplingWidth, _ISO_Level);
     
@@ -34,14 +34,6 @@ class TerrainSettings : MonoBehaviour
         return _InitialPlayerLocation;
     }
 
-    public bool UpdateSettings(TerrainSettings settings)
-    {
-        if (this != settings)
-            return true;
-
-        return false;
-        
-    }
 }
 
 /// <summary>
@@ -67,5 +59,57 @@ public struct TerrainParameters
         SamplingLength = samplingLength;
         SamplingWidth = samplingWidth;
         ISO_Level = iSO_Level;
+    }
+
+    public override bool Equals(object obj)
+    {
+        return obj is TerrainParameters parameters && 
+            Seed == parameters.Seed && 
+            Origin == parameters.Origin && 
+            Scale == parameters.Scale && 
+            SamplingHeight == parameters.SamplingHeight
+            && SamplingLength == parameters.SamplingLength && 
+            SamplingWidth == parameters.SamplingWidth && 
+            ISO_Level == parameters.ISO_Level;        
+    } 
+    public  bool EqualsExecptOrigin(object obj)
+    {
+        return obj is TerrainParameters parameters && 
+            Seed == parameters.Seed && 
+            Scale == parameters.Scale && 
+            SamplingHeight == parameters.SamplingHeight
+            && SamplingLength == parameters.SamplingLength && 
+            SamplingWidth == parameters.SamplingWidth && 
+            ISO_Level == parameters.ISO_Level;        
+    }
+
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
+    }
+
+    public override string ToString()
+    {
+        return base.ToString() +  
+            " | Seed: " +  Seed + 
+            " | Origin: " + Origin + 
+            " | Scale: " + Scale + 
+            " | SamplingHeight: "+ SamplingHeight +
+            " | SamplingWidth: "  +SamplingWidth +
+            " | SamplingLength: " + SamplingLength + 
+            " | ISO_Level: "+ ISO_Level;
+    }
+
+    public static bool operator ==(TerrainParameters lhs, TerrainParameters rhs) {
+
+        return lhs.Equals(rhs);
+    }
+
+    public static bool operator !=(TerrainParameters lhs, TerrainParameters rhs) {
+
+
+        return !lhs.Equals(rhs);
+
+    
     }
 }

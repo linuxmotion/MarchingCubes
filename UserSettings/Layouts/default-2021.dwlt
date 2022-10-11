@@ -35,7 +35,7 @@ MonoBehaviour:
     height: 780.8
 >>>>>>> fb27990 (Add loading of chunks when crossing a border)
   m_ShowMode: 4
-  m_Title: Game
+  m_Title: Scene
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 300}
 >>>>>>> d6164cf (Add generating a single chunk on one thread)
@@ -193,7 +193,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 200}
   m_MaxSize: {x: 32384, y: 16192}
   vertical: 0
-  controlID: 107912
+  controlID: 63
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -229,6 +229,7 @@ MonoBehaviour:
   vertical: 1
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   controlID: 240
 >>>>>>> d6164cf (Add generating a single chunk on one thread)
 =======
@@ -237,6 +238,9 @@ MonoBehaviour:
 =======
   controlID: 107913
 >>>>>>> 0a34e39 (Optimize some generation calls)
+=======
+  controlID: 64
+>>>>>>> 3c9725e (Add live changing of the terrain settings in the editor)
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -314,8 +318,12 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 8096}
   vertical: 0
+<<<<<<< HEAD
   controlID: 107914
 >>>>>>> 0a34e39 (Optimize some generation calls)
+=======
+  controlID: 104
+>>>>>>> 3c9725e (Add live changing of the terrain settings in the editor)
 --- !u!114 &8
 >>>>>>> d6164cf (Add generating a single chunk on one thread)
 MonoBehaviour:
@@ -418,9 +426,14 @@ MonoBehaviour:
 =======
     width: 248.79993
     height: 516.8
+<<<<<<< HEAD
 >>>>>>> 0a34e39 (Optimize some generation calls)
   m_MinSize: {x: 202, y: 221}
   m_MaxSize: {x: 4002, y: 4021}
+=======
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
+>>>>>>> 3c9725e (Add live changing of the terrain settings in the editor)
   m_ActualView: {fileID: 13}
   m_Panes:
   - {fileID: 13}
@@ -1249,17 +1262,17 @@ MonoBehaviour:
       y: 21
       width: 246.79993
       height: 474.8
-    m_Scale: {x: 1.1592737, y: 1.159274}
-    m_Translation: {x: 123.39984, y: 237.39996}
+    m_Scale: {x: 1.159274, y: 1.159274}
+    m_Translation: {x: 123.3999, y: 237.39996}
     m_MarginLeft: 0
     m_MarginRight: 0
     m_MarginTop: 0
     m_MarginBottom: 0
     m_LastShownAreaInsideMargins:
       serializedVersion: 2
-      x: -106.445816
+      x: -106.44585
       y: -204.78331
-      width: 212.89185
+      width: 212.8918
       height: 409.56668
     m_MinimalGUI: 1
   m_defaultScale: 0.16067703
@@ -1301,9 +1314,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: da6e0000
-      m_LastClickedID: 28378
-      m_ExpandedIDs: 16fbffffda6e0000f46e0000
+      m_SelectedIDs: 
+      m_LastClickedID: 0
+      m_ExpandedIDs: 16fbffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1361,8 +1374,8 @@ MonoBehaviour:
       floating: 0
       collapsed: 0
       displayed: 1
-      snapOffset: {x: -101, y: -26}
-      snapOffsetDelta: {x: 0, y: 0}
+      snapOffset: {x: 0, y: 0}
+      snapOffsetDelta: {x: -100, y: -25.600006}
       snapCorner: 3
       id: Tool Settings
       index: 0
@@ -1564,9 +1577,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -2.588568, y: 300.174, z: -141.94952}
+    m_Target: {x: 49.15515, y: -13.695533, z: -111.54027}
     speed: 2
-    m_Value: {x: -2.588568, y: 300.174, z: -141.94952}
+    m_Value: {x: 49.15515, y: -13.695533, z: -111.54027}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1613,13 +1626,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.4121255, y: 0.037514336, z: -0.016860068, w: -0.9103382}
+    m_Target: {x: 0.030164883, y: 0.95471203, z: -0.103507414, w: 0.27790505}
     speed: 2
-    m_Value: {x: -0.4121255, y: 0.037514336, z: -0.016860066, w: -0.91033816}
+    m_Value: {x: 0.030159907, y: 0.95455456, z: -0.10349034, w: 0.2778592}
   m_Size:
-    m_Target: 11.488255
+    m_Target: 87.55185
     speed: 2
-    m_Value: 11.488255
+    m_Value: 87.55185
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -1666,6 +1679,7 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
 <<<<<<< HEAD
+<<<<<<< HEAD
     x: 7.2000003
 <<<<<<< HEAD
     y: 588.8
@@ -1682,6 +1696,12 @@ MonoBehaviour:
     width: 872
     height: 174
 >>>>>>> fb27990 (Add loading of chunks when crossing a border)
+=======
+    x: 0
+    y: 590.4
+    width: 1046.2
+    height: 193
+>>>>>>> 3c9725e (Add live changing of the terrain settings in the editor)
   m_ViewDataDictionary: {fileID: 0}
   m_OverlayCanvas:
     m_LastAppliedPresetName: Default
@@ -1733,6 +1753,7 @@ MonoBehaviour:
 >>>>>>> d6164cf (Add generating a single chunk on one thread)
 =======
     scrollPos: {x: 0, y: 70}
+<<<<<<< HEAD
     m_SelectedIDs: 16710000
     m_LastClickedID: 28950
 <<<<<<< HEAD
@@ -1741,6 +1762,11 @@ MonoBehaviour:
 =======
     m_ExpandedIDs: 000000008e6f0000
 >>>>>>> 0a34e39 (Optimize some generation calls)
+=======
+    m_SelectedIDs: 1e930000
+    m_LastClickedID: 37662
+    m_ExpandedIDs: 000000009e6f0000
+>>>>>>> 3c9725e (Add live changing of the terrain settings in the editor)
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1771,6 +1797,7 @@ MonoBehaviour:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     m_ExpandedIDs: 00000000766d000000ca9a3bffffff7f
 =======
     m_ExpandedIDs: 00000000766e000000ca9a3b
@@ -1781,6 +1808,9 @@ MonoBehaviour:
 =======
     m_ExpandedIDs: 000000008e6f0000
 >>>>>>> 0a34e39 (Optimize some generation calls)
+=======
+    m_ExpandedIDs: 000000009e6f0000
+>>>>>>> 3c9725e (Add live changing of the terrain settings in the editor)
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1805,8 +1835,8 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: 34710000
-    m_LastClickedInstanceID: 28980
+    m_SelectedInstanceIDs: 1e930000
+    m_LastClickedInstanceID: 37662
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c6230000646d000000000000
     m_RenameOverlay:

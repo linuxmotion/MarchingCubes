@@ -22,21 +22,11 @@ public class NoiseSettings : MonoBehaviour
         return new NoiseParameters(_Frequency, _Amplitude, _Persistence, _Octave, _SampleLevel);
     }
 
-    public bool UpdateSettings(NoiseSettings settings)
-    { 
-        if (settings.Parameterize() !=  Parameterize())
-            return false;
-
-        return true;
-
-
-
-    }
 }
 
 public struct NoiseParameters
 {
-    public float Frequency;
+     public float Frequency;
     public float Amplitude;
     public float Persistence;
     public int Octave;

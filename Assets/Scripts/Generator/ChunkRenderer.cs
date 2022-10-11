@@ -13,13 +13,14 @@ using UnityEngine.Pool;
 public partial class ChunkRenderer : MonoBehaviour
 {
 
-    NoiseParameters mNoiseParameters;
+    TerrainSettings mTerrainSettings;
     NoiseSettings mNoiseSettings;
     TerrainParameters mTerrainParameters;
+    NoiseParameters mNoiseParameters;
 
     List<Chunk> mChunkList;
     List<bool> mChunksInUse;
-   // Queue<Chunk> mChunkQueue;
+    // Queue<Chunk> mChunkQueue;
     //ObjectPool<TerrainLoader> mLoaderPool;
     public int _ChunkRenderDistance;
     private Transform mPlayerLocation;
@@ -54,9 +55,13 @@ public partial class ChunkRenderer : MonoBehaviour
 
         // Setup components
         mNoiseSettings = GetComponent<NoiseSettings>();
+        mTerrainSettings = GetComponent<TerrainSettings>();
         mNoiseParameters = mNoiseSettings.Parameterize();
-        Debug.Log("Setting default parameters to :" + mNoiseParameters.ToString());
-        mTerrainParameters = GetComponent<TerrainSettings>().Paramterize();
+        mTerrainParameters = mTerrainSettings.Parameterize();
+
+        Debug.Log("Setting initial noise parameters to :" + mNoiseParameters.ToString());
+        Debug.Log("Setting initial terrain parameters to :" + mTerrainParameters.ToString());
+
         mPlayerLocation = GetComponent<TerrainSettings>().GetPlayerTransform();
 
         // Setup Chunk list
@@ -233,27 +238,42 @@ public partial class ChunkRenderer : MonoBehaviour
     }
     public void LateUpdate()
     {
-
-        // check to see if the noise settings have change
-        // only need to check one since all chunks have the same settings
-        NoiseParameters noiseParameters1 = mNoiseSettings.Parameterize();
-        if (noiseParameters1 != mChunkList[0].Loader.noiseParameters) {
-
-            Debug.Log("Editor values changed from : " + mChunkList[0].Loader.noiseParameters +" to: " + noiseParameters1);
-             mNoiseParameters = mNoiseSettings.Parameterize();
-            ApplyEditorChangesToTerrain();
-
-
-        }
-
+        CheckForAndApplyEditorChanges();
 
     }
 
-    public void ApplyEditorChangesToTerrain() {
-        
+    private void CheckForAndApplyEditorChanges()
+    {
+        // check to see if the noise settings have change
+        // only need to check one since all chunks have the same settings
+        bool update = false;
+        NoiseParameters noiseParameters1 = mNoiseSettings.Parameterize();
+        TerrainParameters terrainParameters = mTerrainSettings.Parameterize();
+        // Check the editor values against the default initialized values
+        // if its different save the new valuesa as the default apply the changes
+        if (noiseParameters1 != mNoiseParameters)
+        {
+            Debug.Log("Noise values in editor changed from : " + mChunkList[0].Loader.noiseParameters + " to: " + noiseParameters1);
+            mNoiseParameters = mNoiseSettings.Parameterize();
+            update = true;
+        }
+        if (!terrainParameters.EqualsExecptOrigin(mTerrainParameters))
+        {
+            Debug.Log("Terrain values in editor changed from : " + mChunkList[0].Loader.terrainParameters + " to: " + terrainParameters);
+            mTerrainParameters = mTerrainSettings.Parameterize();
+            update = true;
+        }
+
+        if (update) ApplyEditorChangesToTerrain();
+    }
+
+    public void ApplyEditorChangesToTerrain()
+    {
+
         // reinit the whole chunk list
         // with the new settings since the chunks already exist
-        for (int i = 0; i < mChunkList.Count; i++) {
+        for (int i = 0; i < mChunkList.Count; i++)
+        {
 
             var tp = mTerrainParameters;
             tp.Origin = mChunkList[i].ChunkOrigin;
@@ -267,8 +287,8 @@ public partial class ChunkRenderer : MonoBehaviour
         }
         // Finally schedule the chunks to update
         ScheduleChunks();
-    
-    
+
+
     }
 
     // Update is called once per frame
@@ -352,10 +372,11 @@ public partial class ChunkRenderer : MonoBehaviour
         {
             for (int j = 0; j < evictionCenters.Count; j++)
             {
-                if (mChunkList[i].ChunkOrigin == evictionCenters[j]) {
+                if (mChunkList[i].ChunkOrigin == evictionCenters[j])
+                {
                     mChunkList[i].ChunkOrigin = q.Dequeue();
                     reuseIndices.Add(i);
-                
+
                 }
 
             }
