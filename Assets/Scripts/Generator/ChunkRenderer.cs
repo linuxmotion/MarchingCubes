@@ -18,11 +18,13 @@ public partial class ChunkRenderer : MonoBehaviour
     TerrainParameters mTerrainParameters;
     NoiseParameters mNoiseParameters;
 
+
     List<Chunk> mChunkList;
     List<bool> mChunksInUse;
     // Queue<Chunk> mChunkQueue;
     //ObjectPool<TerrainLoader> mLoaderPool;
     public int _ChunkRenderDistance;
+    private int mChunkRenderDistance;
     private Transform mPlayerLocation;
     private Vector3 mCurrentChunkCenter;
 
@@ -44,13 +46,28 @@ public partial class ChunkRenderer : MonoBehaviour
         public Vector2 IJobID;
         public TerrainLoader Loader;
 
+        public void ReleaseChunk()
+        {
+
+
+            Points.Dispose();
+            Vertices.Dispose();
+            Triangles.Dispose();
+            UpdateMainThread.Dispose();
+            NumberOfTriangles.Dispose();
+            Filter = null;
+            Renderer = null;
+            Destroy(ChunkObject);
+
+        }
+
 
     }
 
     private int mNumberofChunks;
 
     // Start is called before the first frame update
-    void Start()
+    void OnEnable()
     {
 
         // Setup components
@@ -65,8 +82,17 @@ public partial class ChunkRenderer : MonoBehaviour
         mPlayerLocation = GetComponent<TerrainSettings>().GetPlayerTransform();
 
         // Setup Chunk list
-        _ChunkRenderDistance = _ChunkRenderDistance * 2 + 1;
-        mNumberofChunks = _ChunkRenderDistance * _ChunkRenderDistance;
+        mChunkRenderDistance = _ChunkRenderDistance * 2 + 1;
+        SetupChunkList(mChunkRenderDistance*mChunkRenderDistance);
+
+
+        // use the editor provided origin
+        ScheduleChunks();
+    }
+
+    private void SetupChunkList(int numChunks)
+    {
+        mNumberofChunks = numChunks;
         Debug.Log("Instantitating chunk pool of size: " + mNumberofChunks);
         mChunkList = new List<Chunk>(mNumberofChunks);
         mChunksInUse = new List<bool>(mNumberofChunks);
@@ -75,6 +101,7 @@ public partial class ChunkRenderer : MonoBehaviour
         {
             mChunksInUse.Add(false);
         }
+
 
         Vector3 forward = mPlayerLocation.transform.forward;
         Vector3 playerLocation = mPlayerLocation.transform.position;
@@ -93,10 +120,6 @@ public partial class ChunkRenderer : MonoBehaviour
 
 
         }
-
-
-        // use the editor provided origin
-        ScheduleChunks();
     }
 
     private Chunk SetupChunk(Vector3 currentChunkOrigins, int i)
@@ -110,9 +133,9 @@ public partial class ChunkRenderer : MonoBehaviour
 
         chunk.IJobID = ChunkIDFromLocation(terrainParameters.Origin);
 
+
         Debug.Log("Chunk location ID: " + chunk.IJobID);
         chunk.Loader = new TerrainLoader(mNoiseParameters, terrainParameters, chunk.IJobID);
-
 
         chunk.ChunkOrigin = terrainParameters.Origin;
         chunk.Vertices = chunk.Loader.Vertices;
@@ -150,30 +173,22 @@ public partial class ChunkRenderer : MonoBehaviour
             width = mTerrainParameters.SamplingWidth;
 
 
-        float bootomLeftX = playerchunkorigin.x - ((_ChunkRenderDistance - 1) / 2) * width;
-        float bootomLeftz = playerchunkorigin.z - ((_ChunkRenderDistance - 1) / 2) * length;
+        float bootomLeftX = playerchunkorigin.x - ((mChunkRenderDistance - 1) / 2) * width;
+        float bootomLeftz = playerchunkorigin.z - ((mChunkRenderDistance - 1) / 2) * length;
 
         List<Vector3> chunksOrigins = new List<Vector3>(numberChunks);
 
 
-        for (int i = 0; i < _ChunkRenderDistance; i++)
+        for (int i = 0; i < mChunkRenderDistance; i++)
         {
-
-
-            for (int j = 0; j < _ChunkRenderDistance; j++)
+            for (int j = 0; j < mChunkRenderDistance; j++)
             {
                 Vector3 point = new Vector3();
                 point.x = bootomLeftX + width * j;
                 point.z = bootomLeftz + length * i;
                 chunksOrigins.Add(point);
-
             }
-
-
         }
-
-
-
         return chunksOrigins;
     }
 
@@ -253,15 +268,27 @@ public partial class ChunkRenderer : MonoBehaviour
         // if its different save the new valuesa as the default apply the changes
         if (noiseParameters1 != mNoiseParameters)
         {
-            Debug.Log("Noise values in editor changed from : " + mChunkList[0].Loader.noiseParameters + " to: " + noiseParameters1);
+            Debug.Log("Noise values in editor changed from : " + mNoiseParameters + " to: " + noiseParameters1);
             mNoiseParameters = mNoiseSettings.Parameterize();
             update = true;
         }
         if (!terrainParameters.EqualsExecptOrigin(mTerrainParameters))
         {
-            Debug.Log("Terrain values in editor changed from : " + mChunkList[0].Loader.terrainParameters + " to: " + terrainParameters);
+            Debug.Log("Terrain values in editor changed from : " + mTerrainParameters + " to: " + terrainParameters);
             mTerrainParameters = mTerrainSettings.Parameterize();
             update = true;
+        }
+        int rd = (_ChunkRenderDistance * 2 + 1);
+        if (mChunkRenderDistance != rd  ){
+
+            Debug.Log("Chunk render distance change from: " + mChunkRenderDistance +" to: " + _ChunkRenderDistance);
+            mChunkRenderDistance = rd;
+            OnDisable();
+            SetupChunkList(mChunkRenderDistance * mChunkRenderDistance);
+            ScheduleChunks();
+            return;
+          
+
         }
 
         if (update) ApplyEditorChangesToTerrain();
@@ -289,12 +316,65 @@ public partial class ChunkRenderer : MonoBehaviour
         ScheduleChunks();
 
 
+
+
     }
+
+
 
     // Update is called once per frame
     void Update()
     {
+        CheckForNewChunkCenter();
+        CheckAndCompleteCompletedJobs();
 
+    }
+
+    private void CheckAndCompleteCompletedJobs()
+    {
+        for (int i = 0; i < mChunkList.Count; i++)
+        {
+            // Dont attempt to complete the chunk unless the job is done
+
+            if (mChunkList[i].Handle.IsCompleted)
+            {
+                //Debug.Break();
+                mChunkList[i].Handle.Complete();
+                if (!mChunkList[i].Loader.UpdateMainThread[0])
+                    continue;
+                AssignChunkDataFromJob(i);
+
+            }
+
+
+
+        }
+    }
+
+    private void AssignChunkDataFromJob(int i)
+    {
+        int index = (mChunkList[i].Loader.NumberOfTriangles[0] * 3);
+
+        Vector3[] ver = mChunkList[i].Loader.Vertices.GetSubArray(0, index).ToArray();
+        int[] ind = mChunkList[i].Loader.Triangles.GetSubArray(0, index).ToArray();
+
+        mChunkList[i].Filter.mesh.Clear();
+        mChunkList[i].Filter.mesh.vertices = ver;
+        mChunkList[i].Filter.mesh.triangles = ind;
+        mChunkList[i].Filter.mesh.RecalculateNormals();
+        mChunkList[i].Filter.mesh.RecalculateBounds();
+        //mCollider.sharedMesh = filter.mesh;
+
+        var cl = mChunkList[i].Loader;
+        var n = cl.UpdateMainThread;
+        n[0] = false;
+        cl.UpdateMainThread = n;
+        mChunkList[i].Loader = cl;
+        mChunksInUse[i] = false;
+    }
+
+    private void CheckForNewChunkCenter()
+    {
         Vector3 snapped = GetChunkCenterFromLocation(mPlayerLocation.position);
 
         if (mCurrentChunkCenter != snapped)
@@ -307,46 +387,6 @@ public partial class ChunkRenderer : MonoBehaviour
 
             // schedule the job and resave the given handle
         }
-
-        for (int i = 0; i < mChunkList.Count; i++)
-        {
-            // Dont attempt to complete the chunk unless the job is done
-
-            if (mChunkList[i].Handle.IsCompleted)
-            {
-                //Debug.Break();
-                mChunkList[i].Handle.Complete();
-                if (!mChunkList[i].Loader.UpdateMainThread[0])
-                    continue;
-
-                int index = (mChunkList[i].Loader.NumberOfTriangles[0] * 3);
-
-                Vector3[] ver = mChunkList[i].Loader.Vertices.GetSubArray(0, index).ToArray();
-                int[] ind = mChunkList[i].Loader.Triangles.GetSubArray(0, index).ToArray();
-
-                mChunkList[i].Filter.mesh.Clear();
-                mChunkList[i].Filter.mesh.vertices = ver;
-                mChunkList[i].Filter.mesh.triangles = ind;
-                mChunkList[i].Filter.mesh.RecalculateNormals();
-                mChunkList[i].Filter.mesh.RecalculateBounds();
-                //mCollider.sharedMesh = filter.mesh;
-
-                var cl = mChunkList[i].Loader;
-                var n = cl.UpdateMainThread;
-                n[0] = false;
-                cl.UpdateMainThread = n;
-                mChunkList[i].Loader = cl;
-                mChunksInUse[i] = false;
-
-
-            }
-
-
-
-        }
-
-
-
     }
 
     private void ReloadEdgeChunksFromCenter(in Vector3 oldCenter)
@@ -403,19 +443,28 @@ public partial class ChunkRenderer : MonoBehaviour
 
 
 
-    }
 
-    public void OnDestroy()
+    }
+    public void OnDisable()
     {
+
+        // Called when the component is disable or when a hot reload happens
         for (int i = 0; i < mChunkList.Count; i++)
         {
+            // release all chunks
+            mChunkList[i].ReleaseChunk();
 
-            mChunkList[i].Vertices.Dispose();
-            mChunkList[i].Triangles.Dispose();
-            mChunkList[i].UpdateMainThread.Dispose();
-            mChunkList[i].NumberOfTriangles.Dispose();
-            mChunkList[i].Points.Dispose();
         }
+        // clear the list and delete
+        mChunkList.Clear();
+        mChunkList = null;
+
+
+
+    }
+    public void OnDestroy()
+    {
+
 
     }
 }
