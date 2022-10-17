@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 
-struct TerrainLoader : IJob
+struct ChunkJob : IJob
 {
 
     public Vector2 IJobID;
@@ -26,8 +26,9 @@ struct TerrainLoader : IJob
     /// <param name="noiseP">The noise parameters to create the chunk with</param>
     /// <param name="terrainP">The terrain parameters that controls generation, LOD and size</param>
     /// <param name="id">A vector in 2d space the represnts the chunk centers for a given terrainP </param>
-    public TerrainLoader(NoiseParameters noiseP, TerrainParameters terrainP, Vector2 id)
-    {
+    public ChunkJob(NoiseParameters noiseP, TerrainParameters terrainP, Vector2 id)
+    {        ComputeShader shader = Resources.Load<ComputeShader>("NewComputeShader");
+
         IJobID = id;
         noiseParameters = noiseP;
         terrainParameters = terrainP;
@@ -53,7 +54,10 @@ struct TerrainLoader : IJob
     /// <param name="id">The id of the chunk as an x,z coordinate pair</param>
     public void ReInitialize(NoiseParameters noiseP, TerrainParameters terrainP, Vector2 id)
     {
-        
+       // ComputeBuffer buffer = new ComputeBuffer(1, 4);
+       // ComputeShader shader = Resources.Load<ComputeShader>("NewComputeShader");
+       // shader.SetBuffer(0, 0, buffer);
+       // shader.Dispatch(0, 1, 0, 0);
 
         // The array may change size, dump them then set the struct back up
         if (Points.IsCreated)
@@ -94,13 +98,14 @@ struct TerrainLoader : IJob
         GenerateScalarField(terrainParameters.Origin);
         // have a set of volumetric data
         // turn all that data into cubes to march over
-        List<VoxelCell> VoxelCells = CreateCubeData();
+        List<VoxelCell> VoxelCells = new List<VoxelCell>();
+        CreateCubeData(ref VoxelCells);
         CalulateMesh(VoxelCells);
         UpdateMainThread[0] = true;
 
     }
     // [BurstCompile]
-    private void CalulateMesh(List<VoxelCell> VoxelCells)
+    private void CalulateMesh(in List<VoxelCell> VoxelCells)
     {
 
         //for each voxel cell we get a mesh that consists of vertices and triangle.
@@ -158,11 +163,10 @@ struct TerrainLoader : IJob
 
     }
 
-    [BurstCompile]
-    private List<VoxelCell> CreateCubeData()
+   // [BurstCompile]
+    private void CreateCubeData(ref List<VoxelCell> VoxelCells )
     {
         int levelOffset, rowOffset;
-        List<VoxelCell> VoxelCells = new List<VoxelCell>();
 
         int Length = terrainParameters.SamplingLength;
         int Width = terrainParameters.SamplingWidth;
@@ -212,7 +216,6 @@ struct TerrainLoader : IJob
             }
         }
 
-        return VoxelCells;
     }
     //[BurstCompile]
     private void GenerateScalarField(Vector3 around)
@@ -228,6 +231,7 @@ struct TerrainLoader : IJob
         int Height = terrainParameters.SamplingHeight;
         int Scale = terrainParameters.Scale;
         float Scalef = (float)Scale;
+        int bedrock = terrainParameters.BedrockLevel;
         Vector3 pos = Vector3.zero;
         List<Voxel> nativePointsBuffer = new List<Voxel>(Length * Width * Height * Scale*Scale*Scale);
 
@@ -242,7 +246,7 @@ struct TerrainLoader : IJob
                 {
 
                     x = -((Width) / 2f) + (column / Scalef);
-                    y = -((Height) / 2f) + (level / Scalef);
+                    y =   bedrock + (level / Scalef);
                     z = -((Length) / 2f) + (row / Scalef);
 
                     pos = this.terrainParameters.Origin; ;// + new Vector3(x, y, z);
@@ -252,7 +256,7 @@ struct TerrainLoader : IJob
 
                     // TODO: Generate better noise - create a flat plane
 
-                    float noise = Noise.GenerateNoise(pos, terrainParameters.Seed, noiseParameters);
+                    float noise = Noise.GenerateNoise(pos, noiseParameters, terrainParameters.SurfaceLevel);
                     Voxel v = new(pos, noise);
                     nativePointsBuffer.Add(v);
 

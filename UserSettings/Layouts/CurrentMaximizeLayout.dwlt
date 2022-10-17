@@ -33,6 +33,7 @@ MonoBehaviour:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   controlID: 83
 =======
   controlID: 14733
@@ -61,6 +62,9 @@ MonoBehaviour:
 =======
   controlID: 67
 >>>>>>> 3c9725e (Add live changing of the terrain settings in the editor)
+=======
+  controlID: 57
+>>>>>>> 4c23d42 (Add a bedrock level and a surface level parameter)
 --- !u!114 &2
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -178,7 +182,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 200}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 1
-  controlID: 68
+  controlID: 58
 --- !u!114 &4
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -204,7 +208,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 8096}
   vertical: 0
-  controlID: 69
+  controlID: 59
 --- !u!114 &5
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -535,6 +539,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
       m_SelectedIDs: 80e6feff
       m_LastClickedID: -72064
       m_ExpandedIDs: 16fbffffda6e0000f06e0000f86e0000
@@ -570,6 +575,11 @@ MonoBehaviour:
       m_LastClickedID: -2026
       m_ExpandedIDs: 14fbffffea6e0000046f0000
 >>>>>>> 3c9725e (Add live changing of the terrain settings in the editor)
+=======
+      m_SelectedIDs: ea6e0000
+      m_LastClickedID: 28394
+      m_ExpandedIDs: 16fbffff046f0000166f0000
+>>>>>>> 4c23d42 (Add a bedrock level and a surface level parameter)
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -944,6 +954,7 @@ MonoBehaviour:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     m_Target: {x: 11.706606, y: 0.49511182, z: -15.499853}
     speed: 2
     m_Value: {x: 11.706606, y: 0.49511182, z: -15.499853}
@@ -992,6 +1003,11 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: -108.94535, y: -29.005516, z: 39.030727}
 >>>>>>> 3c9725e (Add live changing of the terrain settings in the editor)
+=======
+    m_Target: {x: 296.84607, y: -360.47095, z: 356.6569}
+    speed: 2
+    m_Value: {x: 296.84607, y: -360.47095, z: 356.6569}
+>>>>>>> 4c23d42 (Add a bedrock level and a surface level parameter)
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1038,6 +1054,7 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -1095,10 +1112,15 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: -0.13611831, y: 0.5708557, z: -0.09661364, w: -0.8039039}
 >>>>>>> 3c9725e (Add live changing of the terrain settings in the editor)
-  m_Size:
-    m_Target: 56.677074
+=======
+    m_Target: {x: -0.44696692, y: -0.3114911, z: 0.1710424, w: -0.8212252}
     speed: 2
-    m_Value: 59.34772
+    m_Value: {x: -0.44737238, y: -0.30895308, z: 0.16966066, w: -0.8219618}
+>>>>>>> 4c23d42 (Add a bedrock level and a surface level parameter)
+  m_Size:
+    m_Target: 445.19125
+    speed: 2
+    m_Value: 445.19125
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -2442,8 +2464,8 @@ MonoBehaviour:
     y: 0
     width: 248.79993
     height: 516.8
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 202, y: 221}
+  m_MaxSize: {x: 4002, y: 4021}
   m_ActualView: {fileID: 2}
 >>>>>>> 0a34e39 (Optimize some generation calls)
   m_Panes:
@@ -2708,7 +2730,7 @@ MonoBehaviour:
 =======
 >>>>>>> 0a34e39 (Optimize some generation calls)
   m_Script: {fileID: 12006, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: ConsoleWindow
+  m_Name: ProjectBrowser
   m_EditorClassIdentifier: 
   m_Children: []
   m_Position:
@@ -2772,16 +2794,22 @@ MonoBehaviour:
     y: 516.8
     width: 1047.2
     height: 214
+<<<<<<< HEAD
   m_MinSize: {x: 101, y: 121}
   m_MaxSize: {x: 4001, y: 4021}
   m_ActualView: {fileID: 12}
 >>>>>>> 0a34e39 (Optimize some generation calls)
+=======
+  m_MinSize: {x: 231, y: 271}
+  m_MaxSize: {x: 10001, y: 10021}
+  m_ActualView: {fileID: 11}
+>>>>>>> 4c23d42 (Add a bedrock level and a surface level parameter)
   m_Panes:
   - {fileID: 11}
   - {fileID: 12}
   - {fileID: 13}
-  m_Selected: 1
-  m_LastSelected: 0
+  m_Selected: 0
+  m_LastSelected: 1
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -2853,20 +2881,28 @@ MonoBehaviour:
     m_SearchArea: 1
     m_Folders:
 <<<<<<< HEAD
+<<<<<<< HEAD
     - Assets
 =======
     - Assets/Scripts/Generator
 >>>>>>> 8b20ab6 (Move to a threaded model-All seting not used)
+=======
+    - Assets/Prefabs
+>>>>>>> 4c23d42 (Add a bedrock level and a surface level parameter)
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
 <<<<<<< HEAD
+<<<<<<< HEAD
   - Assets
 =======
   - Assets/Scripts/Generator
 >>>>>>> 8b20ab6 (Move to a threaded model-All seting not used)
+=======
+  - Assets/Prefabs
+>>>>>>> 4c23d42 (Add a bedrock level and a surface level parameter)
   m_LastFoldersGridSize: -1
   m_LastProjectPath: F:\Programming\Unity\FirstFPSGame
   m_LockTracker:
@@ -2900,6 +2936,7 @@ MonoBehaviour:
 =======
     scrollPos: {x: 0, y: 70}
 <<<<<<< HEAD
+<<<<<<< HEAD
     m_SelectedIDs: 16710000
     m_LastClickedID: 28950
 <<<<<<< HEAD
@@ -2918,6 +2955,11 @@ MonoBehaviour:
 =======
     m_ExpandedIDs: 000000009e6f0000
 >>>>>>> 3c9725e (Add live changing of the terrain settings in the editor)
+=======
+    m_SelectedIDs: 52740000
+    m_LastClickedID: 29778
+    m_ExpandedIDs: 000000009e6f00005874000000ca9a3b
+>>>>>>> 4c23d42 (Add a bedrock level and a surface level parameter)
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -2994,6 +3036,7 @@ MonoBehaviour:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     m_SelectedInstanceIDs: 5c8f0000
     m_LastClickedInstanceID: 36700
     m_HadKeyboardFocusLastEvent: 1
@@ -3013,6 +3056,10 @@ MonoBehaviour:
     m_SelectedInstanceIDs: 1e930000
     m_LastClickedInstanceID: 37662
 >>>>>>> 7e4b15b (Allow changing the noise settings in the editor to take affect without restart.)
+=======
+    m_SelectedInstanceIDs: ea6e0000
+    m_LastClickedInstanceID: 28394
+>>>>>>> 4c23d42 (Add a bedrock level and a surface level parameter)
     m_HadKeyboardFocusLastEvent: 1
 >>>>>>> fb27990 (Add loading of chunks when crossing a border)
     m_ExpandedInstanceIDs: c6230000646d000000000000

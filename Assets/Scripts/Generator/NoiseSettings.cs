@@ -7,6 +7,8 @@ public class NoiseSettings : MonoBehaviour
 
     [Header("Noise sampling parameters")]
     [SerializeField]
+    private int _Seed;
+    [SerializeField]
     private float _Frequency;
     [SerializeField]
     private float _Amplitude;
@@ -15,25 +17,27 @@ public class NoiseSettings : MonoBehaviour
     [SerializeField]
     private int _Octave;
     [SerializeField]
-    private float _SampleLevel;
+    private float _Scale;
 
     public NoiseParameters Parameterize()
     {
-        return new NoiseParameters(_Frequency, _Amplitude, _Persistence, _Octave, _SampleLevel);
+        return new NoiseParameters(_Seed, _Frequency, _Amplitude, _Persistence, _Octave, _Scale);
     }
 
 }
 
 public struct NoiseParameters
 {
-     public float Frequency;
+    public float Seed;
+    public float Frequency;
     public float Amplitude;
     public float Persistence;
     public int Octave;
     public float SampleLevel;
 
-    public NoiseParameters(float frequency, float amplitude, float persistence, int octave, float sampleLevel)
+    public NoiseParameters(float seed, float frequency, float amplitude, float persistence, int octave, float sampleLevel)
     {
+        Seed = seed;
         Frequency = frequency;
         Amplitude = amplitude;
         Persistence = persistence;
@@ -41,12 +45,14 @@ public struct NoiseParameters
         SampleLevel = sampleLevel;
     }
 
-    public static  bool operator ==(NoiseParameters n1, NoiseParameters n2) {
+    public static bool operator ==(NoiseParameters n1, NoiseParameters n2)
+    {
 
-    
+
         return n1.Equals(n2);
     }
-    public  static bool operator !=(NoiseParameters n1, NoiseParameters n2) {
+    public static bool operator !=(NoiseParameters n1, NoiseParameters n2)
+    {
 
 
         return !n1.Equals(n2);
@@ -54,12 +60,20 @@ public struct NoiseParameters
 
     override public string ToString()
     {
-        return base.ToString() + " - Frequency:" + Frequency + " | Amplitude: " + Amplitude + " | Persistence: " + Persistence + " | Octave: " + Octave + " | SampleLevel: " + SampleLevel + " ";
+        return base.ToString() +
+            " | Frequency:" + Frequency +
+            " | Seed: " + Seed +
+            " | Amplitude: " + Amplitude + 
+            " | Persistence: " + Persistence + 
+            " | Octave: " + Octave + 
+            " | SampleLevel: " + SampleLevel + 
+            " ";
     }
 
     public override bool Equals(object obj)
     {
         return obj is NoiseParameters parameters &&
+            Seed == parameters.Seed &&
                Frequency == parameters.Frequency &&
                Amplitude == parameters.Amplitude &&
                Persistence == parameters.Persistence &&
@@ -74,19 +88,31 @@ public class Noise
 {
 
 
-    public static float GenerateNoise(in Vector3 point, in int seed, in NoiseParameters noiseParameters)
+    public static float GenerateNoise(in Vector3 point, in NoiseParameters noiseParameters, in int surfaceLevel)
     {
-      
 
-        float x = point.x / noiseParameters.SampleLevel;
-        float y = point.y / noiseParameters.SampleLevel;
-        float z = point.z / noiseParameters.SampleLevel;
+
+        float sampleLevel = noiseParameters.SampleLevel;
+        float seed = noiseParameters.SampleLevel ;
+        float x = point.x / sampleLevel;
+        float y = point.y / sampleLevel;
+        float z = point.z / sampleLevel;
         float frequency = noiseParameters.Frequency;
         float amplitude = noiseParameters.Amplitude;
         float persistence = noiseParameters.Persistence;
         int octave = noiseParameters.Octave;
 
+        if (y < surfaceLevel) return 1;
+
         float noise = 0.0f;
+        noise += -y + Mathf.Sin(x) + Mathf.Sin(z);
+        noise += Mathf.PerlinNoise(x, z);
+        noise += (Mathf.Sin(4 * x * frequency) / 4f) * amplitude + (Mathf.Sin(4 * z * frequency) / 4f) * amplitude;
+        noise %= 4;
+
+        //  return noise;
+
+
 
         for (int i = 0; i < octave; ++i)
         {

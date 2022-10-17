@@ -44,7 +44,7 @@ public partial class ChunkRenderer : MonoBehaviour
         public JobHandle Handle;
         public Vector3 ChunkOrigin;
         public Vector2 IJobID;
-        public TerrainLoader Loader;
+        public ChunkJob Loader;
 
         public void ReleaseChunk()
         {
@@ -88,6 +88,30 @@ public partial class ChunkRenderer : MonoBehaviour
 
         // use the editor provided origin
         ScheduleChunks();
+    }
+    [SerializeField]
+    GameObject _ScaleCubePrefab;
+    public void Start()
+    {
+        if (_ScaleCubePrefab == null)
+        {
+            Debug.Log("No scale prefab set, not render cube scale");
+                return;
+        }
+        Transform parent = GameObject.FindGameObjectWithTag("TerrainScale").transform;
+        for (int i = 0; i < mTerrainParameters.SamplingHeight; i++) {
+
+            GameObject g = GameObject.Instantiate(_ScaleCubePrefab);
+            g.transform.SetParent(parent);
+            MeshRenderer rend = g.GetComponent<MeshRenderer>();
+                rend.material.mainTexture = null;
+            if (i % 2 == 0) rend.material.color = Color.white;
+            else rend.material.color = Color.black;
+            g.transform.SetPositionAndRotation(new Vector3(0, mTerrainParameters.BedrockLevel + i, 0), new Quaternion());
+            
+        
+        }
+
     }
 
     private void SetupChunkList(int numChunks)
@@ -135,7 +159,7 @@ public partial class ChunkRenderer : MonoBehaviour
 
 
         Debug.Log("Chunk location ID: " + chunk.IJobID);
-        chunk.Loader = new TerrainLoader(mNoiseParameters, terrainParameters, chunk.IJobID);
+        chunk.Loader = new ChunkJob(mNoiseParameters, terrainParameters, chunk.IJobID);
 
         chunk.ChunkOrigin = terrainParameters.Origin;
         chunk.Vertices = chunk.Loader.Vertices;
