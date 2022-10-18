@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.Profiling;
+using UnityEngine;
 
 
 
@@ -88,9 +89,14 @@ public class Noise
 {
 
 
+
+    static readonly ProfilerMarker NoiseMarker = new ProfilerMarker("GenerateNoise - Marker 1");
+    static readonly ProfilerMarker NoiseMarker2 = new ProfilerMarker("GenerateNoise - Marker 2");
     public static float GenerateNoise(in Vector3 point, in NoiseParameters noiseParameters, in int surfaceLevel)
     {
 
+        NoiseMarker.Begin();     
+        if (point.y < surfaceLevel) { NoiseMarker.End(); return 1; }
 
         float sampleLevel = noiseParameters.SampleLevel;
         float seed = noiseParameters.SampleLevel ;
@@ -102,7 +108,7 @@ public class Noise
         float persistence = noiseParameters.Persistence;
         int octave = noiseParameters.Octave;
 
-        if (y < surfaceLevel) return 1;
+   
 
         float noise = 0.0f;
         noise += -y + Mathf.Sin(x) + Mathf.Sin(z);
@@ -136,6 +142,7 @@ public class Noise
 
         // This should push the ending value into the range of -1 to 1, more or less, since noise could be slighty
         // below 0 or beyond 1.0
+        NoiseMarker.End();
         return -1f + 2 * (noise / octave);
 
 

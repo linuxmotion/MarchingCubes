@@ -2,10 +2,11 @@
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
+using Unity.Profiling;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-
+[BurstCompile]
 struct ChunkJob : IJob
 {
 
@@ -100,14 +101,18 @@ struct ChunkJob : IJob
         // turn all that data into cubes to march over
         List<VoxelCell> VoxelCells = new List<VoxelCell>();
         CreateCubeData(ref VoxelCells);
-        CalulateMesh(VoxelCells);
+        CalulateMesh(ref VoxelCells);
         UpdateMainThread[0] = true;
 
     }
-    // [BurstCompile]
-    private void CalulateMesh(in List<VoxelCell> VoxelCells)
-    {
 
+
+
+    static readonly ProfilerMarker s_CalculateMeshMarker = new ProfilerMarker("CalculateMesh");
+
+    private void CalulateMesh(ref List<VoxelCell> VoxelCells)
+    {
+        s_CalculateMeshMarker.Begin();
         //for each voxel cell we get a mesh that consists of vertices and triangle.
         //now we need to put all the vertices and indices into a single array
         // since cooridinate are givine in world space we will need to shift all the but the first cell
@@ -160,12 +165,14 @@ struct ChunkJob : IJob
         }
 
 
-
+        s_CalculateMeshMarker.End();
     }
 
-   // [BurstCompile]
+    static readonly ProfilerMarker s_CreateCubeDataMarker = new ProfilerMarker("CreateCubeData");
+    [BurstDiscard]
     private void CreateCubeData(ref List<VoxelCell> VoxelCells )
     {
+        s_CreateCubeDataMarker.Begin();
         int levelOffset, rowOffset;
 
         int Length = terrainParameters.SamplingLength;
@@ -176,6 +183,8 @@ struct ChunkJob : IJob
 
         int levelSize = ((Width * Scale + 1) * (Length * Scale + 1));
         int rowSize = Width * Scale + 1;
+        VoxelCell cell = new VoxelCell(0);
+        bool newCellNeeded = false;
 
         for (int level = 0; level < Height * Scale; level++)
         {
@@ -189,7 +198,12 @@ struct ChunkJob : IJob
                 {
 
 
-                    VoxelCell cell = new VoxelCell(0);
+                    if (newCellNeeded)
+                    {
+                        cell = new VoxelCell(0);
+                        newCellNeeded = false;
+                    }
+
                     cell.mVoxel[0] = localPoints[coloumn + rowOffset + levelOffset];  //(c, r) 
                     cell.mVoxel[1] = localPoints[coloumn + rowOffset + levelOffset + levelSize];  //(c, r) 
                     cell.mVoxel[2] = localPoints[coloumn + rowOffset + levelOffset + levelSize + 1];  //(c, r) 
@@ -206,8 +220,10 @@ struct ChunkJob : IJob
                     // check if the cell in on the surface
                     if (cell.IsOnSurface())
                     {
+                        cell.CreateVertexConnections();
                         cell.CalculateMesh();
                         VoxelCells.Add(cell);
+                        newCellNeeded = true;
                     }
 
 
@@ -216,14 +232,19 @@ struct ChunkJob : IJob
             }
         }
 
+        s_CreateCubeDataMarker.End();
+
     }
-    //[BurstCompile]
+
+
+    static readonly ProfilerMarker s_GenerateScalarFieldfMarker = new ProfilerMarker("GenerateScalarField");
+
+    [BurstCompile]
     private void GenerateScalarField(Vector3 around)
     {
+        s_GenerateScalarFieldfMarker.Begin();
 
 
-
-        int levelOffset = 0, rowOffset = 0;
         float x, y, z;
 
         int Length = terrainParameters.SamplingLength;
@@ -232,16 +253,15 @@ struct ChunkJob : IJob
         int Scale = terrainParameters.Scale;
         float Scalef = (float)Scale;
         int bedrock = terrainParameters.BedrockLevel;
-        Vector3 pos = Vector3.zero;
+        Vector3 pos;
         List<Voxel> nativePointsBuffer = new List<Voxel>(Length * Width * Height * Scale*Scale*Scale);
 
         for (int level = 0; level <= Height * Scale; level++)
         {
-            levelOffset = level * ((Width * Scale + 1) * (Length * Scale + 1));
+           // levelOffset = level * ((Width * Scale + 1) * (Length * Scale + 1));
 
             for (int row = 0; row <= Length * Scale; row++)
             {
-                rowOffset = row * (Width * Scale + 1);
                 for (int column = 0; column <= Width * Scale; column++)
                 {
 
@@ -265,5 +285,7 @@ struct ChunkJob : IJob
             }
         }
         Points.CopyFrom(nativePointsBuffer.ToArray());
+
+        s_GenerateScalarFieldfMarker.End();
     }
 }
