@@ -4,32 +4,34 @@ using Unity.Burst.Intrinsics;
 using Unity.Profiling;
 using UnityEngine;
 
-
-public struct Voxel
+namespace Assets.Scripts.Threaded
 {
 
-    public Vector3 Point;
-    public float Density;
-    public Voxel(Vector3 vect, float den) { Point = vect; Density = den; }
+    public struct Voxel
+    {
 
-}
+        public Vector3 Point;
+        public float Density;
+        public Voxel(Vector3 vect, float den) { Point = vect; Density = den; }
 
-public class VoxelCell
-{
-    public const int SIZE  = 8;
-    public const int NUM_POSSIBLE_TRIANGLES = 5;
+    }
 
-    public Voxel[] mVoxel = new Voxel[SIZE];
-    private byte mEdgeList = 0;
-    private int ISOLevel;
-    public int mNumberTriangles { get; private set; }
-    public Vector3[] mTriangleVertices;
-    public int[] mTriangleIndex;
+    public class VoxelCell
+    {
+        public const int SIZE = 8;
+        public const int NUM_POSSIBLE_TRIANGLES = 5;
 
-    // We have up to five triangle that get connected per cube
-    private Vector3[] mVertexConnections;
+        public Voxel[] mVoxel = new Voxel[SIZE];
+        private byte mEdgeList = 0;
+        private int ISOLevel;
+        public int mNumberTriangles { get; private set; }
+        public Vector3[] mTriangleVertices;
+        public int[] mTriangleIndex;
 
-    public  int[] CASENUMBERTOTRIANGLES = new int[256]{
+        // We have up to five triangle that get connected per cube
+        private Vector3[] mVertexConnections;
+
+        public int[] CASENUMBERTOTRIANGLES = new int[256]{
                   0 , 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 2, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 3,
                   1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 3, 2, 3, 3, 2, 3, 4, 4, 3, 3, 4, 4, 3, 4, 5, 5, 2,
                   1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 3, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 4,
@@ -39,7 +41,7 @@ public class VoxelCell
                   2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 2, 3, 3, 2, 3, 4, 4, 5, 4, 5, 5, 2, 4, 3, 5, 4, 3, 2, 4, 1,
                   3, 4, 4, 5, 4, 5, 3, 4, 4, 5, 5, 2, 3, 4, 2, 1, 2, 3, 3, 2, 3, 4, 2, 1, 3, 2, 4, 1, 2, 1, 1, 0 };
 
-    readonly static Vector3[,] EDGECONNECTIONLIST = new Vector3[,] {
+        readonly static Vector3[,] EDGECONNECTIONLIST = new Vector3[,] {
        {new Vector3(-1,-1,-1), new Vector3(-1,-1,-1), new Vector3(-1,-1,-1), new Vector3(-1,-1,-1), new Vector3(-1,-1,-1) },
        {new Vector3(0,8,3), new Vector3(-1,-1,-1), new Vector3(-1,-1,-1), new Vector3(-1,-1,-1), new Vector3(-1,-1,-1) },
        {new Vector3(0,1,9), new Vector3(-1,-1,-1), new Vector3(-1,-1,-1), new Vector3(-1,-1,-1), new Vector3(-1,-1,-1) },
@@ -301,246 +303,248 @@ public class VoxelCell
 
 
 
-    public VoxelCell(int isoLevel)
-    {
-        ISOLevel = isoLevel;
-    }
-
-    static readonly ProfilerMarker EdgeList = new ProfilerMarker("CreateEdgeList-Edgelist"); 
-    static readonly ProfilerMarker VertexMarker = new ProfilerMarker("CreateEdgeList-VertexConnections");
-
-    /// <summary>
-    /// Creates the list of edges that are connected together, always calculates a new edgelist
-    /// </summary>
-    public void CreateEdgeList()
-    {
-        EdgeList.Begin();
-        if (mEdgeList != 0) mEdgeList = 0;
-        for (int i = 0; i < 8; i++) // high acces time
+        public VoxelCell(int isoLevel)
         {
+            ISOLevel = isoLevel;
+        }
 
-            if (mVoxel[i].Density >= ISOLevel)
+        static readonly ProfilerMarker EdgeList = new ProfilerMarker("CreateEdgeList-Edgelist");
+        static readonly ProfilerMarker VertexMarker = new ProfilerMarker("CreateEdgeList-VertexConnections");
+
+        /// <summary>
+        /// Creates the list of edges that are connected together, always calculates a new edgelist
+        /// </summary>
+        public void CreateEdgeList()
+        {
+            EdgeList.Begin();
+            if (mEdgeList != 0) mEdgeList = 0;
+            for (int i = 0; i < 8; i++) // high acces time
             {
-                mEdgeList |= (byte)(0b00000001 << i);
-            }
 
-        }
-
-        EdgeList.End();
-
-    }
-
-    public void CreateVertexConnections() { 
-        VertexMarker.Begin();
-        int numTri = CASENUMBERTOTRIANGLES[mEdgeList];
-        mNumberTriangles = numTri;
-        if (numTri > NUM_POSSIBLE_TRIANGLES)
-            throw new UnityException("More than the maximum triangles are to be prooduced: Logic error");
-
-        
-        mVertexConnections = new Vector3[numTri];
-        for (int i = 0; i < numTri; i++)
-        {
-            mVertexConnections[i] = EDGECONNECTIONLIST[mEdgeList, i];
-        }
-        VertexMarker.End();
-    }
-
-    public bool IsOnSurface()
-    {
-        if (mEdgeList == 0)
-            return false;
-        if (mEdgeList == 255)
-            return false;
-        return true;
-    }
-    public bool IsOnOrUnderSurface()
-    {
-        if (mEdgeList == 0)
-            return false;
-        return true;
-    }
-
-
-    public Vector3[] GetEdgeTriangle()
-    {
-
-        return mVertexConnections;
-
-    }
-
-
-
-    public void CalculateMesh()
-    {
-
-
-        // know which edges connect, and how many triangle to generate
-
-        Vector3[] vertices = new Vector3[mNumberTriangles * 3];
-        int[] triangles = new int[mNumberTriangles * 3];
-
-        for (int i = 0; i < mNumberTriangles * 3; i += 3)
-        {
-            Vector3[] triangle = new Vector3[3];
-
-            Vector3 edges = mVertexConnections[i / 3];
-            triangle = MakeTriangleFromEdgeVector(edges);
-            vertices[i] = triangle[0];
-            vertices[i + 1] = triangle[1];
-            vertices[i + 2] = triangle[2];
-
-            triangles[i] = i;
-            triangles[i + 1] = i + 1;
-            triangles[i + 2] = i + 2;
-
-
-        }
-        mTriangleVertices = vertices;
-        mTriangleIndex = triangles;
-
-        return;
-
-    }
-
-    private Vector3[] MakeTriangleFromEdgeVector(Vector3 triangle)
-    {
-
-        Vector3[] vertices = new Vector3[3];
-
-        vertices[0] = GetVertexFromEdge((int)triangle.x);
-        vertices[1] = GetVertexFromEdge((int)triangle.y);
-        vertices[2] = GetVertexFromEdge((int)triangle.z);
-
-        return vertices;
-    }
-
-    private Vector3 GetVertexFromEdge(int edge)
-    {
-        int index1 = -1;
-        int index2 = -1;
-
-        switch (edge)
-        {
-
-            case 0:
+                if (mVoxel[i].Density >= ISOLevel)
                 {
-                    // 0,1
-                    index1 = 0;
-                    index2 = 1;
-                };
-                break;
-            case 1:
-                {
-                    // lerp vertex 1,2
-                    index1 = 1;
-                    index2 = 2;
-                };
-                break;
-            case 2:
-                {
-                    //lerp vertex 2,3
-                    index1 = 2;
-                    index2 = 3;
-                };
-                break;
-            case 3:
-                {
-                    // lerp vertex 3,0
-                    index1 = 3;
-                    index2 = 0;
-                };
-                break;
-
-            case 4:
-                {
-                    //lerp 4, 5
-                    index1 = 4;
-                    index2 = 5;
-                };
-                break;
-            case 5:
-                {
-                    // lerp 5, 6
-                    index1 = 5;
-                    index2 = 6;
-                };
-                break;
-            case 6:
-                {
-                    // lerp 6, 7
-                    index1 = 6;
-                    index2 = 7;
-
-                };
-                break;
-            case 7:
-                {
-                    // lerp 7,4
-                    index1 = 7;
-                    index2 = 4;
-                };
-                break;
-            case 8:
-                {
-                    // lerp 0,4
-                    index1 = 0;
-                    index2 = 4;
-
-                };
-                break;
-            case 9:
-                {
-                    // lerp vertices 1,5
-                    index1 = 1;
-                    index2 = 5;
-                };
-                break;
-            case 10:
-                {
-                    //lerp 2,6
-                    index1 = 2;
-                    index2 = 6;
-                };
-                break;
-            case 11:
-                {
-                    // lerp 3, 7
-                    index1 = 3;
-                    index2 = 7;
-                };
-                break;
-            default:
-                { // 0,1
-                    index1 = -1;
-                    index2 = -1;
-                    break;
+                    mEdgeList |= (byte)(0b00000001 << i);
                 }
 
+            }
 
+            EdgeList.End();
 
         }
 
-        float weight =  mVoxel[index1].Density / (float)(mVoxel[index1].Density - mVoxel[index2].Density)   ;
- 
+        public void CreateVertexConnections()
+        {
+            VertexMarker.Begin();
+            int numTri = CASENUMBERTOTRIANGLES[mEdgeList];
+            mNumberTriangles = numTri;
+            if (numTri > NUM_POSSIBLE_TRIANGLES)
+                throw new UnityException("More than the maximum triangles are to be prooduced: Logic error");
 
-        return Vector3.Lerp(mVoxel[index1].Point, mVoxel[index2].Point, weight);
+
+            mVertexConnections = new Vector3[numTri];
+            for (int i = 0; i < numTri; i++)
+            {
+                mVertexConnections[i] = EDGECONNECTIONLIST[mEdgeList, i];
+            }
+            VertexMarker.End();
+        }
+
+        public bool IsOnSurface()
+        {
+            if (mEdgeList == 0)
+                return false;
+            if (mEdgeList == 255)
+                return false;
+            return true;
+        }
+        public bool IsOnOrUnderSurface()
+        {
+            if (mEdgeList == 0)
+                return false;
+            return true;
+        }
+
+
+        public Vector3[] GetEdgeTriangle()
+        {
+
+            return mVertexConnections;
+
+        }
+
+
+
+        public void CalculateMesh()
+        {
+
+
+            // know which edges connect, and how many triangle to generate
+
+            Vector3[] vertices = new Vector3[mNumberTriangles * 3];
+            int[] triangles = new int[mNumberTriangles * 3];
+
+            for (int i = 0; i < mNumberTriangles * 3; i += 3)
+            {
+                Vector3[] triangle = new Vector3[3];
+
+                Vector3 edges = mVertexConnections[i / 3];
+                triangle = MakeTriangleFromEdgeVector(edges);
+                vertices[i] = triangle[0];
+                vertices[i + 1] = triangle[1];
+                vertices[i + 2] = triangle[2];
+
+                triangles[i] = i;
+                triangles[i + 1] = i + 1;
+                triangles[i + 2] = i + 2;
+
+
+            }
+            mTriangleVertices = vertices;
+            mTriangleIndex = triangles;
+
+            return;
+
+        }
+
+        private Vector3[] MakeTriangleFromEdgeVector(Vector3 triangle)
+        {
+
+            Vector3[] vertices = new Vector3[3];
+
+            vertices[0] = GetVertexFromEdge((int)triangle.x);
+            vertices[1] = GetVertexFromEdge((int)triangle.y);
+            vertices[2] = GetVertexFromEdge((int)triangle.z);
+
+            return vertices;
+        }
+
+        private Vector3 GetVertexFromEdge(int edge)
+        {
+            int index1 = -1;
+            int index2 = -1;
+
+            switch (edge)
+            {
+
+                case 0:
+                    {
+                        // 0,1
+                        index1 = 0;
+                        index2 = 1;
+                    };
+                    break;
+                case 1:
+                    {
+                        // lerp vertex 1,2
+                        index1 = 1;
+                        index2 = 2;
+                    };
+                    break;
+                case 2:
+                    {
+                        //lerp vertex 2,3
+                        index1 = 2;
+                        index2 = 3;
+                    };
+                    break;
+                case 3:
+                    {
+                        // lerp vertex 3,0
+                        index1 = 3;
+                        index2 = 0;
+                    };
+                    break;
+
+                case 4:
+                    {
+                        //lerp 4, 5
+                        index1 = 4;
+                        index2 = 5;
+                    };
+                    break;
+                case 5:
+                    {
+                        // lerp 5, 6
+                        index1 = 5;
+                        index2 = 6;
+                    };
+                    break;
+                case 6:
+                    {
+                        // lerp 6, 7
+                        index1 = 6;
+                        index2 = 7;
+
+                    };
+                    break;
+                case 7:
+                    {
+                        // lerp 7,4
+                        index1 = 7;
+                        index2 = 4;
+                    };
+                    break;
+                case 8:
+                    {
+                        // lerp 0,4
+                        index1 = 0;
+                        index2 = 4;
+
+                    };
+                    break;
+                case 9:
+                    {
+                        // lerp vertices 1,5
+                        index1 = 1;
+                        index2 = 5;
+                    };
+                    break;
+                case 10:
+                    {
+                        //lerp 2,6
+                        index1 = 2;
+                        index2 = 6;
+                    };
+                    break;
+                case 11:
+                    {
+                        // lerp 3, 7
+                        index1 = 3;
+                        index2 = 7;
+                    };
+                    break;
+                default:
+                    { // 0,1
+                        index1 = -1;
+                        index2 = -1;
+                        break;
+                    }
+
+
+
+            }
+
+            float weight = mVoxel[index1].Density / (float)(mVoxel[index1].Density - mVoxel[index2].Density);
+
+
+            return Vector3.Lerp(mVoxel[index1].Point, mVoxel[index2].Point, weight);
+        }
+
+
+
+        private int[] GetMeshTriangles()
+        {
+            throw new NotImplementedException();
+        }
+
+        private Vector3[] GetMeshVertices()
+        {
+
+            throw new NotImplementedException();
+        }
     }
 
 
 
-    private int[] GetMeshTriangles()
-    {
-        throw new NotImplementedException();
-    }
 
-    private Vector3[] GetMeshVertices()
-    {
-
-        throw new NotImplementedException();
-    }
 }
-
-
-
-

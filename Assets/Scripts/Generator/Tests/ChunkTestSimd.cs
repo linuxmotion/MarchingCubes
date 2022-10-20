@@ -1,3 +1,4 @@
+using Assets.Scripts.SIMD;
 using StarterAssets;
 using System;
 using System.Collections;
@@ -8,12 +9,11 @@ using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.Pool;
 
-
-namespace Assets.Scripts.Threaded
+namespace Assets.Scripts.SIMD
 {
     [RequireComponent(typeof(TerrainSettings))]
     [RequireComponent(typeof(NoiseSettings))]
-    public partial class ChunkRenderer : MonoBehaviour
+    public partial class ChunkTestSimd : MonoBehaviour
     {
 
         TerrainSettings mTerrainSettings;
@@ -47,17 +47,13 @@ namespace Assets.Scripts.Threaded
             public JobHandle Handle;
             public Vector3 ChunkOrigin;
             public Vector2 IJobID;
-            public ChunkJob Loader;
+            public ChunkJobSimd Loader;
 
             public void ReleaseChunk()
             {
 
 
-                Points.Dispose();
-                Vertices.Dispose();
-                Triangles.Dispose();
-                UpdateMainThread.Dispose();
-                NumberOfTriangles.Dispose();
+                Loader.Dispose();
                 Filter = null;
                 Renderer = null;
                 Destroy(ChunkObject);
@@ -77,7 +73,7 @@ namespace Assets.Scripts.Threaded
             mNoiseSettings = GetComponent<NoiseSettings>();
             mTerrainSettings = GetComponent<TerrainSettings>();
             mNoiseParameters = mNoiseSettings.Parameterize();
-            mTerrainParameters = mTerrainSettings.Parameterize();
+            mTerrainParameters = mTerrainSettings.Parameterize(); 
 
             Debug.Log("Setting initial noise parameters to :" + mNoiseParameters.ToString());
             Debug.Log("Setting initial terrain parameters to :" + mTerrainParameters.ToString());
@@ -163,7 +159,7 @@ namespace Assets.Scripts.Threaded
 
 
             Debug.Log("Chunk location ID: " + chunk.IJobID);
-            chunk.Loader = new ChunkJob(mNoiseParameters, terrainParameters, chunk.IJobID);
+            chunk.Loader = new ChunkJobSimd(mNoiseParameters, terrainParameters, chunk.IJobID);
 
             chunk.ChunkOrigin = terrainParameters.Origin;
             chunk.Vertices = chunk.Loader.Vertices;

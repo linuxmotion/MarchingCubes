@@ -2,25 +2,35 @@
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
+using Unity.Mathematics;
 using Unity.Profiling;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Assets.Scripts.Threaded
+
+namespace Assets.Scripts.SIMD
 {
-    struct ChunkJob : IJob
+
+    [BurstCompile]
+    struct ChunkJobSimd : IJob
     {
 
-        public Vector2 IJobID;
+        public float2 IJobID;
 
         public NoiseParameters noiseParameters;
         public TerrainParameters terrainParameters;
 
         public NativeArray<Voxel> Points;
+
         public NativeArray<int> NumberOfTriangles;
         public NativeArray<Vector3> Vertices;
         public NativeArray<int> Triangles;
+
         public NativeArray<bool> UpdateMainThread;
+
+        NativeArray<Voxel> cell;
+        NativeArray<int4> edgeConnections;
+        NativeArray<float4> vertices ;
 
         /// <summary>
         /// Initialize the IJob for use with a chunk
@@ -28,9 +38,8 @@ namespace Assets.Scripts.Threaded
         /// <param name="noiseP">The noise parameters to create the chunk with</param>
         /// <param name="terrainP">The terrain parameters that controls generation, LOD and size</param>
         /// <param name="id">A vector in 2d space the represnts the chunk centers for a given terrainP </param>
-        public ChunkJob(NoiseParameters noiseP, TerrainParameters terrainP, Vector2 id)
+        public ChunkJobSimd(NoiseParameters noiseP, TerrainParameters terrainP, Vector2 id)
         {
-            ComputeShader shader = Resources.Load<ComputeShader>("NewComputeShader");
 
             IJobID = id;
             noiseParameters = noiseP;
@@ -47,6 +56,10 @@ namespace Assets.Scripts.Threaded
             Points = new NativeArray<Voxel>(numPossiblePoints, Allocator.Persistent);
             Vertices = new NativeArray<Vector3>(size * 15, Allocator.Persistent);
             Triangles = new NativeArray<int>(size * 15, Allocator.Persistent);
+
+            cell = new NativeArray<Voxel>(8, Allocator.Persistent);
+           edgeConnections = new NativeArray<int4>(5, Allocator.Persistent);
+            vertices = new NativeArray<float4>(5 * 3, Allocator.Persistent);
 
         }
         /// <summary>
@@ -65,14 +78,10 @@ namespace Assets.Scripts.Threaded
             // The array may change size, dump them then set the struct back up
             if (Points.IsCreated)
                 Points.Dispose();
-            if (NumberOfTriangles.IsCreated)
-                NumberOfTriangles.Dispose();
             if (Vertices.IsCreated)
                 Vertices.Dispose();
             if (Triangles.IsCreated)
                 Triangles.Dispose();
-            if (UpdateMainThread.IsCreated)
-                UpdateMainThread.Dispose();
 
             IJobID = id;
             noiseParameters = noiseP;
@@ -90,20 +99,37 @@ namespace Assets.Scripts.Threaded
             Vertices = new NativeArray<Vector3>(size * 15, Allocator.Persistent);
             Triangles = new NativeArray<int>(size * 15, Allocator.Persistent);
 
+            cell = new NativeArray<Voxel>(8, Allocator.Persistent);
+            edgeConnections = new NativeArray<int4>(5, Allocator.Persistent);
+            vertices = new NativeArray<float4>(5 * 3, Allocator.Persistent);
 
+        }
+        public void Dispose()
+        {
+            Points.Dispose();
+            NumberOfTriangles.Dispose();
+            Vertices.Dispose();
+            Triangles.Dispose();
+            UpdateMainThread.Dispose();
+
+            cell.Dispose();
+            edgeConnections.Dispose();
+            vertices.Dispose();
 
         }
 
 
         public void Execute()
         {
+            float4 point = 0;
+            point.x = terrainParameters.Origin.x;
+            point.y = terrainParameters.Origin.y;
+            point.z = terrainParameters.Origin.z;
 
-            GenerateScalarField(terrainParameters.Origin);
-            // have a set of volumetric data
-            // turn all that data into cubes to march over
-            List<VoxelCell> VoxelCells = new List<VoxelCell>();
-            CreateCubeData(ref VoxelCells);
-            CalulateMesh(ref VoxelCells);
+
+            GenerateScalarField(point);
+            CreateCubeData();
+            // CalulateMesh(VoxelCells);
             UpdateMainThread[0] = true;
 
         }
@@ -113,68 +139,11 @@ namespace Assets.Scripts.Threaded
         static readonly ProfilerMarker s_CalculateMeshMarker = new ProfilerMarker("CalculateMesh");
 
 
-        private void CalulateMesh(ref List<VoxelCell> VoxelCells)
-        {
-            s_CalculateMeshMarker.Begin();
-            //for each voxel cell we get a mesh that consists of vertices and triangle.
-            //now we need to put all the vertices and indices into a single array
-            // since cooridinate are givine in world space we will need to shift all the but the first cell
-            // into the correct world space location by adding the the column number to the given triangle
-            // we also must correctly index the new triangles
-
-            // We will have at most the amount of cells times 5 since we can have no more than 5 triangles per mesh
-            List<Vector3[]> agVertices = new List<Vector3[]>(VoxelCells.Count);// TODO: Dont allocate as much space 
-            List<int[]> agTriangles = new List<int[]>(VoxelCells.Count);   // has up to 5 triangles
-            int numTri = 0;
-
-
-            for (int i = 0; i < VoxelCells.Count; i++)
-            {
-
-                agVertices.Add(VoxelCells[i].mTriangleVertices); // has 3,6,9,12, or 15 vertices
-                agTriangles.Add(VoxelCells[i].mTriangleIndex);   // has up to 5 triangles
-                numTri += VoxelCells[i].mNumberTriangles;
-
-            }
-            NumberOfTriangles[0] = numTri;
-
-            Assert.IsTrue(agVertices.Count == agTriangles.Count);
-
-            List<Vector3> linVertices = new List<Vector3>(agVertices.Count * 5);
-            List<int> linIndexedTriangles = new List<int>(agVertices.Count * 5);
-            int offset = 0;
-            Vector3[] vertList;
-            int[] triList;
-            // now we must linearlize the vertices List<> into a array[]
-            for (int i = 0; i < agVertices.Count; i++)
-            {
-                vertList = agVertices[i];
-                triList = agTriangles[i];
-                for (int j = 0; j < vertList.Length; j++)
-                {
-                    linIndexedTriangles.Add(agTriangles[i][j] + offset);
-                    linVertices.Add(agVertices[i][j]);
-                }
-                offset += triList.Length;
-            }
-
-            Assert.IsTrue(linVertices.Count == linIndexedTriangles.Count);
-
-            for (int i = 0; i < linVertices.Count; i++)
-            {
-                Vertices[i] = linVertices[i];
-                Triangles[i] = linIndexedTriangles[i];
-
-            }
-
-
-            s_CalculateMeshMarker.End();
-        }
 
         static readonly ProfilerMarker s_CreateCubeDataMarker = new ProfilerMarker("CreateCubeData");
-        [BurstDiscard]
-        private void CreateCubeData(ref List<VoxelCell> VoxelCells)
+        private void CreateCubeData()
         {
+
             s_CreateCubeDataMarker.Begin();
             int levelOffset, rowOffset;
 
@@ -182,13 +151,9 @@ namespace Assets.Scripts.Threaded
             int Width = terrainParameters.SamplingWidth;
             int Height = terrainParameters.SamplingHeight;
             int Scale = terrainParameters.Scale;
-            List<Voxel> localPoints = new(Points.ToArray());
-
             int levelSize = ((Width * Scale + 1) * (Length * Scale + 1));
             int rowSize = Width * Scale + 1;
-            VoxelCell cell = new VoxelCell(0);
-            bool newCellNeeded = false;
-
+            int index = 0;
             for (int level = 0; level < Height * Scale; level++)
             {
 
@@ -200,33 +165,32 @@ namespace Assets.Scripts.Threaded
                     for (int coloumn = 0; coloumn < Width * Scale; coloumn++)
                     {
 
+                        cell[0] = Points[coloumn + rowOffset + levelOffset]; //(c, r)
+                        cell[1] = Points[coloumn + rowOffset + levelOffset + levelSize]; //(c, r)
+                        cell[2] = Points[coloumn + rowOffset + levelOffset + levelSize + 1]; //(c, r)
+                        cell[3] = Points[coloumn + rowOffset + levelOffset + 1]; //(c, r)
 
-                        if (newCellNeeded)
-                        {
-                            cell = new VoxelCell(0);
-                            newCellNeeded = false;
-                        }
+                        cell[4] = Points[coloumn + rowOffset + levelOffset + rowSize]; //(c, r)
+                        cell[5] = Points[coloumn + rowOffset + levelOffset + rowSize + levelSize]; //(c, r)
+                        cell[6] = Points[coloumn + rowOffset + levelOffset + rowSize + levelSize + 1]; //(c, r)
+                        cell[7] = Points[coloumn + rowOffset + levelOffset + rowSize + 1]; //(c, r)
 
-                        cell.mVoxel[0] = localPoints[coloumn + rowOffset + levelOffset];  //(c, r) 
-                        cell.mVoxel[1] = localPoints[coloumn + rowOffset + levelOffset + levelSize];  //(c, r) 
-                        cell.mVoxel[2] = localPoints[coloumn + rowOffset + levelOffset + levelSize + 1];  //(c, r) 
-                        cell.mVoxel[3] = localPoints[coloumn + rowOffset + levelOffset + 1];  //(c, r) 
-
-                        cell.mVoxel[4] = localPoints[coloumn + rowOffset + levelOffset + rowSize];  //(c, r) 
-                        cell.mVoxel[5] = localPoints[coloumn + rowOffset + levelOffset + rowSize + levelSize];  //(c, r) 
-                        cell.mVoxel[6] = localPoints[coloumn + rowOffset + levelOffset + rowSize + levelSize + 1];  //(c, r) 
-                        cell.mVoxel[7] = localPoints[coloumn + rowOffset + levelOffset + rowSize + 1];  //(c, r) 
-
+                        byte edgelist = 0;
                         // create the edge list
-                        cell.CreateEdgeList();
+                        VoxelCell.CreateEdgeList(ref edgelist, 0, cell);
 
                         // check if the cell in on the surface
-                        if (cell.IsOnSurface())
+                        if (VoxelCell.IsOnSurface(edgelist))
                         {
-                            cell.CreateVertexConnections();
-                            cell.CalculateMesh();
-                            VoxelCells.Add(cell);
-                            newCellNeeded = true;
+                            int numTri = 0;
+                            VoxelCell.CreateVertexConnections( edgelist, ref numTri, ref edgeConnections );
+                            VoxelCell.CalculateMesh(numTri,ref vertices, edgeConnections, cell  );
+                            for (int i = 0; i < numTri*3; i++) {
+                                Vertices[index + i] = new Vector3(vertices[i].x, vertices[i].y, vertices[i].z);
+                                Triangles[index + i] = index + i;
+
+                            }
+                            index += numTri*3;
                         }
 
 
@@ -234,16 +198,15 @@ namespace Assets.Scripts.Threaded
 
                 }
             }
+            NumberOfTriangles[0] = index / 3;
 
             s_CreateCubeDataMarker.End();
-
+             
         }
 
 
         static readonly ProfilerMarker s_GenerateScalarFieldfMarker = new ProfilerMarker("GenerateScalarField");
-
-        [BurstCompile]
-        private void GenerateScalarField(Vector3 around)
+        private void GenerateScalarField(float4 around)
         {
             s_GenerateScalarFieldfMarker.Begin();
 
@@ -256,9 +219,8 @@ namespace Assets.Scripts.Threaded
             int Scale = terrainParameters.Scale;
             float Scalef = (float)Scale;
             int bedrock = terrainParameters.BedrockLevel;
-            Vector3 pos;
-            List<Voxel> nativePointsBuffer = new List<Voxel>(Length * Width * Height * Scale * Scale * Scale);
-
+            float4 pos;
+            int index = 0;
             for (int level = 0; level <= Height * Scale; level++)
             {
                 // levelOffset = level * ((Width * Scale + 1) * (Length * Scale + 1));
@@ -268,28 +230,30 @@ namespace Assets.Scripts.Threaded
                     for (int column = 0; column <= Width * Scale; column++)
                     {
 
-                        x = -((Width) / 2f) + (column / Scalef);
+                        x = terrainParameters.Origin.x - ((Width) / 2f) + (column / Scalef);
                         y = bedrock + (level / Scalef);
-                        z = -((Length) / 2f) + (row / Scalef);
-
-                        pos = around; ;// + new Vector3(x, y, z);
-                        pos.x += x;
-                        pos.y += y;
-                        pos.z += z;
+                        z = terrainParameters.Origin.z - ((Length) / 2f) + (row / Scalef);
+                         
+                        //pos =; ;// + new Vector3(x, y, z);
+                        pos.x = x;
+                        pos.y = y;
+                        pos.z = z;
+                        pos.w = 0;
 
                         // TODO: Generate better noise - create a flat plane
 
-                        float noise = Noise.GenerateNoise(pos, noiseParameters, terrainParameters.SurfaceLevel);
+                        float4 noise = Noise.GenerateNoise(pos, noiseParameters, terrainParameters.SurfaceLevel);
                         Voxel v = new(pos, noise);
-                        nativePointsBuffer.Add(v);
+                        Points[index++] = v;
 
                     }
 
                 }
             }
-            Points.CopyFrom(nativePointsBuffer.ToArray());
+           // Points.CopyFrom(nativePointsBuffer.ToArray());
 
             s_GenerateScalarFieldfMarker.End();
         }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using Unity.Profiling;
+﻿using Unity.Mathematics;
+using Unity.Profiling;
 using UnityEngine;
 
 
@@ -89,14 +90,26 @@ public class Noise
 {
 
 
+    public static float GenerateNoise(in Vector3 point, in NoiseParameters noiseParameters, in int surfaceLevel) {
 
+        float4 vect;
+        vect.x = point.x;
+        vect.y = point.y;
+        vect.z = point.z;
+        vect.w = 0;
+        return GenerateNoise(vect, noiseParameters, surfaceLevel).x;
+    
+    }
     static readonly ProfilerMarker NoiseMarker = new ProfilerMarker("GenerateNoise - Marker 1");
     static readonly ProfilerMarker NoiseMarker2 = new ProfilerMarker("GenerateNoise - Marker 2");
-    public static float GenerateNoise(in Vector3 point, in NoiseParameters noiseParameters, in int surfaceLevel)
+    public static float4 GenerateNoise(in float4 point, in NoiseParameters noiseParameters, in int surfaceLevel)
     {
-
+    
         NoiseMarker.Begin();     
-        if (point.y < surfaceLevel) { NoiseMarker.End(); return 1; }
+        if (point.y < surfaceLevel) {
+            NoiseMarker.End(); 
+            //return 1;
+        }
 
         float sampleLevel = noiseParameters.SampleLevel;
         float seed = noiseParameters.SampleLevel ;
@@ -108,15 +121,8 @@ public class Noise
         float persistence = noiseParameters.Persistence;
         int octave = noiseParameters.Octave;
 
+        float noise = 0;
    
-
-        float noise = 0.0f;
-        noise += -y + Mathf.Sin(x) + Mathf.Sin(z);
-        noise += Mathf.PerlinNoise(x, z);
-        noise += (Mathf.Sin(4 * x * frequency) / 4f) * amplitude + (Mathf.Sin(4 * z * frequency) / 4f) * amplitude;
-        noise %= 4;
-
-        //  return noise;
 
 
 
