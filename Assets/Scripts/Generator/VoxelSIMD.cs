@@ -237,8 +237,10 @@ namespace Assets.Scripts.SIMD
 
             float weight = FindWeightFromDensities(mVoxel[index1.x].Densities, mVoxel[index2.x].Densities);
             p.x = Lerpf4(mVoxel[index1.x].Point, mVoxel[index2.x].Point, weight);
+
             weight = FindWeightFromDensities(mVoxel[index1.y].Densities, mVoxel[index2.y].Densities);
             p.y = Lerpf4(mVoxel[index1.y].Point, mVoxel[index2.y].Point, weight);
+
             weight = FindWeightFromDensities(mVoxel[index1.z].Densities, mVoxel[index2.z].Densities);
             p.z = Lerpf4(mVoxel[index1.z].Point, mVoxel[index2.z].Point, weight);
 

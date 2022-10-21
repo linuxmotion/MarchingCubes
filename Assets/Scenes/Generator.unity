@@ -529,6 +529,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a1ba142215730649b939c5b2b0909af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _ChunkRenderDistance: 1
+  _ScaleCubePrefab: {fileID: 0}
 --- !u!114 &1093071311
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -543,7 +545,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _InitialPlayerLocation: {fileID: 618950398}
   _SubSampleLevel: 1
-  _SamplingHeight: 16
+  _SamplingHeight: 64
   _SamplingLength: 16
   _SamplingWidth: 16
   _ISO_Level: 0
@@ -566,7 +568,7 @@ MonoBehaviour:
   _Amplitude: 1
   _Persistence: 1
   _Octave: 1
-  _Scale: 1
+  _Scale: 10
 --- !u!1 &1694845347
 GameObject:
   m_ObjectHideFlags: 0

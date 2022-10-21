@@ -169,6 +169,7 @@ namespace Assets.Scripts.SIMD
             chunk.Points = chunk.Loader.Points;
             chunk.ChunkObject = new GameObject();
             chunk.ChunkObject.name = "Chunk #" + i;
+            chunk.ChunkObject.transform.SetPositionAndRotation(chunk.ChunkOrigin, new Quaternion(0,0,0,0));
 
             chunk.ChunkObject.transform.SetParent(this.transform);
             chunk.Filter = chunk.ChunkObject.AddComponent<MeshFilter>();
@@ -361,7 +362,7 @@ namespace Assets.Scripts.SIMD
             {
                 // Dont attempt to complete the chunk unless the job is done
 
-                if (mChunkList[i].Handle.IsCompleted)
+                if (mChunkList[i].Handle.IsCompleted && mChunksInUse[i])
                 {
                     //Debug.Break();
                     mChunkList[i].Handle.Complete();
@@ -381,10 +382,14 @@ namespace Assets.Scripts.SIMD
             int index = (mChunkList[i].Loader.NumberOfTriangles[0] * 3);
 
             Vector3[] ver = mChunkList[i].Loader.Vertices.GetSubArray(0, index).ToArray();
+            var localVert = new Vector3[ver.Length];
+            for (int j = 0; j < ver.Length; j++) { 
+                localVert[j] = mChunkList[i].ChunkObject.transform.InverseTransformPoint(ver[j]);
+            }
             int[] ind = mChunkList[i].Loader.Triangles.GetSubArray(0, index).ToArray();
 
             mChunkList[i].Filter.mesh.Clear();
-            mChunkList[i].Filter.mesh.vertices = ver;
+            mChunkList[i].Filter.mesh.vertices = localVert;
             mChunkList[i].Filter.mesh.triangles = ind;
             mChunkList[i].Filter.mesh.RecalculateNormals();
             mChunkList[i].Filter.mesh.RecalculateBounds();
@@ -395,6 +400,7 @@ namespace Assets.Scripts.SIMD
             n[0] = false;
             cl.UpdateMainThread = n;
             mChunkList[i].Loader = cl;
+            mChunkList[i].Loader.Cleanup();
             mChunksInUse[i] = false;
         }
 
@@ -464,6 +470,7 @@ namespace Assets.Scripts.SIMD
                 mChunkList[i].Points = mChunkList[i].Loader.Points;
 
                 mChunkList[i].Handle = mChunkList[i].Loader.Schedule();
+                mChunksInUse[i] = true;
             }
 
 

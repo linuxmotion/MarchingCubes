@@ -86,8 +86,6 @@ namespace Assets.Scripts.SIMD
             IJobID = id;
             noiseParameters = noiseP;
             terrainParameters = terrainP;
-            NumberOfTriangles = new NativeArray<int>(1, Allocator.Persistent);
-            UpdateMainThread = new NativeArray<bool>(1, Allocator.Persistent);
 
             if (terrainParameters.SamplingLength == 0 || terrainParameters.SamplingWidth == 0 || terrainParameters.SamplingHeight == 0)
                 throw new UnityException("Cannot have zero size volume");
@@ -95,21 +93,28 @@ namespace Assets.Scripts.SIMD
             int size = (terrainParameters.SamplingLength + 1) * (terrainParameters.SamplingWidth + 1) * (terrainParameters.SamplingHeight + 1) * terrainParameters.Scale;
 
             int numPossiblePoints = (terrainParameters.SamplingLength * terrainParameters.Scale + 1) * (terrainParameters.SamplingWidth * terrainParameters.Scale + 1) * (terrainParameters.SamplingHeight * terrainParameters.Scale + 1);
+            
             Points = new NativeArray<Voxel>(numPossiblePoints, Allocator.Persistent);
             Vertices = new NativeArray<Vector3>(size * 15, Allocator.Persistent);
             Triangles = new NativeArray<int>(size * 15, Allocator.Persistent);
 
-            cell = new NativeArray<Voxel>(8, Allocator.Persistent);
-            edgeConnections = new NativeArray<int4>(5, Allocator.Persistent);
-            vertices = new NativeArray<float4>(5 * 3, Allocator.Persistent);
+
+        }
+
+        /// <summary>
+        /// Called after a job is completed to release a large portion of the native memory
+        /// </summary>
+        public void Cleanup() {
+
+            Vertices.Dispose();
+            Triangles.Dispose();
+            Points.Dispose();
+            NumberOfTriangles[0] = 0;
 
         }
         public void Dispose()
         {
-            Points.Dispose();
             NumberOfTriangles.Dispose();
-            Vertices.Dispose();
-            Triangles.Dispose();
             UpdateMainThread.Dispose();
 
             cell.Dispose();
