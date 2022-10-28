@@ -20,7 +20,7 @@ MonoBehaviour:
     width: 1536
     height: 780.8
   m_ShowMode: 4
-  m_Title: Console
+  m_Title: Scene
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -120,7 +120,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 200}
   m_MaxSize: {x: 32384, y: 16192}
   vertical: 0
-  controlID: 4400
+  controlID: 126
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -145,7 +145,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 200}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 1
-  controlID: 4341
+  controlID: 127
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -171,7 +171,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 8096}
   vertical: 0
-  controlID: 4342
+  controlID: 128
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -432,9 +432,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 286f0000
-      m_LastClickedID: 28456
-      m_ExpandedIDs: 16fbffff1c6f0000
+      m_SelectedIDs: 3c6f0000
+      m_LastClickedID: 28476
+      m_ExpandedIDs: 16fbffff226f0000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -492,8 +492,8 @@ MonoBehaviour:
       floating: 0
       collapsed: 0
       displayed: 1
-      snapOffset: {x: -101, y: -26}
-      snapOffsetDelta: {x: 0, y: 0}
+      snapOffset: {x: 0, y: 0}
+      snapOffsetDelta: {x: -100, y: -25.600006}
       snapCorner: 3
       id: Tool Settings
       index: 0
@@ -695,13 +695,13 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 120.378296, y: 20.953833, z: -118.79345}
+    m_Target: {x: -86.80118, y: -85.64812, z: 123.531784}
     speed: 2
-    m_Value: {x: 120.378296, y: 20.953833, z: -118.79345}
+    m_Value: {x: -86.80118, y: -85.64812, z: 123.531784}
   m_RenderMode: 0
   m_CameraMode:
-    drawMode: 2
-    name: Shaded Wireframe
+    drawMode: 0
+    name: Shaded
     section: Shading Mode
   m_ValidateTrueMetals: 0
   m_DoValidateTrueMetals: 0
@@ -744,13 +744,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.0068848208, y: 0.9250727, z: 0.013390583, w: 0.38021144}
+    m_Target: {x: 0.24741392, y: -0.72411263, z: 0.56091213, w: 0.3168412}
     speed: 2
-    m_Value: {x: -0.0068848208, y: 0.9250727, z: 0.013390583, w: 0.38021144}
+    m_Value: {x: 0.24734421, y: -0.7239086, z: 0.5607541, w: 0.31675196}
   m_Size:
-    m_Target: 84.493034
+    m_Target: 593.27313
     speed: 2
-    m_Value: 84.493034
+    m_Value: 593.27313
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -832,7 +832,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 83}
     m_SelectedIDs: ec6e0000
     m_LastClickedID: 28396
-    m_ExpandedIDs: 00000000c66f0000
+    m_ExpandedIDs: 00000000cc6f0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -860,7 +860,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000c66f0000
+    m_ExpandedIDs: 00000000cc6f0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 

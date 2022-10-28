@@ -12,10 +12,10 @@ namespace Assets.Scripts.SIMD
 {
 
     [BurstCompile]
-    struct ChunkJobSimd : IJob
+    struct SimdChunkJob : IJob
     {
 
-        public float2 IJobID;
+        public Vector3 ChunkCenter;
 
         public NoiseParameters noiseParameters;
         public TerrainParameters terrainParameters;
@@ -37,11 +37,11 @@ namespace Assets.Scripts.SIMD
         /// </summary>
         /// <param name="noiseP">The noise parameters to create the chunk with</param>
         /// <param name="terrainP">The terrain parameters that controls generation, LOD and size</param>
-        /// <param name="id">A vector in 2d space the represnts the chunk centers for a given terrainP </param>
-        public ChunkJobSimd(NoiseParameters noiseP, TerrainParameters terrainP, Vector2 id)
+        /// <param name="center">A vector in 2d space the represnts the chunk centers for a given terrainP </param>
+        public SimdChunkJob(NoiseParameters noiseP, TerrainParameters terrainP, Vector3 center)
         {
 
-            IJobID = id;
+            ChunkCenter = center;
             noiseParameters = noiseP;
             terrainParameters = terrainP;
             NumberOfTriangles = new NativeArray<int>(1, Allocator.Persistent);
@@ -58,64 +58,26 @@ namespace Assets.Scripts.SIMD
             Triangles = new NativeArray<int>(size * 15, Allocator.Persistent);
 
             cell = new NativeArray<Voxel>(8, Allocator.Persistent);
-           edgeConnections = new NativeArray<int4>(5, Allocator.Persistent);
+            edgeConnections = new NativeArray<int4>(5, Allocator.Persistent);
             vertices = new NativeArray<float4>(5 * 3, Allocator.Persistent);
 
         }
-        /// <summary>
-        /// Reinitialize the chunk job for loading a chunk
-        /// </summary>
-        /// <param name="noiseP">The new noise parameters</param>
-        /// <param name="terrainP"> The new parameters to create the terrain with</param>
-        /// <param name="id">The id of the chunk as an x,z coordinate pair</param>
-        public void ReInitialize(NoiseParameters noiseP, TerrainParameters terrainP, Vector2 id)
+
+        public void RecenterChunk(Vector3 newCenter) 
         {
-            // ComputeBuffer buffer = new ComputeBuffer(1, 4);
-            // ComputeShader shader = Resources.Load<ComputeShader>("NewComputeShader");
-            // shader.SetBuffer(0, 0, buffer);
-            // shader.Dispatch(0, 1, 0, 0);
 
-            // The array may change size, dump them then set the struct back up
-            if (Points.IsCreated)
-                Points.Dispose();
-            if (Vertices.IsCreated)
-                Vertices.Dispose();
-            if (Triangles.IsCreated)
-                Triangles.Dispose();
-
-            IJobID = id;
-            noiseParameters = noiseP;
-            terrainParameters = terrainP;
-
-            if (terrainParameters.SamplingLength == 0 || terrainParameters.SamplingWidth == 0 || terrainParameters.SamplingHeight == 0)
-                throw new UnityException("Cannot have zero size volume");
-
-            int size = (terrainParameters.SamplingLength + 1) * (terrainParameters.SamplingWidth + 1) * (terrainParameters.SamplingHeight + 1) * terrainParameters.Scale;
-
-            int numPossiblePoints = (terrainParameters.SamplingLength * terrainParameters.Scale + 1) * (terrainParameters.SamplingWidth * terrainParameters.Scale + 1) * (terrainParameters.SamplingHeight * terrainParameters.Scale + 1);
-            
-            Points = new NativeArray<Voxel>(numPossiblePoints, Allocator.Persistent);
-            Vertices = new NativeArray<Vector3>(size * 15, Allocator.Persistent);
-            Triangles = new NativeArray<int>(size * 15, Allocator.Persistent);
-
-
-        }
-
-        /// <summary>
-        /// Called after a job is completed to release a large portion of the native memory
-        /// </summary>
-        public void Cleanup() {
-
-            Vertices.Dispose();
-            Triangles.Dispose();
-            Points.Dispose();
+            ChunkCenter = newCenter;
+            UpdateMainThread[0] = false;
             NumberOfTriangles[0] = 0;
-
         }
+ 
         public void Dispose()
         {
             NumberOfTriangles.Dispose();
             UpdateMainThread.Dispose();
+            Vertices.Dispose();
+            Triangles.Dispose();
+            Points.Dispose();
 
             cell.Dispose();
             edgeConnections.Dispose();
@@ -127,9 +89,9 @@ namespace Assets.Scripts.SIMD
         public void Execute()
         {
             float4 point = 0;
-            point.x = terrainParameters.Origin.x;
-            point.y = terrainParameters.Origin.y;
-            point.z = terrainParameters.Origin.z;
+            point.x = ChunkCenter.x;
+            point.y = ChunkCenter.y;
+            point.z = ChunkCenter.z;
 
 
             GenerateScalarField(point);
@@ -205,6 +167,8 @@ namespace Assets.Scripts.SIMD
             }
             NumberOfTriangles[0] = index / 3;
 
+           // Debug.Log("Number of triangle in job centered at " + ChunkCenter + " : " + NumberOfTriangles[0]);
+
             s_CreateCubeDataMarker.End();
              
         }
@@ -227,7 +191,7 @@ namespace Assets.Scripts.SIMD
             float4 pos;
             int index = 0;
             for (int level = 0; level <= Height * Scale; level++)
-            {
+            { 
                 // levelOffset = level * ((Width * Scale + 1) * (Length * Scale + 1));
 
                 for (int row = 0; row <= Length * Scale; row++)
@@ -235,9 +199,9 @@ namespace Assets.Scripts.SIMD
                     for (int column = 0; column <= Width * Scale; column++)
                     {
 
-                        x = terrainParameters.Origin.x - ((Width) / 2f) + (column / Scalef);
+                        x = ChunkCenter.x - ((Width) / 2f) + (column / Scalef);
                         y = bedrock + (level / Scalef);
-                        z = terrainParameters.Origin.z - ((Length) / 2f) + (row / Scalef);
+                        z = ChunkCenter.z - ((Length) / 2f) + (row / Scalef);
                          
                         //pos =; ;// + new Vector3(x, y, z);
                         pos.x = x;

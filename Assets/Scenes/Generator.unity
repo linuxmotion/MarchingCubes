@@ -529,7 +529,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a1ba142215730649b939c5b2b0909af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ChunkRenderDistance: 1
+  _ChunkRenderDistance: 25
   _ScaleCubePrefab: {fileID: 0}
 --- !u!114 &1093071311
 MonoBehaviour:
@@ -543,9 +543,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 667182fbbc0fde8449e0f2a1db3adfd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _InitialPlayerLocation: {fileID: 618950398}
+  _InitialPlayerLocation: {fileID: 2218051634642237718}
   _SubSampleLevel: 1
-  _SamplingHeight: 64
+  _SamplingHeight: 32
   _SamplingLength: 16
   _SamplingWidth: 16
   _ISO_Level: 0
