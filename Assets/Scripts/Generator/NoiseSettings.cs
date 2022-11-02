@@ -1,4 +1,5 @@
-﻿using Unity.Mathematics;
+﻿using System;
+using Unity.Mathematics;
 using Unity.Profiling;
 using UnityEngine;
 
@@ -81,6 +82,11 @@ public struct NoiseParameters
                Persistence == parameters.Persistence &&
                Octave == parameters.Octave &&
                SampleLevel == parameters.SampleLevel;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Seed, Frequency, Amplitude, Persistence, Octave, SampleLevel);
     }
 }
 

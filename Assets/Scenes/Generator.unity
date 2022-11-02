@@ -496,7 +496,7 @@ GameObject:
   - component: {fileID: 1093071312}
   - component: {fileID: 1093071311}
   m_Layer: 0
-  m_Name: ForScale
+  m_Name: JobPooling
   m_TagString: TerrainScale
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -529,7 +529,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a1ba142215730649b939c5b2b0909af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ChunkRenderDistance: 25
+  _ChunkRenderDistance: 1
   _ScaleCubePrefab: {fileID: 0}
 --- !u!114 &1093071311
 MonoBehaviour:

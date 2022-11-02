@@ -54,9 +54,7 @@ namespace Assets.Scripts.SIMD
                 mNoiseSettings.Parameterize(), 
                 mTerrainSettings.Parameterize());
 
-            //mLoaderPool.CreateChunkQueue(mPlayerLocation.transform.position);
-            mLoaderPool.DispatchQueue();
-            // use the editor provided origin
+            mLoaderPool.DispatchUnsafeQueue();
           
         }
         [SerializeField]
@@ -147,7 +145,9 @@ namespace Assets.Scripts.SIMD
         {
             // check to see if the noise settings have change
             // only need to check one since all chunks have the same settings
+#pragma warning disable CS0219 // Variable is assigned but its value is never used
             bool update = false;
+#pragma warning restore CS0219 // Variable is assigned but its value is never used
             NoiseParameters noiseParameters1 = mNoiseSettings.Parameterize();
             TerrainParameters terrainParameters = mTerrainSettings.Parameterize();
             // Check the editor values against the default initialized values
