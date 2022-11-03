@@ -17,8 +17,8 @@ namespace Assets.Scripts.SIMD
 
         public Vector3 ChunkCenter;
 
-        public NoiseParameters noiseParameters;
-        public TerrainParameters terrainParameters;
+        public NoiseParameters MnoiseParameters;
+        public TerrainParameters MterrainParameters;
 
         public NativeArray<Voxel> Points;
 
@@ -30,7 +30,7 @@ namespace Assets.Scripts.SIMD
 
         NativeArray<Voxel> cell;
         NativeArray<int4> edgeConnections;
-        NativeArray<float4> vertices ;
+        NativeArray<float4> vertices;
 
         /// <summary>
         /// Initialize the IJob for use with a chunk
@@ -42,17 +42,17 @@ namespace Assets.Scripts.SIMD
         {
 
             ChunkCenter = center;
-            noiseParameters = noiseP;
-            terrainParameters = terrainP;
+            MnoiseParameters = noiseP;
+            MterrainParameters = terrainP;
             NumberOfTriangles = new NativeArray<int>(1, Allocator.Persistent);
             UpdateMainThread = new NativeArray<bool>(1, Allocator.Persistent);
 
-            if (terrainParameters.SamplingLength == 0 || terrainParameters.SamplingWidth == 0 || terrainParameters.SamplingHeight == 0)
+            if (MterrainParameters.SamplingLength == 0 || MterrainParameters.SamplingWidth == 0 || MterrainParameters.SamplingHeight == 0)
                 throw new UnityException("Cannot have zero size volume");
 
-            int size = (terrainParameters.SamplingLength + 1) * (terrainParameters.SamplingWidth + 1) * (terrainParameters.SamplingHeight + 1) * terrainParameters.Scale;
+            int size = (MterrainParameters.SamplingLength + 1) * (MterrainParameters.SamplingWidth + 1) * (MterrainParameters.SamplingHeight + 1) * MterrainParameters.Scale;
 
-            int numPossiblePoints = (terrainParameters.SamplingLength * terrainParameters.Scale + 1) * (terrainParameters.SamplingWidth * terrainParameters.Scale + 1) * (terrainParameters.SamplingHeight * terrainParameters.Scale + 1);
+            int numPossiblePoints = (MterrainParameters.SamplingLength * MterrainParameters.Scale + 1) * (MterrainParameters.SamplingWidth * MterrainParameters.Scale + 1) * (MterrainParameters.SamplingHeight * MterrainParameters.Scale + 1);
             Points = new NativeArray<Voxel>(numPossiblePoints, Allocator.Persistent);
             Vertices = new NativeArray<Vector3>(size * 15, Allocator.Persistent);
             Triangles = new NativeArray<int>(size * 15, Allocator.Persistent);
@@ -63,14 +63,49 @@ namespace Assets.Scripts.SIMD
 
         }
 
-        public void RecenterChunk(Vector3 newCenter) 
+        public void RecenterChunk(Vector3 newCenter)
         {
 
             ChunkCenter = newCenter;
             UpdateMainThread[0] = false;
             NumberOfTriangles[0] = 0;
         }
- 
+        public void ResetChunkParameters(NoiseParameters noiseP, TerrainParameters terrainP, Vector3 center)
+        {
+          
+
+            ChunkCenter = center;
+            MnoiseParameters = noiseP;
+            MterrainParameters = terrainP;
+
+            if (MterrainParameters.SamplingLength == 0 || MterrainParameters.SamplingWidth == 0 || MterrainParameters.SamplingHeight == 0)
+                throw new UnityException("Cannot have zero size volume");
+
+
+            int size = (MterrainParameters.SamplingLength + 1) * (MterrainParameters.SamplingWidth + 1) * (MterrainParameters.SamplingHeight + 1) * MterrainParameters.Scale;
+
+            int numPossiblePoints = (MterrainParameters.SamplingLength * MterrainParameters.Scale + 1) * (MterrainParameters.SamplingWidth * MterrainParameters.Scale + 1) * (MterrainParameters.SamplingHeight * MterrainParameters.Scale + 1);
+
+            // the parameters are smaller, no need to allocate more memeory
+            if (Points.Length >= numPossiblePoints)
+            {
+                Debug.Log("Not allocating memory for reset chunk Job - Terrain Parameters are not bigger");
+                return;
+            }
+            else // The parameters are bigger so more memory needs to be allocated to hold all the data
+            {
+                Points.Dispose();
+                Points = new NativeArray<Voxel>(numPossiblePoints, Allocator.Persistent);
+                Vertices.Dispose();
+                Vertices = new NativeArray<Vector3>(size * 15, Allocator.Persistent);
+                Triangles.Dispose();
+                Triangles = new NativeArray<int>(size * 15, Allocator.Persistent);
+
+            }
+
+
+        }
+
         public void Dispose()
         {
             NumberOfTriangles.Dispose();
@@ -114,10 +149,10 @@ namespace Assets.Scripts.SIMD
             s_CreateCubeDataMarker.Begin();
             int levelOffset, rowOffset;
 
-            int Length = terrainParameters.SamplingLength;
-            int Width = terrainParameters.SamplingWidth;
-            int Height = terrainParameters.SamplingHeight;
-            int Scale = terrainParameters.Scale;
+            int Length = MterrainParameters.SamplingLength;
+            int Width = MterrainParameters.SamplingWidth;
+            int Height = MterrainParameters.SamplingHeight;
+            int Scale = MterrainParameters.Scale;
             int levelSize = ((Width * Scale + 1) * (Length * Scale + 1));
             int rowSize = Width * Scale + 1;
             int index = 0;
@@ -144,20 +179,21 @@ namespace Assets.Scripts.SIMD
 
                         byte edgelist = 0;
                         // create the edge list
-                        VoxelCell.CreateEdgeList(ref edgelist, 0, cell);
+                        VoxelCell.CreateEdgeList(ref edgelist, MterrainParameters.ISO_Level, cell);
 
                         // check if the cell in on the surface
                         if (VoxelCell.IsOnSurface(edgelist))
                         {
                             int numTri = 0;
-                            VoxelCell.CreateVertexConnections( edgelist, ref numTri, ref edgeConnections );
-                            VoxelCell.CalculateMesh(numTri,ref vertices, edgeConnections, cell  );
-                            for (int i = 0; i < numTri*3; i++) {
+                            VoxelCell.CreateVertexConnections(edgelist, ref numTri, ref edgeConnections);
+                            VoxelCell.CalculateMesh(numTri, ref vertices, edgeConnections, cell);
+                            for (int i = 0; i < numTri * 3; i++)
+                            {
                                 Vertices[index + i] = new Vector3(vertices[i].x, vertices[i].y, vertices[i].z);
                                 Triangles[index + i] = index + i;
 
                             }
-                            index += numTri*3;
+                            index += numTri * 3;
                         }
 
 
@@ -167,10 +203,10 @@ namespace Assets.Scripts.SIMD
             }
             NumberOfTriangles[0] = index / 3;
 
-           // Debug.Log("Number of triangle in job centered at " + ChunkCenter + " : " + NumberOfTriangles[0]);
+            // Debug.Log("Number of triangle in job centered at " + ChunkCenter + " : " + NumberOfTriangles[0]);
 
             s_CreateCubeDataMarker.End();
-             
+
         }
 
 
@@ -182,16 +218,16 @@ namespace Assets.Scripts.SIMD
 
             float x, y, z;
 
-            int Length = terrainParameters.SamplingLength;
-            int Width = terrainParameters.SamplingWidth;
-            int Height = terrainParameters.SamplingHeight;
-            int Scale = terrainParameters.Scale;
+            int Length = MterrainParameters.SamplingLength;
+            int Width = MterrainParameters.SamplingWidth;
+            int Height = MterrainParameters.SamplingHeight;
+            int Scale = MterrainParameters.Scale;
             float Scalef = (float)Scale;
-            int bedrock = terrainParameters.BedrockLevel;
+            int bedrock = MterrainParameters.BedrockLevel;
             float4 pos;
             int index = 0;
             for (int level = 0; level <= Height * Scale; level++)
-            { 
+            {
                 // levelOffset = level * ((Width * Scale + 1) * (Length * Scale + 1));
 
                 for (int row = 0; row <= Length * Scale; row++)
@@ -202,7 +238,7 @@ namespace Assets.Scripts.SIMD
                         x = ChunkCenter.x - ((Width) / 2f) + (column / Scalef);
                         y = bedrock + (level / Scalef);
                         z = ChunkCenter.z - ((Length) / 2f) + (row / Scalef);
-                         
+
                         //pos =; ;// + new Vector3(x, y, z);
                         pos.x = x;
                         pos.y = y;
@@ -211,7 +247,7 @@ namespace Assets.Scripts.SIMD
 
                         // TODO: Generate better noise - create a flat plane
 
-                        float4 noise = Noise.GenerateNoise(pos, noiseParameters, terrainParameters.SurfaceLevel);
+                        float4 noise = Noise.GenerateNoise(pos, MnoiseParameters, MterrainParameters.SurfaceLevel);
                         Voxel v = new(pos, noise);
                         Points[index++] = v;
 
@@ -219,7 +255,7 @@ namespace Assets.Scripts.SIMD
 
                 }
             }
-           // Points.CopyFrom(nativePointsBuffer.ToArray());
+            // Points.CopyFrom(nativePointsBuffer.ToArray());
 
             s_GenerateScalarFieldfMarker.End();
         }

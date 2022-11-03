@@ -32,6 +32,15 @@ namespace Assets.Scripts.SIMD
 
         }
 
+        public void ResetArrays() {
+
+            Vertices = Job.Vertices;
+            Triangles = Job.Triangles;
+            UpdateMainThread = Job.UpdateMainThread;
+            NumberOfTriangles = Job.NumberOfTriangles;
+            Points = Job.Points;
+
+        }
         public void ReleaseLoader()
         {
             Job.Dispose();

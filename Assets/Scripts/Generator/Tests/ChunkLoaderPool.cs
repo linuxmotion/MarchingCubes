@@ -9,7 +9,7 @@ namespace Assets.Scripts.SIMD
     class ChunkLoaderPool
     {
 
-        private List<ChunkLoader> LoaderPool;
+        private List<ChunkLoader> JobLoaderPool;
         private Queue<int> LoaderPoolInUse;
         private Queue<int> LoaderPoolAvailable;
 
@@ -21,8 +21,8 @@ namespace Assets.Scripts.SIMD
         public TerrainParameters mTerrainParameters { get; private set; }
         public int ChunkRenderDistance { get; private set; }
         public Vector3 mCurrentChunkOrigin { get; private set; }
-        public readonly int NumberOfChunks;
-        readonly private int MaxSize;
+        public int NumberOfChunks { get; private set; }
+        private readonly int MaxSize;
 
 
 
@@ -65,13 +65,13 @@ namespace Assets.Scripts.SIMD
         public void IntializeLoaderPool()
         {
             // Number of threads available to the program
-            LoaderPool = new List<ChunkLoader>(MaxSize);
+            JobLoaderPool = new List<ChunkLoader>(MaxSize);
             LoaderPoolInUse = new Queue<int>(MaxSize);
             LoaderPoolAvailable = new Queue<int>(MaxSize);
 
             for (int loaderNum = 0; loaderNum < MaxSize; loaderNum++)
             {
-                LoaderPool.Add(new ChunkLoader(mNoiseParameters, mTerrainParameters, Vector3.positiveInfinity, loaderNum));
+                JobLoaderPool.Add(new ChunkLoader(mNoiseParameters, mTerrainParameters, Vector3.positiveInfinity, loaderNum));
                 LoaderPoolAvailable.Enqueue(loaderNum);
             }
 
@@ -100,9 +100,9 @@ namespace Assets.Scripts.SIMD
                 int loaderId = LoaderPoolInUse.Peek();
                 // if the loader was being used a job was issued on it
                 //we have completed a Job
-                if (LoaderPool[loaderId].Handle.IsCompleted)
+                if (JobLoaderPool[loaderId].Handle.IsCompleted)
                 {
-                    LoaderPool[loaderId].Handle.Complete();
+                    JobLoaderPool[loaderId].Handle.Complete();
                     // Can now acces all the data from the job
                     if (ChunkPoolAvailable.TryDequeue(out int chunkNumber))
                     {
@@ -137,22 +137,22 @@ namespace Assets.Scripts.SIMD
         /// <param name="chunkNum">The Chunk that the data should be assigned to</param>
         private void AssignChunkDataFromJob(int loaderId, int chunkNum)
         {
-            int index = LoaderPool[loaderId].NumberOfTriangles[0] * 3;
+            int index = JobLoaderPool[loaderId].NumberOfTriangles[0] * 3;
 
-            Vector3[] ver = LoaderPool[loaderId].Vertices.GetSubArray(0, index).ToArray();
+            Vector3[] ver = JobLoaderPool[loaderId].Vertices.GetSubArray(0, index).ToArray();
 
             var localVert = new Vector3[ver.Length];
 
-            ChunkPool[chunkNum].ChunkOrigin = LoaderPool[loaderId].Job.ChunkCenter;
-            LoaderPool[loaderId].Job.ChunkCenter.y = float.PositiveInfinity;
-            LoaderPool[loaderId].Job.ChunkCenter.z = float.PositiveInfinity;
+            ChunkPool[chunkNum].ChunkOrigin = JobLoaderPool[loaderId].Job.ChunkCenter;
+            JobLoaderPool[loaderId].Job.ChunkCenter.y = float.PositiveInfinity;
+            JobLoaderPool[loaderId].Job.ChunkCenter.z = float.PositiveInfinity;
             ChunkPool[chunkNum].ChunkObject.transform.position = ChunkPool[chunkNum].ChunkOrigin;
 
             for (int j = 0; j < ver.Length; j++)
             {
                 localVert[j] = ChunkPool[chunkNum].ChunkObject.transform.InverseTransformPoint(ver[j]);
             }
-            int[] ind = LoaderPool[loaderId].Triangles.GetSubArray(0, index).ToArray();
+            int[] ind = JobLoaderPool[loaderId].Triangles.GetSubArray(0, index).ToArray();
 
             ChunkPool[chunkNum].Filter.mesh.Clear();
             ChunkPool[chunkNum].Filter.mesh.vertices = localVert;
@@ -160,6 +160,42 @@ namespace Assets.Scripts.SIMD
             ChunkPool[chunkNum].Filter.mesh.RecalculateNormals();
             ChunkPool[chunkNum].Filter.mesh.RecalculateBounds();
             Debug.Log("Succufully assigned Job Id #" + loaderId + " centered at " + ChunkPool[chunkNum].ChunkOrigin + " to chunk #" + chunkNum);
+        }
+
+        public void ResetLoaderPoolParameters(int renderDistance, NoiseParameters noiseParameters, TerrainParameters terrainParameters)
+        {
+            //mCurrentChunkOrigin = Vector3.positiveInfinity;
+            mTerrainParameters = terrainParameters;
+            mNoiseParameters = noiseParameters;
+            ChunkRenderDistance = renderDistance;
+            for (int i = 0; i < JobLoaderPool.Count; i++)
+            {
+
+                JobLoaderPool[i].Job.ResetChunkParameters(mNoiseParameters, mTerrainParameters, new Vector3(i, float.PositiveInfinity, float.PositiveInfinity));
+                JobLoaderPool[i].ResetArrays();
+
+            }
+        }
+
+        public void AddChunkToList(ref Chunk chunk)
+        {
+
+            ChunkPool.Add(chunk);
+        }
+
+        public void ApplyChangesAfterReset()
+        {
+
+
+
+            List<Vector3> newChunksCenters = Chunk.GetChunksFromCenterLocation(mCurrentChunkOrigin, NumberOfChunks, ChunkRenderDistance, mTerrainParameters);
+            for (int i = 0; i < newChunksCenters.Count; i++)
+            {
+                ChunkOriginQueue.Enqueue(newChunksCenters[i]);
+                ChunkPoolAvailable.Enqueue(i);
+            }
+
+            DispatchUnsafeQueue();
         }
 
         /// <summary>
@@ -207,7 +243,7 @@ namespace Assets.Scripts.SIMD
             for (int i = 0; i < newOriginsToQueue.Count; i++)
             {
                 ChunkOriginQueue.Enqueue(newOriginsToQueue[i]);
-                int chunkNumber =  getChunkNumberFromOrigin(evictionList[i]);
+                int chunkNumber = getChunkNumberFromOrigin(evictionList[i]);
                 ChunkPoolAvailable.Enqueue(chunkNumber);
             }
 
@@ -256,8 +292,8 @@ namespace Assets.Scripts.SIMD
                     int nextAvailableLoader = LoaderPoolAvailable.Dequeue();
                     LoaderPoolInUse.Enqueue(nextAvailableLoader);
                     Vector3 chunkCenter = ChunkOriginQueue.Dequeue();
-                    LoaderPool[nextAvailableLoader].Job.RecenterChunk(chunkCenter);
-                    LoaderPool[nextAvailableLoader].Schedule();
+                    JobLoaderPool[nextAvailableLoader].Job.RecenterChunk(chunkCenter);
+                    JobLoaderPool[nextAvailableLoader].Schedule();
 
                 }
 
@@ -296,23 +332,12 @@ namespace Assets.Scripts.SIMD
                     int nextAvailableLoader = LoaderPoolAvailable.Dequeue();
 
                     LoaderPoolInUse.Enqueue(nextAvailableLoader);
-                    LoaderPool[nextAvailableLoader].Job.RecenterChunk(chunkCenter);
-                    LoaderPool[nextAvailableLoader].Schedule();
+                    JobLoaderPool[nextAvailableLoader].Job.RecenterChunk(chunkCenter);
+                    JobLoaderPool[nextAvailableLoader].Schedule();
                 }
             }
             return true;
 
-        }
-        private bool IsChunkCurrentlyRunning(Vector3 chunkCenter)
-        {
-            for (int i = 0; i < LoaderPool.Count; i++)
-            {
-                if (LoaderPool[i].Job.ChunkCenter == chunkCenter)
-                    return true;
-
-            }
-
-            return false;
         }
 
         /// <summary>
@@ -321,11 +346,11 @@ namespace Assets.Scripts.SIMD
         public void ReleasePool()
         {
 
-            foreach (var loader in LoaderPool)
+            foreach (var loader in JobLoaderPool)
             {
                 loader.ReleaseLoader();
             }
-            LoaderPool.Clear();
+            JobLoaderPool.Clear();
 
             foreach (var chunk in ChunkPool)
             {

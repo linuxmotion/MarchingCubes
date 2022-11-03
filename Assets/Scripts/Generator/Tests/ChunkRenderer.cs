@@ -17,8 +17,8 @@ namespace Assets.Scripts.SIMD
 
         TerrainSettings mTerrainSettings;
         NoiseSettings mNoiseSettings;
-       // TerrainParameters mTerrainParameters;
-       // NoiseParameters mNoiseParameters;
+        TerrainParameters mTerrainParameters;
+        // NoiseParameters mNoiseParameters;
 
 
         ChunkLoaderPool mLoaderPool;
@@ -36,8 +36,10 @@ namespace Assets.Scripts.SIMD
 
             // Setup components
             mNoiseSettings = GetComponent<NoiseSettings>();
+            // mNoiseParameters = mNoiseSettings.Parameterize();
+
             mTerrainSettings = GetComponent<TerrainSettings>();
-    
+            //mTerrainParameters = mTerrainSettings.Parameterize();
 
             mPlayerLocation = GetComponent<TerrainSettings>().GetPlayerTransform();
 
@@ -48,14 +50,14 @@ namespace Assets.Scripts.SIMD
             List<Chunk> chunks = SetupChunkList(numberOFChunks, mTerrainSettings.Parameterize());
 
             mLoaderPool = new ChunkLoaderPool(ref chunks,
-                Unity.Jobs.LowLevel.Unsafe.JobsUtility.JobWorkerCount, 
+                Unity.Jobs.LowLevel.Unsafe.JobsUtility.JobWorkerCount,
                 mSizeOfChunkSide,
                 mPlayerLocation.transform.position,
-                mNoiseSettings.Parameterize(), 
+                mNoiseSettings.Parameterize(),
                 mTerrainSettings.Parameterize());
 
             mLoaderPool.DispatchUnsafeQueue();
-          
+
         }
         [SerializeField]
         GameObject _ScaleCubePrefab;
@@ -88,8 +90,8 @@ namespace Assets.Scripts.SIMD
         {
             mNumberofChunks = numChunks;
             Debug.Log("Instantitating chunk list of size: " + mNumberofChunks);
-            List<Chunk>  chunkList = new List<Chunk>(mNumberofChunks);
-          
+            List<Chunk> chunkList = new List<Chunk>(mNumberofChunks);
+
 
             Vector3 playerLocation = mPlayerLocation.transform.position;
 
@@ -112,9 +114,9 @@ namespace Assets.Scripts.SIMD
         private Chunk SetupChunk(in Vector3 chunkOrigin, int chunkNumber)
         {
             Chunk chunk = new Chunk(chunkNumber);
-           // Debug.Log("Creating chunk at :" + chunkOrigin);
+            // Debug.Log("Creating chunk at :" + chunkOrigin);
             chunk.ChunkOrigin = chunkOrigin;
-           // Debug.Log(chunk + "Chunk ID: " + chunk.ChunkID +" | Location: " + chunk.ChunkOrigin);
+            // Debug.Log(chunk + "Chunk ID: " + chunk.ChunkID +" | Location: " + chunk.ChunkOrigin);
             chunk.ChunkObject = new GameObject();
             chunk.ChunkObject.name = "Chunk #" + chunkNumber;
             chunk.ChunkObject.transform.SetPositionAndRotation(chunk.ChunkOrigin, new Quaternion(0, 0, 0, 0));
@@ -127,17 +129,17 @@ namespace Assets.Scripts.SIMD
             chunk.Renderer.material.SetFloat("_Cull", 0);
             return chunk;
         }
-    
+
         public void LateUpdate()
         {
 
-           
+
             mLoaderPool.CreateChunkQueue(mPlayerLocation.transform.position);
             mLoaderPool.DispatchQueue();
             mLoaderPool.ReceiveDispatch();
 
 
-            //CheckForAndApplyEditorChanges();
+            CheckForAndApplyEditorChanges();
 
         }
 
@@ -145,9 +147,7 @@ namespace Assets.Scripts.SIMD
         {
             // check to see if the noise settings have change
             // only need to check one since all chunks have the same settings
-#pragma warning disable CS0219 // Variable is assigned but its value is never used
             bool update = false;
-#pragma warning restore CS0219 // Variable is assigned but its value is never used
             NoiseParameters noiseParameters1 = mNoiseSettings.Parameterize();
             TerrainParameters terrainParameters = mTerrainSettings.Parameterize();
             // Check the editor values against the default initialized values
@@ -155,13 +155,11 @@ namespace Assets.Scripts.SIMD
             if (noiseParameters1 != mLoaderPool.mNoiseParameters)
             {
                 Debug.Log("Noise values in editor changed from : " + mLoaderPool.mNoiseParameters + " to: " + noiseParameters1);
-                //mNoiseParameters = mNoiseSettings.Parameterize();
                 update = true;
             }
             if (!terrainParameters.EqualsExecptOrigin(mLoaderPool.mTerrainParameters))
             {
                 Debug.Log("Terrain values in editor changed from : " + mLoaderPool.mTerrainParameters + " to: " + terrainParameters);
-                //mTerrainParameters = mTerrainSettings.Parameterize();
                 update = true;
             }
             int rd = (_ChunkRenderDistance * 2 + 1);
@@ -170,54 +168,39 @@ namespace Assets.Scripts.SIMD
 
                 Debug.Log("Chunk render distance change from: " + mSizeOfChunkSide + " to: " + rd);
                 mSizeOfChunkSide = rd;
-               // OnDisable();
-                //SetupChunkList(mChunkRenderDistance * mChunkRenderDistance);
-               // ScheduleChunks();
-                return;
+                int size = rd * rd - mNumberofChunks;
+                for (int i = 0; i < size; i++)
+                {
+                    Chunk chunk = SetupChunk(new Vector3(i, 1, 1), mLoaderPool.NumberOfChunks + i);
+                    mLoaderPool.AddChunkToList(ref chunk);
+                    Debug.Log("Chunk " + chunk.ChunkObject);
 
+                }
+
+                update = true;
 
             }
 
-           // if (update) ApplyEditorChangesToTerrain();
+            if (update)
+            {
+                mLoaderPool.ResetLoaderPoolParameters(rd, noiseParameters1, terrainParameters);
+                mLoaderPool.ApplyChangesAfterReset();
+                //mLoaderPool.DispatchQueue();
+            }
         }
-
-
-
-
         // Update is called once per frame
         void Update()
         {
 
         }
-
-
-
-
-
-
-    //}
-    public void OnDisable()
-    {
-
+        public void OnDisable()
+        {
             mLoaderPool.ReleasePool();
-        //// Called when the component is disable or when a hot reload happens
-        //for (int i = 0; i < mChunkList.Count; i++)
-        //{
-        //    // release all chunks
-        //    mChunkList[i].ReleaseChunk();
-
-        //}
-        //// clear the list and delete
-        //mChunkList.Clear();
-        //mChunkList = null;
+        }
+        public void OnDestroy()
+        {
 
 
-
+        }
     }
-    public void OnDestroy()
-    {
-
-
-    }
-}
 }
