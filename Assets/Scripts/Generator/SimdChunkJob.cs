@@ -16,6 +16,7 @@ namespace Assets.Scripts.SIMD
     {
 
         public Vector3 ChunkCenter;
+        public bool SmoothNormals;
 
         public NoiseParameters MnoiseParameters;
         public TerrainParameters MterrainParameters;
@@ -41,6 +42,7 @@ namespace Assets.Scripts.SIMD
         public SimdChunkJob(NoiseParameters noiseP, TerrainParameters terrainP, Vector3 center)
         {
 
+            SmoothNormals = false;
             ChunkCenter = center;
             MnoiseParameters = noiseP;
             MterrainParameters = terrainP;

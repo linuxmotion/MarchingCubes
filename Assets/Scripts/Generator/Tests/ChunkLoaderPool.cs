@@ -17,10 +17,11 @@ namespace Assets.Scripts.SIMD
         private Queue<int> ChunkPoolAvailable;
         private Queue<Vector3> ChunkOriginQueue;
 
-        public NoiseParameters mNoiseParameters { get; private set; }
-        public TerrainParameters mTerrainParameters { get; private set; }
+        public bool SmoothNormals;
+        public NoiseParameters NoiseParams { get; private set; }
+        public TerrainParameters TerrainParams { get; private set; }
         public int ChunkRenderDistance { get; private set; }
-        public Vector3 mCurrentChunkOrigin { get; private set; }
+        public Vector3 CurrentChunkOrigin { get; private set; }
         public int NumberOfChunks { get; private set; }
         private readonly int MaxSize;
 
@@ -35,13 +36,15 @@ namespace Assets.Scripts.SIMD
             Debug.Log("Number of Jobs to pool: " + numJobs);
             Debug.Log("Setting initial noise parameters to: " + noiseParameters.ToString());
             Debug.Log("Setting initial terrain parameters to: " + terrainParameters.ToString());
+            Debug.Log("Setting smooth normals to false");
+            SmoothNormals = false;
             ChunkRenderDistance = renderDistance;
 
             MaxSize = numJobs * 2;
 
-            mCurrentChunkOrigin = initialLocation;
-            mNoiseParameters = noiseParameters;
-            mTerrainParameters = terrainParameters;
+            CurrentChunkOrigin = initialLocation;
+            NoiseParams = noiseParameters;
+            TerrainParams = terrainParameters;
             NumberOfChunks = chunks.Count;
             InitializeChunkPool(ref chunks);
             IntializeLoaderPool();
@@ -71,7 +74,7 @@ namespace Assets.Scripts.SIMD
 
             for (int loaderNum = 0; loaderNum < MaxSize; loaderNum++)
             {
-                JobLoaderPool.Add(new ChunkLoader(mNoiseParameters, mTerrainParameters, Vector3.positiveInfinity, loaderNum));
+                JobLoaderPool.Add(new ChunkLoader(NoiseParams, TerrainParams, Vector3.positiveInfinity, loaderNum));
                 LoaderPoolAvailable.Enqueue(loaderNum);
             }
 
@@ -152,11 +155,42 @@ namespace Assets.Scripts.SIMD
             {
                 localVert[j] = ChunkPool[chunkNum].ChunkObject.transform.InverseTransformPoint(ver[j]);
             }
-            int[] ind = JobLoaderPool[loaderId].Triangles.GetSubArray(0, index).ToArray();
 
+            int[] ind = new int[localVert.Count()];
+            ///TODO:This should be done on the thread itself but is here for testing 
+            if (SmoothNormals)
+            {
+                int i;
+                int j = 0;
+                Dictionary<Vector3, int> vertexSet = new Dictionary<Vector3, int>();
+                for (i = 0; i < localVert.Count(); i++)
+                {
+                    if (vertexSet.ContainsKey(localVert[i]))
+                    {
+                        ind[i] = vertexSet.GetValueOrDefault(localVert[i]);
+                    }
+                    else
+                    {
+                        ind[i] = j;
+                        vertexSet.Add(localVert[i], j++);
+                    }
+                }
+
+              
+                    localVert = vertexSet.Keys.ToArray();
+                
+
+
+            }
+            else
+            {
+                ind = JobLoaderPool[loaderId].Triangles.GetSubArray(0, index).ToArray();
+
+
+            }
             ChunkPool[chunkNum].Filter.mesh.Clear();
-            ChunkPool[chunkNum].Filter.mesh.vertices = localVert;
-            ChunkPool[chunkNum].Filter.mesh.triangles = ind;
+            ChunkPool[chunkNum].Filter.mesh.SetVertices(localVert);
+            ChunkPool[chunkNum].Filter.mesh.SetTriangles(ind,0);
             ChunkPool[chunkNum].Filter.mesh.RecalculateNormals();
             ChunkPool[chunkNum].Filter.mesh.RecalculateBounds();
             Debug.Log("Succufully assigned Job Id #" + loaderId + " centered at " + ChunkPool[chunkNum].ChunkOrigin + " to chunk #" + chunkNum);
@@ -165,13 +199,13 @@ namespace Assets.Scripts.SIMD
         public void ResetLoaderPoolParameters(int renderDistance, NoiseParameters noiseParameters, TerrainParameters terrainParameters)
         {
             //mCurrentChunkOrigin = Vector3.positiveInfinity;
-            mTerrainParameters = terrainParameters;
-            mNoiseParameters = noiseParameters;
+            TerrainParams = terrainParameters;
+            NoiseParams = noiseParameters;
             ChunkRenderDistance = renderDistance;
             for (int i = 0; i < JobLoaderPool.Count; i++)
             {
 
-                JobLoaderPool[i].Job.ResetChunkParameters(mNoiseParameters, mTerrainParameters, new Vector3(i, float.PositiveInfinity, float.PositiveInfinity));
+                JobLoaderPool[i].Job.ResetChunkParameters(NoiseParams, TerrainParams, new Vector3(i, float.PositiveInfinity, float.PositiveInfinity));
                 JobLoaderPool[i].ResetArrays();
 
             }
@@ -188,7 +222,7 @@ namespace Assets.Scripts.SIMD
 
 
 
-            List<Vector3> newChunksCenters = Chunk.GetChunksFromCenterLocation(mCurrentChunkOrigin, NumberOfChunks, ChunkRenderDistance, mTerrainParameters);
+            List<Vector3> newChunksCenters = Chunk.GetChunksFromCenterLocation(CurrentChunkOrigin, NumberOfChunks, ChunkRenderDistance, TerrainParams);
             for (int i = 0; i < newChunksCenters.Count; i++)
             {
                 ChunkOriginQueue.Enqueue(newChunksCenters[i]);
@@ -206,8 +240,8 @@ namespace Assets.Scripts.SIMD
         public bool CreateChunkQueue(in Vector3 playerOrigin)
         {
 
-            Vector3 playerChunkOrigin = Chunk.GetChunkCenterFromLocation(playerOrigin, mTerrainParameters);
-            if (mCurrentChunkOrigin == playerChunkOrigin)
+            Vector3 playerChunkOrigin = Chunk.GetChunkCenterFromLocation(playerOrigin, TerrainParams);
+            if (CurrentChunkOrigin == playerChunkOrigin)
                 return false;
 
             if (LoaderPoolInUse.Count > 0)
@@ -216,9 +250,9 @@ namespace Assets.Scripts.SIMD
             // compare old and new centers
             List<Vector3> oldChunkList = new List<Vector3>(NumberOfChunks);
             GetCurrentChunkOrigins(ref oldChunkList);
-            List<Vector3> newChunksCenters = Chunk.GetChunksFromCenterLocation(playerChunkOrigin, NumberOfChunks, ChunkRenderDistance, mTerrainParameters);
+            List<Vector3> newChunksCenters = Chunk.GetChunksFromCenterLocation(playerChunkOrigin, NumberOfChunks, ChunkRenderDistance, TerrainParams);
             // the old centers that are still in the list are the centers that can be reused
-            mCurrentChunkOrigin = playerChunkOrigin;
+            CurrentChunkOrigin = playerChunkOrigin;
 
             // A list of the current origins minus the origin in the new center
             IEnumerable<Vector3> evictionListIE = oldChunkList.Except(newChunksCenters);
@@ -293,7 +327,7 @@ namespace Assets.Scripts.SIMD
                     LoaderPoolInUse.Enqueue(nextAvailableLoader);
                     Vector3 chunkCenter = ChunkOriginQueue.Dequeue();
                     JobLoaderPool[nextAvailableLoader].Job.RecenterChunk(chunkCenter);
-                    JobLoaderPool[nextAvailableLoader].Schedule();
+                    JobLoaderPool[nextAvailableLoader].Schedule(SmoothNormals);
 
                 }
 
@@ -333,7 +367,7 @@ namespace Assets.Scripts.SIMD
 
                     LoaderPoolInUse.Enqueue(nextAvailableLoader);
                     JobLoaderPool[nextAvailableLoader].Job.RecenterChunk(chunkCenter);
-                    JobLoaderPool[nextAvailableLoader].Schedule();
+                    JobLoaderPool[nextAvailableLoader].Schedule(SmoothNormals);
                 }
             }
             return true;

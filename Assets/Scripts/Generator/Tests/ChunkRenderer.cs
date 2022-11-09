@@ -17,8 +17,9 @@ namespace Assets.Scripts.SIMD
 
         TerrainSettings mTerrainSettings;
         NoiseSettings mNoiseSettings;
-        TerrainParameters mTerrainParameters;
-        // NoiseParameters mNoiseParameters;
+
+        public bool _UseSmoothNormals;
+        private bool UseSmoothNormals;
 
 
         ChunkLoaderPool mLoaderPool;
@@ -34,6 +35,7 @@ namespace Assets.Scripts.SIMD
         void OnEnable()
         {
 
+            UseSmoothNormals = _UseSmoothNormals;
             // Setup components
             mNoiseSettings = GetComponent<NoiseSettings>();
             // mNoiseParameters = mNoiseSettings.Parameterize();
@@ -135,6 +137,7 @@ namespace Assets.Scripts.SIMD
 
 
             mLoaderPool.CreateChunkQueue(mPlayerLocation.transform.position);
+            mLoaderPool.SmoothNormals = _UseSmoothNormals;
             mLoaderPool.DispatchQueue();
             mLoaderPool.ReceiveDispatch();
 
@@ -152,14 +155,14 @@ namespace Assets.Scripts.SIMD
             TerrainParameters terrainParameters = mTerrainSettings.Parameterize();
             // Check the editor values against the default initialized values
             // if its different save the new valuesa as the default apply the changes
-            if (noiseParameters1 != mLoaderPool.mNoiseParameters)
+            if (noiseParameters1 != mLoaderPool.NoiseParams)
             {
-                Debug.Log("Noise values in editor changed from : " + mLoaderPool.mNoiseParameters + " to: " + noiseParameters1);
+                Debug.Log("Noise values in editor changed from : " + mLoaderPool.NoiseParams + " to: " + noiseParameters1);
                 update = true;
             }
-            if (!terrainParameters.EqualsExecptOrigin(mLoaderPool.mTerrainParameters))
+            if (!terrainParameters.EqualsExecptOrigin(mLoaderPool.TerrainParams))
             {
-                Debug.Log("Terrain values in editor changed from : " + mLoaderPool.mTerrainParameters + " to: " + terrainParameters);
+                Debug.Log("Terrain values in editor changed from : " + mLoaderPool.TerrainParams + " to: " + terrainParameters);
                 update = true;
             }
             int rd = (_ChunkRenderDistance * 2 + 1);
@@ -179,6 +182,12 @@ namespace Assets.Scripts.SIMD
 
                 update = true;
 
+            }
+
+            if (UseSmoothNormals != _UseSmoothNormals) {
+
+                update = true;
+                UseSmoothNormals = _UseSmoothNormals;
             }
 
             if (update)

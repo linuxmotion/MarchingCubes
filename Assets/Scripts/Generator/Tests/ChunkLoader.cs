@@ -46,9 +46,9 @@ namespace Assets.Scripts.SIMD
             Job.Dispose();
     
         }
-        public JobHandle Schedule()
+        public JobHandle Schedule(bool SmoothNormals)
         {
-
+            Job.SmoothNormals = SmoothNormals;
             Handle = Job.Schedule();
             return Handle;
 
