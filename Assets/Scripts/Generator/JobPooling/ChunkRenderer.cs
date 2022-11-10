@@ -107,8 +107,9 @@ namespace Assets.Scripts.SIMD
             chunk.ChunkObject.transform.SetParent(this.transform);
             chunk.Filter = chunk.ChunkObject.AddComponent<MeshFilter>();
             chunk.Renderer = chunk.ChunkObject.AddComponent<MeshRenderer>();
+            //chunk.Renderer.sharedMaterial.shader = Shader.Find("Unlit/BasicShader");
             chunk.Filter.mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-            chunk.Renderer.material = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+            chunk.Renderer.material = new Material(Shader.Find("Unlit/BasicShader"));
             chunk.Renderer.material.SetFloat("_Cull", 0);
             return chunk;
         }
@@ -142,19 +143,33 @@ namespace Assets.Scripts.SIMD
                 update = true;
             }
             int rd = (_ChunkRenderDistance * 2 + 1);
-            if (mSizeOfChunkSide != rd)
+
+             if (mSizeOfChunkSide != rd)
             {
+
                 Debug.Log("Chunk render distance change from: " + mSizeOfChunkSide + " to: " + rd);
-                mSizeOfChunkSide = rd;
-                int size = rd * rd - mNumberofChunks;
-                for (int i = 0; i < size; i++)
+
+                int size = rd * rd - mLoaderPool.NumberOfPooledChunks;
+                int startingSize = mLoaderPool.NumberOfPooledChunks;
+                if (size > 0)
                 {
-                    Chunk chunk = SetupChunk(new Vector3(i, 1, 1), mLoaderPool.NumberOfChunks + i);
-                    mLoaderPool.AddChunkToList(ref chunk);
-                    Debug.Log("Chunk " + chunk.ChunkObject);
+                    for (int i = 0; i < size; i++)
+                    {
+                        Chunk chunk = SetupChunk(new Vector3(i, 1, 1), startingSize + i);
+                        mLoaderPool.AddChunkToList(ref chunk);
+                        Debug.Log("Chunk " + chunk.ChunkObject.name + " added to list");
+                    }
                 }
+                else if (size < 0)
+                {
+                    mLoaderPool.ShrinkChunkPool(-size);
+                }
+
+                mSizeOfChunkSide = rd;
                 update = true;
+
             }
+
             if (UseSmoothNormals != _UseSmoothNormals)
             {
                 update = true;

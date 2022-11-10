@@ -21,7 +21,7 @@ namespace Assets.Scripts.SIMD
         public TerrainParameters TerrainParams { get; private set; }
         public int ChunkRenderDistance { get; private set; }
         public Vector3 CurrentChunkOrigin { get; private set; }
-        public int NumberOfChunks { get; private set; }
+        public int NumberOfPooledChunks { get; private set; }
         private readonly int MaxSize;
 
         public ChunkLoaderPool(ref List<Chunk> chunks, int numJobs, int renderDistance, Vector3 initialLocation, NoiseParameters noiseParameters, TerrainParameters terrainParameters)
@@ -41,7 +41,7 @@ namespace Assets.Scripts.SIMD
             CurrentChunkOrigin = initialLocation;
             NoiseParams = noiseParameters;
             TerrainParams = terrainParameters;
-            NumberOfChunks = chunks.Count;
+            NumberOfPooledChunks = chunks.Count;
             InitializeChunkPool(ref chunks);
             IntializeLoaderPool();
         }
@@ -49,10 +49,10 @@ namespace Assets.Scripts.SIMD
         private void InitializeChunkPool(ref List<Chunk> chunks)
         {
             ChunkPool = chunks;
-            ChunkPoolAvailable = new Queue<int>(NumberOfChunks);
+            ChunkPoolAvailable = new Queue<int>(NumberOfPooledChunks);
             //The total number of chunks in the world
-            ChunkOriginQueue = new Queue<Vector3>(NumberOfChunks);
-            for (int i = 0; i < NumberOfChunks; i++)
+            ChunkOriginQueue = new Queue<Vector3>(NumberOfPooledChunks);
+            for (int i = 0; i < NumberOfPooledChunks; i++)
             {
                 Vector3 origin = ChunkPool[i].ChunkOrigin;
                 ChunkOriginQueue.Enqueue(origin);
@@ -177,8 +177,22 @@ namespace Assets.Scripts.SIMD
             Debug.Log("Succufully assigned Job Id #" + loaderId + " centered at " + ChunkPool[chunkNum].ChunkOrigin + " to chunk #" + chunkNum);
         }
 
+        internal void ShrinkChunkPool(int numberToRemove)
+        {
+            ResetChunks();
+            int initialSize = ChunkPool.Count();
+            for (int i = initialSize - numberToRemove; i < initialSize; i++)
+                GameObject.Destroy(ChunkPool[i].ChunkObject);
+
+            ChunkPool.RemoveRange(initialSize - numberToRemove, numberToRemove);
+            ChunkPool.TrimExcess();
+            NumberOfPooledChunks = ChunkPool.Count(); 
+
+        }
+
         public void ResetLoaderPoolParameters(int renderDistance, NoiseParameters noiseParameters, TerrainParameters terrainParameters)
         {
+            //ResetChunks();
             //mCurrentChunkOrigin = Vector3.positiveInfinity;
             TerrainParams = terrainParameters;
             NoiseParams = noiseParameters;
@@ -192,12 +206,13 @@ namespace Assets.Scripts.SIMD
 
         public void AddChunkToList(ref Chunk chunk)
         {
+            NumberOfPooledChunks++;
             ChunkPool.Add(chunk);
         }
 
         public void ApplyChangesAfterReset()
         {
-            List<Vector3> newChunksCenters = Chunk.GetChunksFromCenterLocation(CurrentChunkOrigin, NumberOfChunks, ChunkRenderDistance, TerrainParams);
+            List<Vector3> newChunksCenters = Chunk.GetChunksFromCenterLocation(CurrentChunkOrigin, NumberOfPooledChunks, ChunkRenderDistance, TerrainParams);
             for (int i = 0; i < newChunksCenters.Count; i++)
             {
                 ChunkOriginQueue.Enqueue(newChunksCenters[i]);
@@ -222,9 +237,9 @@ namespace Assets.Scripts.SIMD
                 return false;
 
             // compare old and new centers
-            List<Vector3> oldChunkList = new List<Vector3>(NumberOfChunks);
+            List<Vector3> oldChunkList = new List<Vector3>(NumberOfPooledChunks);
             GetCurrentChunkOrigins(ref oldChunkList);
-            List<Vector3> newChunksCenters = Chunk.GetChunksFromCenterLocation(playerChunkOrigin, NumberOfChunks, ChunkRenderDistance, TerrainParams);
+            List<Vector3> newChunksCenters = Chunk.GetChunksFromCenterLocation(playerChunkOrigin, NumberOfPooledChunks, ChunkRenderDistance, TerrainParams);
             // the old centers that are still in the list are the centers that can be reused
             CurrentChunkOrigin = playerChunkOrigin;
 
@@ -338,6 +353,16 @@ namespace Assets.Scripts.SIMD
                 }
             }
             return true;
+        }
+
+        private void ResetChunks() {
+
+            foreach (var chunk in ChunkPool) {
+
+                chunk.Filter.mesh.Clear();
+            }
+        
+        
         }
         /// <summary>
         /// Release all reference to native memory that the loader currently hold onto. Clear all the lists to remove all references to objects.

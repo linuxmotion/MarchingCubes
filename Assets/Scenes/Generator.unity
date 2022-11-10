@@ -499,7 +499,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _UseSmoothNormals: 0
-  _ChunkRenderDistance: 1
+  _ChunkRenderDistance: 0
   _ScaleCubePrefab: {fileID: 0}
 --- !u!114 &1093071311
 MonoBehaviour:
@@ -516,8 +516,8 @@ MonoBehaviour:
   _InitialPlayerLocation: {fileID: 2218051634642237718}
   _SubSampleLevel: 1
   _SamplingHeight: 32
-  _SamplingLength: 16
-  _SamplingWidth: 16
+  _SamplingLength: 32
+  _SamplingWidth: 32
   _ISO_Level: 0
   __SurfaceLevel: 0
   _BedrockLevel: -8
