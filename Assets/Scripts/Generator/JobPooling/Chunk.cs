@@ -82,13 +82,11 @@ namespace Assets.Scripts.SIMD
             float c = Mathf.Ceil(n / m) * m;//ceil(n, m);
             float lower = n - f;
             float upper = c - n;
-            float p;
-            p = f;
             if (lower > upper)
             {
-                p = c;
+                return c;
             }
-            return p;
+            return f;
         }
     }
 }
