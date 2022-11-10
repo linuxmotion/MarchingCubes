@@ -14,13 +14,11 @@ namespace Assets.Scripts.SIMD
     [RequireComponent(typeof(NoiseSettings))]
     public class ChunkRenderer : MonoBehaviour
     {
-
         TerrainSettings mTerrainSettings;
         NoiseSettings mNoiseSettings;
 
         public bool _UseSmoothNormals;
         private bool UseSmoothNormals;
-
 
         ChunkLoaderPool mLoaderPool;
 
@@ -38,16 +36,10 @@ namespace Assets.Scripts.SIMD
             UseSmoothNormals = _UseSmoothNormals;
             // Setup components
             mNoiseSettings = GetComponent<NoiseSettings>();
-            // mNoiseParameters = mNoiseSettings.Parameterize();
-
             mTerrainSettings = GetComponent<TerrainSettings>();
-            //mTerrainParameters = mTerrainSettings.Parameterize();
-
             mPlayerLocation = GetComponent<TerrainSettings>().GetPlayerTransform();
-
             // Setup Chunk list
             mSizeOfChunkSide = _ChunkRenderDistance * 2 + 1;
-
             int numberOFChunks = mSizeOfChunkSide * mSizeOfChunkSide;
             List<Chunk> chunks = SetupChunkList(numberOFChunks, mTerrainSettings.Parameterize());
 
@@ -74,7 +66,6 @@ namespace Assets.Scripts.SIMD
             int bedrock = mTerrainSettings.Parameterize().BedrockLevel;
             for (int i = 0; i < mTerrainSettings.Parameterize().SamplingHeight; i++)
             {
-
                 GameObject g = GameObject.Instantiate(_ScaleCubePrefab);
                 g.transform.SetParent(parent);
                 MeshRenderer rend = g.GetComponent<MeshRenderer>();
@@ -82,10 +73,7 @@ namespace Assets.Scripts.SIMD
                 if (i % 2 == 0) rend.material.color = Color.white;
                 else rend.material.color = Color.black;
                 g.transform.SetPositionAndRotation(new Vector3(0, bedrock + i, 0), new Quaternion());
-
-
             }
-
         }
 
         private List<Chunk> SetupChunkList(in int numChunks, in TerrainParameters terrainParameters)
@@ -94,12 +82,9 @@ namespace Assets.Scripts.SIMD
             Debug.Log("Instantitating chunk list of size: " + mNumberofChunks);
             List<Chunk> chunkList = new List<Chunk>(mNumberofChunks);
 
-
             Vector3 playerLocation = mPlayerLocation.transform.position;
-
             mCurrentChunkCenter = Chunk.GetChunkCenterFromLocation(playerLocation, terrainParameters);
             List<Vector3> currentChunkOrigins = Chunk.GetChunksFromCenterLocation(mCurrentChunkCenter, numChunks, mSizeOfChunkSide, terrainParameters);
-
 
             for (int i = 0; i < mNumberofChunks; i++)
             {
@@ -107,10 +92,7 @@ namespace Assets.Scripts.SIMD
                 chunkList.Add(chunk);
                 Debug.Log("Chunk " + chunk.ChunkObject);
             }
-
-
             return chunkList;
-
         }
 
         private Chunk SetupChunk(in Vector3 chunkOrigin, int chunkNumber)
@@ -122,7 +104,6 @@ namespace Assets.Scripts.SIMD
             chunk.ChunkObject = new GameObject();
             chunk.ChunkObject.name = "Chunk #" + chunkNumber;
             chunk.ChunkObject.transform.SetPositionAndRotation(chunk.ChunkOrigin, new Quaternion(0, 0, 0, 0));
-
             chunk.ChunkObject.transform.SetParent(this.transform);
             chunk.Filter = chunk.ChunkObject.AddComponent<MeshFilter>();
             chunk.Renderer = chunk.ChunkObject.AddComponent<MeshRenderer>();
@@ -134,16 +115,11 @@ namespace Assets.Scripts.SIMD
 
         public void LateUpdate()
         {
-
-
             mLoaderPool.CreateChunkQueue(mPlayerLocation.transform.position);
             mLoaderPool.SmoothNormals = _UseSmoothNormals;
             mLoaderPool.DispatchQueue();
             mLoaderPool.ReceiveDispatch();
-
-
             CheckForAndApplyEditorChanges();
-
         }
 
         private void CheckForAndApplyEditorChanges()
@@ -168,7 +144,6 @@ namespace Assets.Scripts.SIMD
             int rd = (_ChunkRenderDistance * 2 + 1);
             if (mSizeOfChunkSide != rd)
             {
-
                 Debug.Log("Chunk render distance change from: " + mSizeOfChunkSide + " to: " + rd);
                 mSizeOfChunkSide = rd;
                 int size = rd * rd - mNumberofChunks;
@@ -177,24 +152,18 @@ namespace Assets.Scripts.SIMD
                     Chunk chunk = SetupChunk(new Vector3(i, 1, 1), mLoaderPool.NumberOfChunks + i);
                     mLoaderPool.AddChunkToList(ref chunk);
                     Debug.Log("Chunk " + chunk.ChunkObject);
-
                 }
-
                 update = true;
-
             }
-
-            if (UseSmoothNormals != _UseSmoothNormals) {
-
+            if (UseSmoothNormals != _UseSmoothNormals)
+            {
                 update = true;
                 UseSmoothNormals = _UseSmoothNormals;
             }
-
             if (update)
             {
                 mLoaderPool.ResetLoaderPoolParameters(rd, noiseParameters1, terrainParameters);
                 mLoaderPool.ApplyChangesAfterReset();
-                //mLoaderPool.DispatchQueue();
             }
         }
         // Update is called once per frame

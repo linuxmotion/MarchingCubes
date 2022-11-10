@@ -8,8 +8,6 @@ namespace Assets.Scripts.SIMD
 
     class Chunk
     {
-
-
         public MeshFilter Filter;
         public MeshRenderer Renderer;
         public GameObject ChunkObject;
@@ -19,43 +17,33 @@ namespace Assets.Scripts.SIMD
 
         public Chunk(int ID)
         {
-
             ChunkID = ID;
-
         }
 
         public void ReleaseChunk()
         {
-
             Filter = null;
             Renderer = null;
             GameObject.Destroy(ChunkObject);
-
         }
-
 
         public static List<Vector3> GetChunksFromCenterLocation(in Vector3 playerchunkorigin, int numChunks, int renderDistance, TerrainParameters terrainParameters)
         {
-
-
             int numberChunks = numChunks,
                 length = terrainParameters.SamplingLength,
                 width = terrainParameters.SamplingWidth;
 
-
-            float bootomLeftX = playerchunkorigin.x - ((renderDistance - 1) / 2) * width;
-            float bootomLeftz = playerchunkorigin.z - ((renderDistance - 1) / 2) * length;
+            float bottomLeftX = playerchunkorigin.x - ((renderDistance - 1) / 2) * width;
+            float bottomLeftz = playerchunkorigin.z - ((renderDistance - 1) / 2) * length;
 
             List<Vector3> chunksOrigins = new List<Vector3>(numberChunks);
-
-
             for (int i = 0; i < renderDistance; i++)
             {
                 for (int j = 0; j < renderDistance; j++)
                 {
                     Vector3 point = new Vector3();
-                    point.x = bootomLeftX + width * j;
-                    point.z = bootomLeftz + length * i;
+                    point.x = bottomLeftX + width * j;
+                    point.z = bottomLeftz + length * i;
                     chunksOrigins.Add(point);
                 }
             }
@@ -71,7 +59,6 @@ namespace Assets.Scripts.SIMD
         /// <returns></returns>
         public static Vector3 GetChunkCenterFromLocation(in Vector3 playerLocation, TerrainParameters terrainParameters)
         {
-
             int length = terrainParameters.SamplingLength,
                 width = terrainParameters.SamplingWidth;
 
@@ -99,16 +86,9 @@ namespace Assets.Scripts.SIMD
             p = f;
             if (lower > upper)
             {
-
                 p = c;
-
             }
-
             return p;
         }
-
-
-
     }
-
 }

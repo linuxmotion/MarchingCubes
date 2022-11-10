@@ -14,7 +14,6 @@ namespace Assets.Scripts.SIMD
     [BurstCompile]
     struct SimdChunkJob : IJob
     {
-
         public Vector3 ChunkCenter;
         public bool SmoothNormals;
 
@@ -41,7 +40,6 @@ namespace Assets.Scripts.SIMD
         /// <param name="center">A vector in 2d space the represnts the chunk centers for a given terrainP </param>
         public SimdChunkJob(NoiseParameters noiseP, TerrainParameters terrainP, Vector3 center)
         {
-
             SmoothNormals = false;
             ChunkCenter = center;
             MnoiseParameters = noiseP;
@@ -62,20 +60,16 @@ namespace Assets.Scripts.SIMD
             cell = new NativeArray<Voxel>(8, Allocator.Persistent);
             edgeConnections = new NativeArray<int4>(5, Allocator.Persistent);
             vertices = new NativeArray<float4>(5 * 3, Allocator.Persistent);
-
         }
 
         public void RecenterChunk(Vector3 newCenter)
         {
-
             ChunkCenter = newCenter;
             UpdateMainThread[0] = false;
             NumberOfTriangles[0] = 0;
         }
         public void ResetChunkParameters(NoiseParameters noiseP, TerrainParameters terrainP, Vector3 center)
         {
-          
-
             ChunkCenter = center;
             MnoiseParameters = noiseP;
             MterrainParameters = terrainP;
@@ -83,9 +77,7 @@ namespace Assets.Scripts.SIMD
             if (MterrainParameters.SamplingLength == 0 || MterrainParameters.SamplingWidth == 0 || MterrainParameters.SamplingHeight == 0)
                 throw new UnityException("Cannot have zero size volume");
 
-
             int size = (MterrainParameters.SamplingLength + 1) * (MterrainParameters.SamplingWidth + 1) * (MterrainParameters.SamplingHeight + 1) * MterrainParameters.Scale;
-
             int numPossiblePoints = (MterrainParameters.SamplingLength * MterrainParameters.Scale + 1) * (MterrainParameters.SamplingWidth * MterrainParameters.Scale + 1) * (MterrainParameters.SamplingHeight * MterrainParameters.Scale + 1);
 
             // the parameters are smaller, no need to allocate more memeory
@@ -115,11 +107,9 @@ namespace Assets.Scripts.SIMD
             Vertices.Dispose();
             Triangles.Dispose();
             Points.Dispose();
-
             cell.Dispose();
             edgeConnections.Dispose();
             vertices.Dispose();
-
         }
 
 
@@ -129,25 +119,15 @@ namespace Assets.Scripts.SIMD
             point.x = ChunkCenter.x;
             point.y = ChunkCenter.y;
             point.z = ChunkCenter.z;
-
-
             GenerateScalarField(point);
             CreateCubeData();
             // CalulateMesh(VoxelCells);
             UpdateMainThread[0] = true;
-
         }
-
-
-
-        static readonly ProfilerMarker s_CalculateMeshMarker = new ProfilerMarker("CalculateMesh");
-
-
 
         static readonly ProfilerMarker s_CreateCubeDataMarker = new ProfilerMarker("CreateCubeData");
         private void CreateCubeData()
         {
-
             s_CreateCubeDataMarker.Begin();
             int levelOffset, rowOffset;
 
@@ -160,15 +140,12 @@ namespace Assets.Scripts.SIMD
             int index = 0;
             for (int level = 0; level < Height * Scale; level++)
             {
-
                 levelOffset = level * levelSize;
-
                 for (int row = 0; row < Length * Scale; row++)
                 {
                     rowOffset = row * (Width * Scale + 1);
                     for (int coloumn = 0; coloumn < Width * Scale; coloumn++)
                     {
-
                         cell[0] = Points[coloumn + rowOffset + levelOffset]; //(c, r)
                         cell[1] = Points[coloumn + rowOffset + levelOffset + levelSize]; //(c, r)
                         cell[2] = Points[coloumn + rowOffset + levelOffset + levelSize + 1]; //(c, r)
@@ -179,37 +156,50 @@ namespace Assets.Scripts.SIMD
                         cell[6] = Points[coloumn + rowOffset + levelOffset + rowSize + levelSize + 1]; //(c, r)
                         cell[7] = Points[coloumn + rowOffset + levelOffset + rowSize + 1]; //(c, r)
 
-                        byte edgelist = 0;
                         // create the edge list
-                        VoxelCell.CreateEdgeList(ref edgelist, MterrainParameters.ISO_Level, cell);
-
+                        VoxelCell.CreateEdgeList(out byte edgelist, MterrainParameters.ISO_Level, cell);
                         // check if the cell in on the surface
                         if (VoxelCell.IsOnSurface(edgelist))
                         {
-                            int numTri = 0;
-                            VoxelCell.CreateVertexConnections(edgelist, ref numTri, ref edgeConnections);
+                            VoxelCell.CreateVertexConnections(edgelist, out int numTri, ref edgeConnections);
                             VoxelCell.CalculateMesh(numTri, ref vertices, edgeConnections, cell);
                             for (int i = 0; i < numTri * 3; i++)
                             {
+
                                 Vertices[index + i] = new Vector3(vertices[i].x, vertices[i].y, vertices[i].z);
                                 Triangles[index + i] = index + i;
 
                             }
                             index += numTri * 3;
                         }
-
-
                     }
 
                 }
             }
             NumberOfTriangles[0] = index / 3;
-
             // Debug.Log("Number of triangle in job centered at " + ChunkCenter + " : " + NumberOfTriangles[0]);
-
             s_CreateCubeDataMarker.End();
-
         }
+
+        //if (SmoothNormals)
+        // {
+        //   int i;
+        //   int j = 0;
+        //   Dictionary<Vector3, int> vertexSet = new Dictionary<Vector3, int>();
+        //   for (i = 0; i<localVert.Count(); i++)
+        //   {
+        //            if (vertexSet.ContainsKey(localVert[i]))
+        //            {
+        //                ind[i] = vertexSet.GetValueOrDefault(localVert[i]);
+        //            }
+        //            else
+        //            {
+        //                ind[i] = j;
+        //                vertexSet.Add(localVert[i], j++);
+        //            }
+        //   }
+        //   localVert = vertexSet.Keys.ToArray();
+        //}
 
 
         static readonly ProfilerMarker s_GenerateScalarFieldfMarker = new ProfilerMarker("GenerateScalarField");

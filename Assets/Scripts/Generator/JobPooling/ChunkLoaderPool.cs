@@ -8,7 +8,6 @@ namespace Assets.Scripts.SIMD
     ///
     class ChunkLoaderPool
     {
-
         private List<ChunkLoader> JobLoaderPool;
         private Queue<int> LoaderPoolInUse;
         private Queue<int> LoaderPoolAvailable;
@@ -24,9 +23,6 @@ namespace Assets.Scripts.SIMD
         public Vector3 CurrentChunkOrigin { get; private set; }
         public int NumberOfChunks { get; private set; }
         private readonly int MaxSize;
-
-
-
 
         public ChunkLoaderPool(ref List<Chunk> chunks, int numJobs, int renderDistance, Vector3 initialLocation, NoiseParameters noiseParameters, TerrainParameters terrainParameters)
         {
@@ -77,8 +73,6 @@ namespace Assets.Scripts.SIMD
                 JobLoaderPool.Add(new ChunkLoader(NoiseParams, TerrainParams, Vector3.positiveInfinity, loaderNum));
                 LoaderPoolAvailable.Enqueue(loaderNum);
             }
-
-
         }
 
         /// <summary>
@@ -119,16 +113,12 @@ namespace Assets.Scripts.SIMD
                     {
                         Debug.LogError("The chunk pool is empty, could not assign a chunk from the loader");
                     }
-
                 }
                 else
                 {
                     break;
                 }
-
             }
-
-
             return dispatchReceived;
         }
 
@@ -141,9 +131,7 @@ namespace Assets.Scripts.SIMD
         private void AssignChunkDataFromJob(int loaderId, int chunkNum)
         {
             int index = JobLoaderPool[loaderId].NumberOfTriangles[0] * 3;
-
             Vector3[] ver = JobLoaderPool[loaderId].Vertices.GetSubArray(0, index).ToArray();
-
             var localVert = new Vector3[ver.Length];
 
             ChunkPool[chunkNum].ChunkOrigin = JobLoaderPool[loaderId].Job.ChunkCenter;
@@ -175,18 +163,11 @@ namespace Assets.Scripts.SIMD
                         vertexSet.Add(localVert[i], j++);
                     }
                 }
-
-              
                     localVert = vertexSet.Keys.ToArray();
-                
-
-
             }
             else
             {
                 ind = JobLoaderPool[loaderId].Triangles.GetSubArray(0, index).ToArray();
-
-
             }
             ChunkPool[chunkNum].Filter.mesh.Clear();
             ChunkPool[chunkNum].Filter.mesh.SetVertices(localVert);
@@ -204,31 +185,24 @@ namespace Assets.Scripts.SIMD
             ChunkRenderDistance = renderDistance;
             for (int i = 0; i < JobLoaderPool.Count; i++)
             {
-
                 JobLoaderPool[i].Job.ResetChunkParameters(NoiseParams, TerrainParams, new Vector3(i, float.PositiveInfinity, float.PositiveInfinity));
                 JobLoaderPool[i].ResetArrays();
-
             }
         }
 
         public void AddChunkToList(ref Chunk chunk)
         {
-
             ChunkPool.Add(chunk);
         }
 
         public void ApplyChangesAfterReset()
         {
-
-
-
             List<Vector3> newChunksCenters = Chunk.GetChunksFromCenterLocation(CurrentChunkOrigin, NumberOfChunks, ChunkRenderDistance, TerrainParams);
             for (int i = 0; i < newChunksCenters.Count; i++)
             {
                 ChunkOriginQueue.Enqueue(newChunksCenters[i]);
                 ChunkPoolAvailable.Enqueue(i);
             }
-
             DispatchUnsafeQueue();
         }
 
@@ -280,9 +254,7 @@ namespace Assets.Scripts.SIMD
                 int chunkNumber = getChunkNumberFromOrigin(evictionList[i]);
                 ChunkPoolAvailable.Enqueue(chunkNumber);
             }
-
             return true;
-
         }
 
         private void GetCurrentChunkOrigins(ref List<Vector3> oldChunkList)
@@ -328,11 +300,8 @@ namespace Assets.Scripts.SIMD
                     Vector3 chunkCenter = ChunkOriginQueue.Dequeue();
                     JobLoaderPool[nextAvailableLoader].Job.RecenterChunk(chunkCenter);
                     JobLoaderPool[nextAvailableLoader].Schedule(SmoothNormals);
-
                 }
-
             }
-
         }
 
         /// <summary>
@@ -356,8 +325,6 @@ namespace Assets.Scripts.SIMD
                 return false;
             }
 
-
-            //int initialQueueSize = ChunkOriginQueue.Count;
             for (int i = 0, initialQueueSize = ChunkOriginQueue.Count; i < initialQueueSize; i++)
             {
                 if (LoaderPoolAvailable.Count > 0)
@@ -371,32 +338,24 @@ namespace Assets.Scripts.SIMD
                 }
             }
             return true;
-
         }
-
         /// <summary>
         /// Release all reference to native memory that the loader currently hold onto. Clear all the lists to remove all references to objects.
         /// </summary>
         public void ReleasePool()
         {
-
             foreach (var loader in JobLoaderPool)
             {
                 loader.ReleaseLoader();
             }
             JobLoaderPool.Clear();
-
             foreach (var chunk in ChunkPool)
             {
                 chunk.ReleaseChunk();
             }
             ChunkPool.Clear();
-
             LoaderPoolInUse.Clear();
             ChunkOriginQueue.Clear();
         }
-
-
     }
-
 }

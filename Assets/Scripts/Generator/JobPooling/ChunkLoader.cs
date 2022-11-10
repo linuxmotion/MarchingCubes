@@ -8,7 +8,6 @@ namespace Assets.Scripts.SIMD
 
     class ChunkLoader
     {
-
         public NativeArray<Voxel> Points;
         public NativeArray<Vector3> Vertices;
         public NativeArray<int> Triangles;
@@ -21,7 +20,6 @@ namespace Assets.Scripts.SIMD
 
         public ChunkLoader(NoiseParameters noiseParameters, TerrainParameters terrainParameters, Vector3 center, int loaderId)
         {
-
             LoaderId = loaderId;
             Job = new SimdChunkJob(noiseParameters, terrainParameters, center);
             Vertices = Job.Vertices;
@@ -29,7 +27,6 @@ namespace Assets.Scripts.SIMD
             UpdateMainThread = Job.UpdateMainThread;
             NumberOfTriangles = Job.NumberOfTriangles;
             Points = Job.Points;
-
         }
 
         public void ResetArrays() {
@@ -39,29 +36,21 @@ namespace Assets.Scripts.SIMD
             UpdateMainThread = Job.UpdateMainThread;
             NumberOfTriangles = Job.NumberOfTriangles;
             Points = Job.Points;
-
         }
         public void ReleaseLoader()
         {
             Job.Dispose();
-    
         }
         public JobHandle Schedule(bool SmoothNormals)
         {
             Job.SmoothNormals = SmoothNormals;
             Handle = Job.Schedule();
             return Handle;
-
         }
         public void Complete()
         {
-
             Handle.Complete();
         }
-
-
-
-
     }
 
 }

@@ -7,7 +7,6 @@ using UnityEngine;
 
 namespace Assets.Scripts.SIMD
 {
-
     public struct Voxel
     {
         // Extra padding for vector optimizations
@@ -15,7 +14,6 @@ namespace Assets.Scripts.SIMD
         // allow for vector opertions and more control over generation
         public float4 Densities;
         public Voxel(float4 vect, float4 den) { Point = vect; Densities = den; }
-
     }
 
     public struct VoxelCell
@@ -23,36 +21,33 @@ namespace Assets.Scripts.SIMD
         public const int SIZE = 8;
         public const int NUM_POSSIBLE_TRIANGLES = 5;
 
-
         static readonly ProfilerMarker EdgeList = new ProfilerMarker("Simd CreateEdgeList-Edgelist");
         static readonly ProfilerMarker VertexMarker = new ProfilerMarker("Simd CreateEdgeList-VertexConnections");
+        static readonly ProfilerMarker MeshMarker = new ProfilerMarker("Simd CalculateMesh-VertexConnections");
 
         /// <summary>
         /// Creates the list of edges that are connected together, always calculates a new edgelist
         /// </summary>
-        public static void CreateEdgeList(ref byte mEdgeList, float4 ISOLevel, NativeArray<Voxel> mVoxel)
+        public static void CreateEdgeList(out byte mEdgeList, float4 ISOLevel, NativeArray<Voxel> mVoxel)
         {
             EdgeList.Begin();
-            if (mEdgeList != 0) mEdgeList = 0;
-            bool pointBelowSurface;
+            mEdgeList = 0;
+            bool pointOnOrBelowSurface;
             for (int i = 0; i < SIZE; i++)
             {
-                pointBelowSurface = false;
+                pointOnOrBelowSurface = false;
                 // for now only use the first density value
-                if ((mVoxel[i].Densities >= ISOLevel).Equals(true))
-                    pointBelowSurface = true;
+                if ((mVoxel[i].Densities.x >= ISOLevel.x))
+                    pointOnOrBelowSurface = true;
 
-                if (pointBelowSurface)
+                if (pointOnOrBelowSurface)
                 {
                     mEdgeList |= (byte)(0b00000001 << i);
                 }
-
             }
-
             EdgeList.End();
-
         }
-        public static void CreateVertexConnections(in byte mEdgeList, ref int mNumberTriangles,ref NativeArray<int4> mVertexConnections)
+        public static void CreateVertexConnections(in byte mEdgeList, out int mNumberTriangles, ref NativeArray<int4> mVertexConnections)
         {
             VertexMarker.Begin();
             int numTri = MarchingCube.CASENUMBERTOTRIANGLES[mEdgeList];
@@ -78,6 +73,7 @@ namespace Assets.Scripts.SIMD
                 return false;
             return true;
         }
+
         public static bool IsOnOrUnderSurface(in byte mEdgeList)
         {
             if (mEdgeList == 0)
@@ -85,33 +81,27 @@ namespace Assets.Scripts.SIMD
             return true;
         }
 
-
-
-
-        public static void CalculateMesh(in int numberofTriangles,ref  NativeArray<float4> triangleVertices,in  NativeArray<int4> vertexConnections,in  NativeArray<Voxel> voxels)
+        public static void CalculateMesh(in int numberofTriangles, ref NativeArray<float4> triangleVertices, in NativeArray<int4> vertexConnections, in NativeArray<Voxel> voxels)
         {
-
-
-
+            MeshMarker.Begin();
             // know which edges connect, and how many triangle to generate
-
             for (int i = 0; i < numberofTriangles; i++)
             {
-                Points3 p =  GetVertexFromEdge(vertexConnections[i], voxels);
-                triangleVertices[i*3] = p.x;
-                triangleVertices[i*3 + 1] = p.y;
-                triangleVertices[i*3 + 2] = p.z;
+                Points3 p = GetVertexFromEdge(vertexConnections[i], voxels);
+                triangleVertices[i * 3] = p.x;
+                triangleVertices[i * 3 + 1] = p.y;
+                triangleVertices[i * 3 + 2] = p.z;
 
             }
+            MeshMarker.End();
 
         }
 
-
         public struct Points3
         {
-           public  float4 x;
+            public float4 x;
             public float4 y;
-                public float4 z;
+            public float4 z;
         }
 
         /// <summary>
@@ -130,10 +120,8 @@ namespace Assets.Scripts.SIMD
             for (int i = 0; i < 3; i++)
             {
                 edge = edges[i];
-
                 switch (edge)
                 {
-
                     case 0:
                         {
                             // 0,1
@@ -227,12 +215,8 @@ namespace Assets.Scripts.SIMD
                             index2[i] = -1;
                             break;
                         }
-
-
-
                 }
             }
-
             Points3 p = new Points3();
 
             float weight = FindWeightFromDensities(mVoxel[index1.x].Densities, mVoxel[index2.x].Densities);
@@ -244,7 +228,6 @@ namespace Assets.Scripts.SIMD
             weight = FindWeightFromDensities(mVoxel[index1.z].Densities, mVoxel[index2.z].Densities);
             p.z = Lerpf4(mVoxel[index1.z].Point, mVoxel[index2.z].Point, weight);
 
-
             return p;
         }
 
@@ -254,16 +237,9 @@ namespace Assets.Scripts.SIMD
             return massDen.x;
         }
 
-        public static float4 Lerpf4(in float4 point1,in float4 point2,in float4 weight)
+        public static float4 Lerpf4(in float4 point1, in float4 point2, in float4 weight)
         {
-
-
-
             return (point1 * (1 - weight) + point2 * weight);
-
         }
-
-
     }
-
 }
