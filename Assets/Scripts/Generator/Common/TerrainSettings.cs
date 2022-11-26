@@ -9,7 +9,7 @@ class TerrainSettings : MonoBehaviour
 
 
     [Header("Terrain Creation parameters")]
- 
+
     [SerializeField]
     private Transform _InitialPlayerLocation;
     [Header("Volume Sampling Parameters")]
@@ -26,12 +26,24 @@ class TerrainSettings : MonoBehaviour
     [SerializeField]
     public int __SurfaceLevel;
     [SerializeField]
+    public int __SeaLevel;
+    [SerializeField]
     public int _BedrockLevel;
 
     public TerrainParameters Parameterize()
     {
 
-        return new TerrainParameters(_InitialPlayerLocation.position, _SubSampleLevel, _SamplingHeight, _SamplingLength, _SamplingWidth, _ISO_Level, __SurfaceLevel, _BedrockLevel);
+        return new TerrainParameters(
+            _InitialPlayerLocation.position,
+            _SubSampleLevel,
+            _SamplingHeight,
+            _SamplingLength,
+            _SamplingWidth,
+            _ISO_Level,
+            __SurfaceLevel,
+            _BedrockLevel,
+            __SeaLevel
+            );
 
     }
     public Transform GetPlayerTransform()
@@ -42,7 +54,8 @@ class TerrainSettings : MonoBehaviour
 }
 
 /// <summary>
-/// A structure that controls the length, width and height of a chunk. It also controls the subsampling scale and what value determines a surface 
+/// A structure that controls the length, width and height of a chunk. It also controls the subsampling scale and what value determines a surface.
+/// Values are set in the unity editor and are then passed into this structure for use
 /// </summary>
 public struct TerrainParameters
 {
@@ -54,9 +67,10 @@ public struct TerrainParameters
     public int SamplingWidth;
     public int ISO_Level;
     public int SurfaceLevel;
+    public int SeaLevel;
     public int BedrockLevel;
 
-    public TerrainParameters( Vector3 origin, int scale, int samplingHeight, int samplingLength, int samplingWidth, int iSO_Level, int surfaceLevel, int bedrockLevel)
+    public TerrainParameters(Vector3 origin, int scale, int samplingHeight, int samplingLength, int samplingWidth, int iSO_Level, int surfaceLevel, int bedrockLevel, int seaLevel)
     {
         Origin = origin;
         Scale = scale;
@@ -66,13 +80,14 @@ public struct TerrainParameters
         ISO_Level = iSO_Level;
         SurfaceLevel = surfaceLevel;
         BedrockLevel = bedrockLevel;
+        SeaLevel = seaLevel;
     }
 
     public override bool Equals(object obj)
     {
-        return obj is TerrainParameters parameters &&
-            Origin == parameters.Origin && EqualsExecptOrigin(parameters);
-            
+        return
+             EqualsExecptOrigin(obj) && Origin == ((TerrainParameters)obj).Origin;
+
     }
     public bool EqualsExecptOrigin(object obj)
     {
@@ -83,7 +98,8 @@ public struct TerrainParameters
             SamplingWidth == parameters.SamplingWidth &&
             ISO_Level == parameters.ISO_Level &&
             SurfaceLevel == parameters.SurfaceLevel &&
-            BedrockLevel == parameters.BedrockLevel
+            BedrockLevel == parameters.BedrockLevel &&
+            SeaLevel == parameters.SeaLevel
             ;
     }
 
@@ -98,22 +114,29 @@ public struct TerrainParameters
             " | Origin: " + Origin +
             " | Scale: " + Scale +
             " | SamplingHeight: " + SamplingHeight +
-            " | SamplingWidth: " + SamplingWidth +  
+            " | SamplingWidth: " + SamplingWidth +
             " | SamplingLength: " + SamplingLength +
             " | ISO_Level: " + ISO_Level;
     }
 
+    /// <summary>
+    /// Check to see if the object passed is equal to current parameters except fopr the origin 
+    /// of the parameter
+    /// </summary>
+    /// <param name="lhs"></param>
+    /// <param name="rhs"></param>
+    /// <returns></returns>
     public static bool operator ==(TerrainParameters lhs, TerrainParameters rhs)
     {
 
-        return lhs.Equals(rhs);
+        return lhs.EqualsExecptOrigin(rhs);
     }
 
     public static bool operator !=(TerrainParameters lhs, TerrainParameters rhs)
     {
 
 
-        return !lhs.Equals(rhs);
+        return !lhs.EqualsExecptOrigin(rhs);
 
 
     }

@@ -279,7 +279,7 @@ namespace Assets.Scripts.Threaded
 
                         // TODO: Generate better noise - create a flat plane
 
-                        float noise = Noise.GenerateNoise(pos, noiseParameters, terrainParameters.SurfaceLevel);
+                        float noise = Noise.GenerateNoise(pos, noiseParameters, terrainParameters);
                         Voxel v = new(pos, noise);
                         nativePointsBuffer.Add(v);
 

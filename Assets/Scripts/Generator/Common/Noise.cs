@@ -7,25 +7,21 @@ public class Noise
 {
 
 
-    public static float GenerateNoise(in Vector3 point, in NoiseParameters noiseParameters, in int surfaceLevel) {
-
-        float4 vect;
-        vect.x = point.x;
-        vect.y = point.y;
-        vect.z = point.z;
-        vect.w = 0;
-        return GenerateNoise(vect, noiseParameters, surfaceLevel).x;
-    
-    }
+ 
     static readonly ProfilerMarker NoiseMarker = new ProfilerMarker("GenerateNoise - Marker 1");
     static readonly ProfilerMarker NoiseMarker2 = new ProfilerMarker("GenerateNoise - Marker 2");
-    public static float4 GenerateNoise(in float4 point, in NoiseParameters noiseParameters, in int surfaceLevel)
+
+    public static float GenerateNoise(in Vector3 point, in NoiseParameters noiseParameters, in TerrainParameters terrainParamaters)
+    {
+        return GenerateNoise(new float4(point.x, point.y, point.z, 0), noiseParameters, terrainParamaters).x;
+    }
+        public static float4 GenerateNoise(in float4 point, in NoiseParameters noiseParameters, in TerrainParameters terrainParamaters)
     {
     
         NoiseMarker.Begin();     
-        if (point.y < surfaceLevel) {
+        if (point.y < terrainParamaters.SurfaceLevel) {
             NoiseMarker.End(); 
-            //return 1;
+            return 1;
         }
 
         float sampleLevel = noiseParameters.SampleLevel;
@@ -63,10 +59,17 @@ public class Noise
         }
 
 
+        float tNoise = -1f + 2 * (noise / octave);
+
+        if (y < terrainParamaters.SeaLevel && tNoise < 0) {
+            return new float4(0, 1, 0, 0);
+        
+        }
+
         // This should push the ending value into the range of -1 to 1, more or less, since noise could be slighty
         // below 0 or beyond 1.0
         NoiseMarker.End();
-        return -1f + 2 * (noise / octave);
+        return tNoise;
 
 
     }
