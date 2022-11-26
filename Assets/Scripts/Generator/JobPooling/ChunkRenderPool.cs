@@ -5,8 +5,11 @@ using UnityEngine;
 
 namespace Assets.Scripts.SIMD
 {
-    ///
-    class ChunkLoaderPool
+    /// <summary>
+    /// Chunk loader pool class. Maintains the state of the chunk references as well as create and destroy chunks
+    /// as needed.
+    /// </summary>
+    class ChunkRenderPool
     {
         private List<ChunkLoader> JobLoaderPool;
         private Queue<int> LoaderPoolInUse;
@@ -24,7 +27,7 @@ namespace Assets.Scripts.SIMD
         public int NumberOfPooledChunks { get; private set; }
         private readonly int MaxSize;
 
-        public ChunkLoaderPool(ref List<Chunk> chunks, int numJobs, int renderDistance, Vector3 initialLocation, NoiseParameters noiseParameters, TerrainParameters terrainParameters)
+        public ChunkRenderPool(ref List<Chunk> chunks, int numJobs, int renderDistance, Vector3 initialLocation, NoiseParameters noiseParameters, TerrainParameters terrainParameters)
         {
 
             Debug.Log("Creating chunk loader pool");
@@ -83,7 +86,7 @@ namespace Assets.Scripts.SIMD
         /// False if there are no Job to check for or the chunk pool is empty,
         /// True if at least one Job was available for data retrieval
         /// </returns>
-        public bool ReceiveDispatch()
+        public bool ReceiveDispatch(GameObject prefab)
         {
             if (LoaderPoolInUse.Count == 0)
                 return false;
@@ -104,7 +107,7 @@ namespace Assets.Scripts.SIMD
                     if (ChunkPoolAvailable.TryDequeue(out int chunkNumber))
                     {
                         Debug.Log("Assigning data from Job Id #" + loaderId + " to chunk #" + chunkNumber);
-                        AssignChunkDataFromJob(loaderId, chunkNumber);
+                        AssignChunkDataFromJob(loaderId, chunkNumber, prefab);
                         LoaderPoolInUse.Dequeue();
                         LoaderPoolAvailable.Enqueue(loaderId);
                         dispatchReceived = true;
@@ -122,13 +125,13 @@ namespace Assets.Scripts.SIMD
             return dispatchReceived;
         }
 
-
+        List<GameObject> DebugCubes = new List<GameObject>();
         /// <summary>
         /// Assign Data from a Job into a chunk for rendering
         /// </summary>
         /// <param name="loaderId">The Job id to retrieve the data from</param>
         /// <param name="chunkNum">The Chunk that the data should be assigned to</param>
-        private void AssignChunkDataFromJob(int loaderId, int chunkNum)
+        private void AssignChunkDataFromJob(int loaderId, int chunkNum, GameObject prefab)
         {
             int index = JobLoaderPool[loaderId].NumberOfTriangles[0] * 3;
             Vector3[] ver = JobLoaderPool[loaderId].Vertices.GetSubArray(0, index).ToArray();
@@ -163,18 +166,79 @@ namespace Assets.Scripts.SIMD
                         vertexSet.Add(localVert[i], j++);
                     }
                 }
-                    localVert = vertexSet.Keys.ToArray();
+                localVert = vertexSet.Keys.ToArray();
             }
             else
             {
                 ind = JobLoaderPool[loaderId].Triangles.GetSubArray(0, index).ToArray();
             }
-            ChunkPool[chunkNum].Filter.mesh.Clear();
-            ChunkPool[chunkNum].Filter.mesh.SetVertices(localVert);
-            ChunkPool[chunkNum].Filter.mesh.SetTriangles(ind,0);
-            ChunkPool[chunkNum].Filter.mesh.RecalculateNormals();
-            ChunkPool[chunkNum].Filter.mesh.RecalculateBounds();
+
+
+            if (prefab == null)
+            {
+                ChunkPool[chunkNum].Filter.mesh.Clear();
+                ChunkPool[chunkNum].Filter.mesh.SetVertices(localVert);
+                ChunkPool[chunkNum].Filter.mesh.SetTriangles(ind, 0);
+                ChunkPool[chunkNum].Filter.mesh.RecalculateNormals();
+                ChunkPool[chunkNum].Filter.mesh.RecalculateBounds();
+            }
+            else
+            {
+                Debug.Log("Debugging volume point cloud");
+                DebugVolumePointCloud(loaderId, prefab);
+
+            }
+
+
             Debug.Log("Succufully assigned Job Id #" + loaderId + " centered at " + ChunkPool[chunkNum].ChunkOrigin + " to chunk #" + chunkNum);
+        }
+
+        private void DebugVolumePointCloud(int loaderId, GameObject prefab)
+        {
+
+            for (int i = 0; i < JobLoaderPool[loaderId].NumberOfTriangles[0] * 3; i += 3)
+            {
+
+
+                Vector3 a = JobLoaderPool[loaderId].Vertices[i];
+                Vector3 b = JobLoaderPool[loaderId].Vertices[i + 1];
+                Vector3 c = JobLoaderPool[loaderId].Vertices[i + 2];
+                GameObject g = GameObject.Instantiate(prefab, a, new Quaternion(0, 0, 0, 0));
+                g.GetComponent<Renderer>().material.color = Color.red;
+
+                g.transform.SetParent(GameObject.FindGameObjectWithTag("Surface").transform);
+                DebugCubes.Add(g);
+
+                g = GameObject.Instantiate(prefab, b, new Quaternion(0, 0, 0, 0));
+                g.GetComponent<Renderer>().material.color = Color.red;
+                g.transform.SetParent(GameObject.FindGameObjectWithTag("Surface").transform);
+                DebugCubes.Add(g);
+
+                g = GameObject.Instantiate(prefab, c, new Quaternion(0, 0, 0, 0));
+                g.GetComponent<Renderer>().material.color = Color.red;
+                g.transform.SetParent(GameObject.FindGameObjectWithTag("Surface").transform);
+                DebugCubes.Add(g);
+
+                //        DebugCubes.Add(g);
+                //        // g.SetActive(true);
+                //        g.transform.SetParent(GameObject.FindGameObjectWithTag("DebugCubes").transform);
+
+            }
+            for (int i = 0; i < JobLoaderPool[loaderId].NumberOfTriangles[1]; i++)
+            {
+
+                Vector4 vect = JobLoaderPool[loaderId].Points[i].Point;
+                // create cubes at vertices locations
+                if (JobLoaderPool[loaderId].Points[i].Densities.x >= TerrainParams.ISO_Level)
+                {
+
+                    GameObject g = GameObject.Instantiate(prefab, vect, new Quaternion(0, 0, 0, 0));
+                    DebugCubes.Add(g);
+                    // g.SetActive(true);
+                    g.transform.SetParent(GameObject.FindGameObjectWithTag("Interior").transform);
+
+                }
+            }
         }
 
         internal void ShrinkChunkPool(int numberToRemove)
@@ -186,7 +250,7 @@ namespace Assets.Scripts.SIMD
 
             ChunkPool.RemoveRange(initialSize - numberToRemove, numberToRemove);
             ChunkPool.TrimExcess();
-            NumberOfPooledChunks = ChunkPool.Count(); 
+            NumberOfPooledChunks = ChunkPool.Count();
 
         }
 
@@ -212,6 +276,14 @@ namespace Assets.Scripts.SIMD
 
         public void ApplyChangesAfterReset()
         {
+            ResetChunks();
+
+            foreach (GameObject g in DebugCubes)
+            {
+                GameObject.Destroy(g);
+            }
+            DebugCubes.Clear();
+
             List<Vector3> newChunksCenters = Chunk.GetChunksFromCenterLocation(CurrentChunkOrigin, NumberOfPooledChunks, ChunkRenderDistance, TerrainParams);
             for (int i = 0; i < newChunksCenters.Count; i++)
             {
@@ -355,14 +427,16 @@ namespace Assets.Scripts.SIMD
             return true;
         }
 
-        private void ResetChunks() {
+        private void ResetChunks()
+        {
 
-            foreach (var chunk in ChunkPool) {
+            foreach (var chunk in ChunkPool)
+            {
 
                 chunk.Filter.mesh.Clear();
             }
-        
-        
+
+
         }
         /// <summary>
         /// Release all reference to native memory that the loader currently hold onto. Clear all the lists to remove all references to objects.

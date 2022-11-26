@@ -21,8 +21,8 @@ class TerrainSettings : MonoBehaviour
     private int _SamplingLength;
     [SerializeField]
     private int _SamplingWidth;
-    [SerializeField]
-    private int _ISO_Level;
+    [SerializeField][Range(-1,1)]
+    private float _ISO_Level;
     [SerializeField]
     public int __SurfaceLevel;
     [SerializeField]
@@ -65,12 +65,12 @@ public struct TerrainParameters
     public int SamplingHeight;
     public int SamplingLength;
     public int SamplingWidth;
-    public int ISO_Level;
+    public float ISO_Level;
     public int SurfaceLevel;
     public int SeaLevel;
     public int BedrockLevel;
 
-    public TerrainParameters(Vector3 origin, int scale, int samplingHeight, int samplingLength, int samplingWidth, int iSO_Level, int surfaceLevel, int bedrockLevel, int seaLevel)
+    public TerrainParameters(Vector3 origin, int scale, int samplingHeight, int samplingLength, int samplingWidth, float iSO_Level, int surfaceLevel, int bedrockLevel, int seaLevel)
     {
         Origin = origin;
         Scale = scale;

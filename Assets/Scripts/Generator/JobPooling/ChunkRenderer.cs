@@ -20,8 +20,8 @@ namespace Assets.Scripts.SIMD
         public bool _UseSmoothNormals;
         private bool UseSmoothNormals;
 
-        ChunkLoaderPool mLoaderPool;
-
+        ChunkRenderPool mLoaderPool;
+        GameObject Prefab;
         public int _ChunkRenderDistance;
         private int mSizeOfChunkSide;
         private Transform mPlayerLocation;
@@ -43,7 +43,7 @@ namespace Assets.Scripts.SIMD
             int numberOFChunks = mSizeOfChunkSide * mSizeOfChunkSide;
             List<Chunk> chunks = SetupChunkList(numberOFChunks, mTerrainSettings.Parameterize());
 
-            mLoaderPool = new ChunkLoaderPool(ref chunks,
+            mLoaderPool = new ChunkRenderPool(ref chunks,
                 Unity.Jobs.LowLevel.Unsafe.JobsUtility.JobWorkerCount,
                 mSizeOfChunkSide,
                 mPlayerLocation.transform.position,
@@ -106,10 +106,9 @@ namespace Assets.Scripts.SIMD
             chunk.ChunkObject.transform.SetPositionAndRotation(chunk.ChunkOrigin, new Quaternion(0, 0, 0, 0));
             chunk.ChunkObject.transform.SetParent(this.transform);
             chunk.Filter = chunk.ChunkObject.AddComponent<MeshFilter>();
-            chunk.Renderer = chunk.ChunkObject.AddComponent<MeshRenderer>();
-            //chunk.Renderer.sharedMaterial.shader = Shader.Find("Unlit/BasicShader");
+            chunk.Renderer = chunk.ChunkObject.AddComponent<MeshRenderer>(); 
             chunk.Filter.mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-            chunk.Renderer.material = new Material(Shader.Find("Unlit/BasicShader"));
+            //chunk.Renderer.material = new Material(Shader.Find("Unlit/BasicShader"));
             chunk.Renderer.material.SetFloat("_Cull", 0);
             return chunk;
         }
@@ -119,8 +118,9 @@ namespace Assets.Scripts.SIMD
             mLoaderPool.CreateChunkQueue(mPlayerLocation.transform.position);
             mLoaderPool.SmoothNormals = _UseSmoothNormals;
             mLoaderPool.DispatchQueue();
-            mLoaderPool.ReceiveDispatch();
+            mLoaderPool.ReceiveDispatch(Prefab);
             CheckForAndApplyEditorChanges();
+
         }
 
         private void CheckForAndApplyEditorChanges()
@@ -132,6 +132,10 @@ namespace Assets.Scripts.SIMD
             TerrainParameters terrainParameters = mTerrainSettings.Parameterize();
             // Check the editor values against the default initialized values
             // if its different save the new valuesa as the default apply the changes
+            if (Prefab != _ScaleCubePrefab) {
+                Prefab = _ScaleCubePrefab;
+                update = true;
+            }
             if (noiseParameters1 != mLoaderPool.NoiseParams)
             {
                 Debug.Log("Noise values in editor changed from : " + mLoaderPool.NoiseParams + " to: " + noiseParameters1);

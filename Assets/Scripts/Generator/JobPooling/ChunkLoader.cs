@@ -12,6 +12,9 @@ namespace Assets.Scripts.SIMD
         public NativeArray<Vector3> Vertices;
         public NativeArray<int> Triangles;
         public NativeArray<bool> UpdateMainThread;
+        /// <summary>
+        /// Store the number of triangles generated in index 0, and stores the number of point generated initially in index 1
+        /// </summary>
         public NativeArray<int> NumberOfTriangles;
 
         public SimdChunkJob Job;

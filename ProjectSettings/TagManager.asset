@@ -7,6 +7,7 @@ TagManager:
   - CinemachineTarget
   - TerrainMesh
   - TerrainScale
+  - DebugCubes
   layers:
   - Default
   - TransparentFX

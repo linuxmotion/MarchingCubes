@@ -44,7 +44,7 @@ namespace Assets.Scripts.SIMD
             ChunkCenter = center;
             MnoiseParameters = noiseP;
             MterrainParameters = terrainP;
-            NumberOfTriangles = new NativeArray<int>(1, Allocator.Persistent);
+            NumberOfTriangles = new NativeArray<int>(2, Allocator.Persistent);// we will also hold the number of points in index 1
             UpdateMainThread = new NativeArray<bool>(1, Allocator.Persistent);
 
             if (MterrainParameters.SamplingLength == 0 || MterrainParameters.SamplingWidth == 0 || MterrainParameters.SamplingHeight == 0)
@@ -181,27 +181,6 @@ namespace Assets.Scripts.SIMD
             s_CreateCubeDataMarker.End();
         }
 
-        //if (SmoothNormals)
-        // {
-        //   int i;
-        //   int j = 0;
-        //   Dictionary<Vector3, int> vertexSet = new Dictionary<Vector3, int>();
-        //   for (i = 0; i<localVert.Count(); i++)
-        //   {
-        //            if (vertexSet.ContainsKey(localVert[i]))
-        //            {
-        //                ind[i] = vertexSet.GetValueOrDefault(localVert[i]);
-        //            }
-        //            else
-        //            {
-        //                ind[i] = j;
-        //                vertexSet.Add(localVert[i], j++);
-        //            }
-        //   }
-        //   localVert = vertexSet.Keys.ToArray();
-        //}
-
-
         static readonly ProfilerMarker s_GenerateScalarFieldfMarker = new ProfilerMarker("GenerateScalarField");
         private void GenerateScalarField(float4 around)
         {
@@ -237,9 +216,9 @@ namespace Assets.Scripts.SIMD
                         pos.z = z;
                         pos.w = 0;
 
-                        // TODO: Generate better noise - create a flat plane
 
-                        float4 noise = Noise.GenerateNoise(pos, MnoiseParameters, MterrainParameters.SurfaceLevel);
+                        float4 noise = Noise.GenerateNoise(pos, MnoiseParameters, MterrainParameters);
+                        // if the noise produces air but is below sea level produce water instead
                         Voxel v = new(pos, noise);
                         Points[index++] = v;
 
@@ -247,7 +226,7 @@ namespace Assets.Scripts.SIMD
 
                 }
             }
-            // Points.CopyFrom(nativePointsBuffer.ToArray());
+            NumberOfTriangles[1] = index-1;
 
             s_GenerateScalarFieldfMarker.End();
         }

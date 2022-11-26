@@ -8,7 +8,7 @@ public class NoiseSettings : MonoBehaviour
 
     [Header("Noise sampling parameters")]
     [SerializeField]
-    private int _Seed;
+    private float _Seed;
     [SerializeField]
     private float _Frequency;
     [SerializeField]

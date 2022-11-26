@@ -13,6 +13,10 @@ namespace Assets.Scripts.SIMD
         public float4 Point;
         // allow for vector opertions and more control over generation
         public float4 Densities;
+        // Density #1 - Solid = 1, Air = 0
+        // Density #2 - Water = 1, Air = 0
+        // Density #3 - Lava  = 1, Air = 0
+        // Density #3 - NotUsed = 1, Air = 0
         public Voxel(float4 vect, float4 den) { Point = vect; Densities = den; }
     }
 
@@ -37,6 +41,12 @@ namespace Assets.Scripts.SIMD
             {
                 pointOnOrBelowSurface = false;
                 // for now only use the first density value
+
+                // Right here is where the point is set to be on the surface or not
+                // so right here is where we determine if the point will go into the
+                // land terrain mesh or the water mesh
+
+
                 if ((mVoxel[i].Densities.x >= ISOLevel.x))
                     pointOnOrBelowSurface = true;
 
@@ -87,7 +97,7 @@ namespace Assets.Scripts.SIMD
             // know which edges connect, and how many triangle to generate
             for (int i = 0; i < numberofTriangles; i++)
             {
-                Points3 p = GetVertexFromEdge(vertexConnections[i], voxels);
+                Triangle p = GetTriangleFromEdges(vertexConnections[i], voxels);
                 triangleVertices[i * 3] = p.x;
                 triangleVertices[i * 3 + 1] = p.y;
                 triangleVertices[i * 3 + 2] = p.z;
@@ -97,7 +107,7 @@ namespace Assets.Scripts.SIMD
 
         }
 
-        public struct Points3
+        public struct Triangle
         {
             public float4 x;
             public float4 y;
@@ -105,18 +115,18 @@ namespace Assets.Scripts.SIMD
         }
 
         /// <summary>
-        /// The three edge number stored in a int4 
+        /// Get the vertices from within the given voxel
         /// </summary>
-        /// <param name="edges"></param>
+        /// <param name="edges">The edge connection list for a given voxel</param>
+        /// <param name="mVoxel">The densities for the given properties of a Voxel</param>
         /// <returns></returns>
-        /// 
-        private static Points3 GetVertexFromEdge(int4 edges, NativeArray<Voxel> mVoxel)
+        private static Triangle GetTriangleFromEdges(int4 edges, NativeArray<Voxel> mVoxel)
         {
             int4 index1 = 0;
             int4 index2 = 0;
             int edge;
 
-            // Check each internal float for the edge and set each index
+            // Check each internal float for the edge connection number and set each index for each vertex
             for (int i = 0; i < 3; i++)
             {
                 edge = edges[i];
@@ -217,24 +227,25 @@ namespace Assets.Scripts.SIMD
                         }
                 }
             }
-            Points3 p = new Points3();
+            Triangle p = new Triangle();
 
-            float weight = FindWeightFromDensities(mVoxel[index1.x].Densities, mVoxel[index2.x].Densities);
-            p.x = Lerpf4(mVoxel[index1.x].Point, mVoxel[index2.x].Point, weight);
+            float4 weight = FindWeightFromDensities(mVoxel[index1.x].Densities, mVoxel[index2.x].Densities);
+
+            p.x = Lerpf4(mVoxel[index1.x].Point, mVoxel[index2.x].Point, weight.x);
 
             weight = FindWeightFromDensities(mVoxel[index1.y].Densities, mVoxel[index2.y].Densities);
-            p.y = Lerpf4(mVoxel[index1.y].Point, mVoxel[index2.y].Point, weight);
+            p.y = Lerpf4(mVoxel[index1.y].Point, mVoxel[index2.y].Point, weight.x);
 
             weight = FindWeightFromDensities(mVoxel[index1.z].Densities, mVoxel[index2.z].Densities);
-            p.z = Lerpf4(mVoxel[index1.z].Point, mVoxel[index2.z].Point, weight);
+            p.z = Lerpf4(mVoxel[index1.z].Point, mVoxel[index2.z].Point, weight.x);
 
             return p;
         }
 
-        private static float FindWeightFromDensities(float4 densities1, float4 densities2)
+        private static float4 FindWeightFromDensities(float4 densities1, float4 densities2)
         {
-            float4 massDen = densities1 / (densities1 - densities2);
-            return massDen.x;
+            return densities1 / (densities1 - densities2);
+            
         }
 
         public static float4 Lerpf4(in float4 point1, in float4 point2, in float4 weight)

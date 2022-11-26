@@ -7,25 +7,26 @@ public class Noise
 {
 
 
- 
+
     static readonly ProfilerMarker NoiseMarker = new ProfilerMarker("GenerateNoise - Marker 1");
     static readonly ProfilerMarker NoiseMarker2 = new ProfilerMarker("GenerateNoise - Marker 2");
 
-    public static float GenerateNoise(in Vector3 point, in NoiseParameters noiseParameters, in TerrainParameters terrainParamaters)
+    public static float GenerateNoise(in Vector3 point, in NoiseParameters noiseParameters, in TerrainParameters terrainParameters)
     {
-        return GenerateNoise(new float4(point.x, point.y, point.z, 0), noiseParameters, terrainParamaters).x;
+        return GenerateNoise(new float4(point.x, point.y, point.z, 0), noiseParameters, terrainParameters).x;
     }
-        public static float4 GenerateNoise(in float4 point, in NoiseParameters noiseParameters, in TerrainParameters terrainParamaters)
+    public static float4 GenerateNoise(in float4 point, in NoiseParameters noiseParameters, in TerrainParameters terrainParameters)
     {
-    
-        NoiseMarker.Begin();     
-        if (point.y < terrainParamaters.SurfaceLevel) {
-            NoiseMarker.End(); 
+
+        NoiseMarker.Begin();
+        if (point.y < terrainParameters.SurfaceLevel)
+        {
+            NoiseMarker.End();
             return 1;
         }
 
         float sampleLevel = noiseParameters.SampleLevel;
-        float seed = noiseParameters.SampleLevel ;
+        float seed = noiseParameters.SampleLevel;
         float x = point.x / sampleLevel;
         float y = point.y / sampleLevel;
         float z = point.z / sampleLevel;
@@ -35,7 +36,7 @@ public class Noise
         int octave = noiseParameters.Octave;
 
         float noise = 0;
-   
+
 
 
 
@@ -61,15 +62,14 @@ public class Noise
 
         float tNoise = -1f + 2 * (noise / octave);
 
-        if (y < terrainParamaters.SeaLevel && tNoise < 0) {
-            return new float4(0, 1, 0, 0);
-        
-        }
+        //if (y < terrainParamaters.SeaLevel && tNoise < 0) {
+        //    return new float4(0, .5f, 0, 0);
+        //}
 
         // This should push the ending value into the range of -1 to 1, more or less, since noise could be slighty
         // below 0 or beyond 1.0
         NoiseMarker.End();
-        return tNoise;
+        return new float4(tNoise,0,0,0);
 
 
     }
