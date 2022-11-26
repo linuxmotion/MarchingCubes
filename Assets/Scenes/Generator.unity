@@ -499,7 +499,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _UseSmoothNormals: 0
-  _ChunkRenderDistance: 0
+  _ChunkRenderDistance: 1
   _ScaleCubePrefab: {fileID: 0}
 --- !u!114 &1093071311
 MonoBehaviour:
